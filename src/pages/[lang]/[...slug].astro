@@ -1,0 +1,118 @@
+---
+import Footer from "../../components/Footer.astro";
+import Header from "../../components/Header.astro";
+import BaseHead from "../../components/BaseHead.astro";
+import { singleSiteLoader } from "../../content.config";
+import prisma from "../../utils/db";
+
+const lang = typeof Astro.params.lang === "string" ? Astro.params.lang : "en";
+const slug = Astro.params.slug;
+
+await prisma.sectionContens.deleteMany();
+await prisma.section.deleteMany();
+await prisma.site.deleteMany();
+
+if ((await prisma.site.count()) === 0) {
+	// create some data
+	await prisma.site.create({
+		data: {
+			title: "Site Title",
+			description: "Site Description",
+			keywords: "site, keywords",
+			slug: slug,
+			sections: {
+				create: [
+					{
+						title: "Section 1",
+						html: "<p>Section 1</p>",
+						css: "p { color: red; }",
+						contents: {
+							create: {
+								content: {
+									key1: "value1",
+									key2: "value2",
+								},
+								langCode: "en",
+							},
+						},
+					},
+					{
+						title: "Section 2",
+						html: '<p class="blue">Section 2 {{key1}}</p>',
+						css: "p.blue { color: blue; }",
+						contents: {
+							create: {
+								content: {
+									key1: "55",
+									key2: "value2",
+								},
+								langCode: "en",
+							},
+						},
+					},
+				],
+			},
+		},
+	});
+}
+
+// const sites = await getCollection("site");
+// const site = sites.find((site) => site.data.slug === slug);
+const site = await singleSiteLoader(slug);
+
+if (!site) return new Response(null, { status: 404 });
+
+const { title, description, sections } = site; // site.data;
+
+function prepareHtml(html: string, content: { [key: string]: string }) {
+	for (const key in content) {
+		html = html.replaceAll(`{{${key}}}`, content[key]);
+	}
+	return html;
+}
+---
+
+<html lang={lang}>
+	<head>
+		<BaseHead title={title} description={description} />
+	</head>
+
+	<body>
+		<Header />
+		<main>
+			{
+				sections.map((section) => {
+					// get proper lang content
+					const sectionContent = section.contents.find(
+						(content) => content.langCode === lang
+					);
+
+					if (!sectionContent) {
+						return (
+							<section class="w-full bg-red-400 p-9">
+								<h2 class="text-center">
+									Content not found for lang: {lang}
+								</h2>
+							</section>
+						);
+					}
+
+					const htmlEverythinSet = prepareHtml(
+						section.html,
+						(sectionContent?.content as {
+							[key: string]: string;
+						}) || ({} as { [key: string]: string })
+					);
+
+					return (
+						<>
+							<style set:html={section.css} />
+							<section set:html={htmlEverythinSet} />
+						</>
+					);
+				})
+			}
+		</main>
+		<Footer />
+	</body>
+</html>
