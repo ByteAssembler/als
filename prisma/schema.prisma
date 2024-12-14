@@ -43,6 +43,8 @@ model Section {
 
   contents SectionContens[]
 
+  contentTemplate Json
+
   site   Site   @relation(fields: [siteId], references: [id])
   siteId String
 

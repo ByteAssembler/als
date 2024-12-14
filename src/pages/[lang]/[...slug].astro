@@ -8,24 +8,32 @@ import prisma from "../../utils/db";
 const lang = typeof Astro.params.lang === "string" ? Astro.params.lang : "en";
 const slug = Astro.params.slug;
 
+/*
 await prisma.sectionContens.deleteMany();
 await prisma.section.deleteMany();
 await prisma.site.deleteMany();
+*/
 
 if ((await prisma.site.count()) === 0) {
 	// create some data
 	await prisma.site.create({
 		data: {
-			title: "Site Title",
-			description: "Site Description",
-			keywords: "site, keywords",
-			slug: slug,
+			title: "Site Title " + slug,
+			description: "Site Description " + slug,
+			keywords: "site, keywords " + slug,
+			slug: slug || "default-slug-" + Math.random(),
 			sections: {
 				create: [
 					{
 						title: "Section 1",
 						html: "<p>Section 1</p>",
 						css: "p { color: red; }",
+						contentTemplate: {
+							create: {
+								key1: "value1",
+								key2: "value2",
+							},
+						},
 						contents: {
 							create: {
 								content: {
@@ -40,6 +48,12 @@ if ((await prisma.site.count()) === 0) {
 						title: "Section 2",
 						html: '<p class="blue">Section 2 {{key1}}</p>',
 						css: "p.blue { color: blue; }",
+						contentTemplate: {
+							create: {
+								key1: "55",
+								key2: "value2",
+							},
+						},
 						contents: {
 							create: {
 								content: {
