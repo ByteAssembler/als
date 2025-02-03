@@ -1,0 +1,62 @@
+---
+import Button from "./ui/Button.astro";
+
+const events = [
+	{
+		title: "ALS Awareness Walk",
+		date: "2024-06-15",
+		location: "Central Park, NY",
+		description:
+			"Join us for our annual awareness walk to support ALS research.",
+		image: "/placeholder.webp",
+	},
+	{
+		title: "Research Symposium",
+		date: "2024-07-20",
+		location: "Virtual Event",
+		description: "Learn about the latest developments in ALS research.",
+		image: "/placeholder.webp",
+	},
+	{
+		title: "Fundraising Gala",
+		date: "2024-08-10",
+		location: "Grand Hotel, Boston",
+		description: "An evening of hope and support for the ALS community.",
+		image: "/placeholder.webp",
+	},
+];
+---
+
+<section id="events" class="py-16 px-6 bg-gray-50">
+	<div class="max-w-6xl mx-auto">
+		<h2 class="text-3xl font-bold mb-12 text-center">Events</h2>
+		<div class="grid md:grid-cols-3 gap-8">
+			{
+				events.map((event) => (
+					<div class="bg-white rounded-lg shadow-md overflow-hidden">
+						<img
+							src={event.image}
+							alt=""
+							class="w-full h-48 object-cover"
+						/>
+						<div class="p-6">
+							<h3 class="text-xl font-semibold mb-2">
+								{event.title}
+							</h3>
+							<div class="text-sm text-gray-500 mb-2">
+								<p>
+									{new Date(event.date).toLocaleDateString()}
+								</p>
+								<p>{event.location}</p>
+							</div>
+							<p class="text-gray-600 mb-4">
+								{event.description}
+							</p>
+							{/* <Button fullWidth>Register Now</Button> */}
+						</div>
+					</div>
+				))
+			}
+		</div>
+	</div>
+</section>

@@ -1,0 +1,32 @@
+---
+interface Props {
+	variant?: "primary" | "secondary";
+	fullWidth?: boolean;
+	type?: "button" | "submit";
+	className?: string;
+}
+
+const {
+	variant = "primary",
+	fullWidth = false,
+	type = "button",
+	className = "",
+} = Astro.props;
+
+const baseStyles =
+	"px-8 py-3 rounded-md transition-colors duration-200 font-semibold";
+const variantStyles = {
+	primary:
+		"bg-primary-600 text-white hover:bg-primary-700 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2",
+	secondary:
+		"bg-white text-gray-900 hover:bg-gray-50 border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2",
+};
+const widthStyles = fullWidth ? "w-full" : "";
+---
+
+<button
+	type={type}
+	class:list={[baseStyles, variantStyles[variant], widthStyles, className]}
+>
+	<slot />
+</button>

@@ -1,0 +1,10 @@
+---
+import MenuItem from "./MenuItem.astro";
+import LanguageSelector from "./LanguageSelector.astro";
+import { menuItems } from "../../data/navigation";
+---
+
+<nav class="hidden lg:flex items-center gap-6">
+	{menuItems.map((item) => <MenuItem href={item.href} text={item.text} />)}
+	<LanguageSelector />
+</nav>

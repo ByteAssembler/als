@@ -1,0 +1,48 @@
+---
+import Button from "./ui/Button.astro";
+
+const comments = [
+	{
+		author: "Max Mastermann",
+		role: "ALS Researcher & Scientist",
+		comment:
+			"ALS has challenged us in ways I never thought possible, but the support from this community has been our strength.",
+		avatar: "/placeholder.webp",
+	},
+	{
+		author: "Sarah Johnson",
+		role: "Community Member",
+		comment:
+			"The resources and support provided here have made a significant difference in our journey.",
+		avatar: "/placeholder.webp",
+	},
+];
+---
+
+<section id="comments" class="py-16 px-6 bg-white">
+	<div class="max-w-4xl mx-auto">
+		<h2 class="text-3xl font-bold mb-12 text-center">Comments</h2>
+		<div class="space-y-8">
+			{
+				comments.map((comment) => (
+					<div class="bg-gray-50 rounded-lg p-6">
+						<div class="flex items-start gap-4">
+							<img
+								src={comment.avatar}
+								alt=""
+								class="w-12 h-12 rounded-full"
+							/>
+							<div>
+								<h3 class="font-semibold">{comment.author}</h3>
+								<p class="text-sm text-gray-500 mb-2">
+									{comment.role}
+								</p>
+								<p class="text-gray-600">{comment.comment}</p>
+							</div>
+						</div>
+					</div>
+				))
+			}
+		</div>
+	</div>
+</section>
