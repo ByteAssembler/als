@@ -5,9 +5,9 @@ const currentLanguage = "en";
 const currentLang = languages.find((lang) => lang.code === currentLanguage);
 ---
 
-<div class="relative group">
+<div class="group relative">
 	<button
-		class="flex items-center gap-2 text-gray-700 hover:text-primary-600 font-medium"
+		class="flex items-center gap-2 font-medium text-gray-700 hover:text-primary-600"
 		aria-label="Select language"
 	>
 		<span class="text-lg">{currentLang?.flag}</span>
@@ -26,7 +26,7 @@ const currentLang = languages.find((lang) => lang.code === currentLanguage);
 	</button>
 
 	<div
-		class="absolute lg:right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50"
+		class="invisible absolute z-50 mt-2 w-48 rounded-md bg-white py-2 opacity-0 shadow-lg transition-all duration-200 group-hover:visible group-hover:opacity-100 lg:right-0"
 	>
 		{
 			languages.map((lang) => (

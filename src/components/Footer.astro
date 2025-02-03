@@ -4,11 +4,11 @@ import Input from "./ui/Input.astro";
 import SocialLinks from "./social/SocialLinks.astro";
 ---
 
-<footer class="bg-gray-900 text-white py-12 px-6">
-	<div class="max-w-6xl mx-auto">
-		<div class="grid md:grid-cols-2 gap-12 mb-12">
+<footer class="bg-gray-900 px-6 py-12 text-white">
+	<div class="mx-auto max-w-6xl">
+		<div class="mb-12 grid gap-12 md:grid-cols-2">
 			<div>
-				<h3 class="text-2xl font-bold mb-4">Join the Fight</h3>
+				<h3 class="mb-4 text-2xl font-bold">Join the Fight</h3>
 				<p class="mb-6 text-gray-100">
 					Support ALS research by donating, volunteering, or attending
 					our events.
@@ -18,12 +18,12 @@ import SocialLinks from "./social/SocialLinks.astro";
 				</Button>
 			</div>
 			<div>
-				<h4 class="text-xl mb-4">Subscribe to our newsletter</h4>
-				<div class="flex flex-col sm:flex-row gap-4">
+				<h4 class="mb-4 text-xl">Subscribe to our newsletter</h4>
+				<div class="flex flex-col gap-4 sm:flex-row">
 					<input
 						type="email"
 						placeholder="Enter your email"
-						class="flex-1 p-3 rounded-md text-gray-900 border-2 border-gray-700 focus:border-primary-500 focus:ring-2 focus:ring-primary-500"
+						class="flex-1 rounded-md border-2 border-gray-700 p-3 text-gray-900 focus:border-primary-500 focus:ring-2 focus:ring-primary-500"
 					/>
 					<Button>Subscribe</Button>
 				</div>
@@ -31,7 +31,7 @@ import SocialLinks from "./social/SocialLinks.astro";
 		</div>
 
 		<div
-			class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4"
+			class="flex flex-col items-center justify-between gap-4 border-t border-gray-800 pt-8 md:flex-row"
 		>
 			<div class="text-sm text-gray-400">
 				© 2025 CV ALS. All rights reserved.
