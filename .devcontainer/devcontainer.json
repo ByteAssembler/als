@@ -1,69 +1,69 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/javascript-node-postgres
 {
-	"name": "Node.js & PostgreSQL",
-	"dockerComposeFile": "docker-compose.yml",
-	"service": "app",
-	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
-	//
-	// Features to add to the dev container. More info: https://containers.dev/features.
-	"features": {
-		"ghcr.io/devcontainers/features/git-lfs:1": {}
-	},
-	//
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// This can be used to network with other containers or with the host.
-	"forwardPorts": [3000, 5432],
-	//
-	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "yarn install",
-	//
-	// Configure tool-specific properties.
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"akamud.vscode-theme-onedark",
-				"imgildev.vscode-auto-barrel",
-				"formulahendry.auto-close-tag",
-				"formulahendry.auto-rename-tag",
-				"mgmcdermott.vscode-language-babel",
-				"aaron-bond.better-comments",
-				"ms-vscode-remote.remote-containers",
-				"EditorConfig.EditorConfig",
-				"adamvoss.vscode-languagetool-en",
-				"usernamehw.errorlens",
-				"dsznajder.es7-react-js-snippets",
-				"dbaeumer.vscode-eslint",
-				"mhutchie.git-graph",
-				"donjayamanne.githistory",
-				"felipecaputo.git-project-manager",
-				"GitHub.remotehub",
-				"kisstkondoros.vscode-gutter-preview",
-				"wix.vscode-import-cost",
-				"oderwat.indent-rainbow",
-				"ms-vscode.live-server",
-				"ms-vsliveshare.vsliveshare",
-				"PKief.material-icon-theme",
-				"christian-kohler.path-intellisense",
-				"csstools.postcss",
-				"esbenp.prettier-vscode",
-				"rvest.vs-code-prettier-eslint",
-				"YoavBls.pretty-ts-errors",
-				"Prisma.prisma",
-				"jock.svg",
-				"bradlc.vscode-tailwindcss",
-				"austenc.tailwind-docs",
-				"Gruntfuggly.todo-tree",
-				"shardulm94.trailing-spaces",
-				"ms-azuretools.vscode-docker",
-				"GitHub.copilot",
-				"GitHub.copilot-chat",
-				"cweijan.vscode-postgresql-client2",
-				"cweijan.vscode-database-client2"
-			]
-		}
-	},
-	//
-	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	"remoteUser": "root"
+  "name": "Node.js & PostgreSQL",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  //
+  // Features to add to the dev container. More info: https://containers.dev/features.
+  "features": {
+    "ghcr.io/devcontainers/features/git-lfs:1": {}
+  },
+  //
+  // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  // This can be used to network with other containers or with the host.
+  "forwardPorts": [3000, 5432],
+  //
+  // Use 'postCreateCommand' to run commands after the container is created.
+  // "postCreateCommand": "yarn install",
+  //
+  // Configure tool-specific properties.
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "akamud.vscode-theme-onedark",
+        "imgildev.vscode-auto-barrel",
+        "formulahendry.auto-close-tag",
+        "formulahendry.auto-rename-tag",
+        "mgmcdermott.vscode-language-babel",
+        "aaron-bond.better-comments",
+        "ms-vscode-remote.remote-containers",
+        "EditorConfig.EditorConfig",
+        "adamvoss.vscode-languagetool-en",
+        "usernamehw.errorlens",
+        "dsznajder.es7-react-js-snippets",
+        "dbaeumer.vscode-eslint",
+        "mhutchie.git-graph",
+        "donjayamanne.githistory",
+        "felipecaputo.git-project-manager",
+        "GitHub.remotehub",
+        "kisstkondoros.vscode-gutter-preview",
+        "wix.vscode-import-cost",
+        "oderwat.indent-rainbow",
+        "ms-vscode.live-server",
+        "ms-vsliveshare.vsliveshare",
+        "PKief.material-icon-theme",
+        "christian-kohler.path-intellisense",
+        "csstools.postcss",
+        "esbenp.prettier-vscode",
+        "rvest.vs-code-prettier-eslint",
+        "YoavBls.pretty-ts-errors",
+        "Prisma.prisma",
+        "jock.svg",
+        "bradlc.vscode-tailwindcss",
+        "austenc.tailwind-docs",
+        "Gruntfuggly.todo-tree",
+        "shardulm94.trailing-spaces",
+        "ms-azuretools.vscode-docker",
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "cweijan.vscode-postgresql-client2",
+        "cweijan.vscode-database-client2"
+      ]
+    }
+  },
+  //
+  // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+  "remoteUser": "root"
 }
