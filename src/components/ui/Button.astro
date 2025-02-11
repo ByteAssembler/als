@@ -4,6 +4,7 @@ interface Props {
 	fullWidth?: boolean;
 	type?: "button" | "submit";
 	className?: string;
+	formAction?: string;
 }
 
 const {
@@ -11,6 +12,7 @@ const {
 	fullWidth = false,
 	type = "button",
 	className = "",
+	formAction,
 } = Astro.props;
 
 const baseStyles =
@@ -27,6 +29,7 @@ const widthStyles = fullWidth ? "w-full" : "";
 <button
 	type={type}
 	class:list={[baseStyles, variantStyles[variant], widthStyles, className]}
+	{...formAction ? { formAction } : {}}
 >
 	<slot />
 </button>

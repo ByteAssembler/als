@@ -1,0 +1,27 @@
+### GET Section by ID
+GET http://localhost:4321/api/sites/my-site/sections
+Accept: application/json
+
+
+
+### PUT Update Section
+PUT http://localhost:3000/api/sections/7870b584-297d-4432-b841-630390bdddfa
+Content-Type: application/json
+
+{
+  "html": "<p>Updated content</p>",
+  "contents": [
+    {
+      "langCode": "en",
+      "content": "Updated English content"
+    },
+    {
+      "langCode": "de",
+      "content": "Aktualisierter deutscher Inhalt"
+    }
+  ]
+}
+
+### GET Non-existent Section
+GET http://localhost:4321/api/sections/7870b584-297d-4432-b841-630390bdddfa
+Accept: application/json

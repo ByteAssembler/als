@@ -1,230 +1,131 @@
-// src/components/SectionEditor.tsx
 import React, { useEffect, useState } from "react";
+import Editor from "@monaco-editor/react";
+import { DndContext, useDraggable, useDroppable } from "@dnd-kit/core";
+import { CSS } from "@dnd-kit/utilities";
 
-// Typdefinitionen
 interface SectionContent {
-  [key: string]: string; // Einfache Key-Value-Paare für den Inhalt
+    [key: string]: string;
 }
 
-interface Section {
-  id: string;
-  title: string;
-  html: string;
-  contentTemplate: { [key: string]: string }; // Typ für contentTemplate
-  siteId: string;
-  contents: {
-    sectionId: string;
-    langCode: string;
-    content: SectionContent;
-  }[];
+export interface EditorSection {
+    contents: {
+        sectionId: string;
+        id: string;
+        langCode: string;
+        content: SectionContent;
+    }[];
+    id: string;
+    title: string;
+    html: string;
+    siteId: string;
+}
+
+async function loadEditorSection(sectionId: string): Promise<EditorSection | null> {
+    const res = await fetch(`/api/sections/${sectionId}`);
+    const data: EditorSection | { error: string } = await res.json();
+    return "error" in data ? null : data;
 }
 
 interface SectionEditorProps {
-  selectedSectionId: string | null;
+    selectedSectionId: string | null;
+}
+
+function DraggableComponent({ id }: { id: string }) {
+    const { attributes, listeners, setNodeRef, transform } = useDraggable({ id });
+    const style = {
+        transform: CSS.Translate.toString(transform),
+    };
+    return (
+        <div ref={setNodeRef} style={style} {...listeners} {...attributes} className="p-2 bg-blue-300 cursor-move">
+            {id}
+        </div>
+    );
+}
+
+function DroppableArea({ id, children }: { id: string; children?: React.ReactNode }) {
+    const { isOver, setNodeRef } = useDroppable({ id });
+    return (
+        <div ref={setNodeRef} className={`p-4 border ${isOver ? "bg-green-100" : "bg-gray-100"}`}>
+            {children}
+        </div>
+    );
 }
 
 function SectionEditor({ selectedSectionId }: SectionEditorProps) {
-  const [section, setSection] = useState<Section | null>(null);
-  const [html, setHtml] = useState<string>("");
-  const [content, setContent] = useState<SectionContent>({});
-  const [langCode, setLangCode] = useState<string>("de");
-  const [error, setError] = useState<string | null>(null);
-  const [availableLangCodes, setAvailableLangCodes] = useState<string[]>([
-    "de",
-    "en",
-    "fr",
-  ]);
+    const [section, setSection] = useState<EditorSection | null>(null);
+    const [html, setHtml] = useState<string>("");
+    const [title, setTitle] = useState<string>("");
+    const [contents, setContents] = useState<EditorSection["contents"]>([]);
+    const [langCode, setLangCode] = useState<string>("de");
+    const [error, setError] = useState<string | null>(null);
 
-  // Mock-Daten-Funktion (ERSETZEN!)
-  const fetchSection = async (sectionId: string): Promise<Section | null> => {
-    // Hier stattdessen die echte API aufrufen
-    if (sectionId === "section1") {
-      return {
-        id: "section1",
-        title: "Hero Section",
-        html:
-          '<div class="{{lang.class}}"><h1>{{lang.title}}</h1><p>{{lang.text}}</p></div>',
-        contentTemplate: {
-          class: "string",
-          title: "string",
-          text: "string",
-        },
-        siteId: "site1",
-        contents: [
-          {
-            sectionId: "section1",
-            langCode: "de",
-            content: {
-              class: "hero",
-              title: "Willkommen",
-              text: "Dies ist die Hauptsektion.",
-            },
-          },
-          {
-            sectionId: "section1",
-            langCode: "en",
-            content: {
-              class: "hero",
-              title: "Welcome",
-              text: "This is the hero section.",
-            },
-          },
-        ],
-      };
-    }
-    return null;
-  };
+    useEffect(() => {
+        const loadSection = async () => {
+            if (!selectedSectionId) return;
+            const selectedSection = await loadEditorSection(selectedSectionId);
+            if (selectedSection) {
+                setSection(selectedSection);
+                setHtml(selectedSection.html || "");
+                setTitle(selectedSection.title || "");
+                setContents(selectedSection.contents);
+                setLangCode(selectedSection.contents[0]?.langCode || "de");
+            } else {
+                setError("Section not found.");
+            }
+        };
+        loadSection();
+    }, [selectedSectionId]);
 
-  useEffect(() => {
-    const loadSection = async () => {
-      if (selectedSectionId) {
-        try {
-          const fetchedSection = await fetchSection(
-            selectedSectionId,
-          );
-          if (fetchedSection) {
-            setSection(fetchedSection);
-            setHtml(fetchedSection.html || "");
+    const saveSection = async () => {
+        if (!section) return;
 
-            const langs = fetchedSection.contents.map((c) => c.langCode);
-            setAvailableLangCodes(langs);
-            handleLangChange(langCode, fetchedSection);
-          } else {
-            setError("Section not found.");
-          }
-        } catch (err: any) {
-          setError("Failed to load section: " + err.message);
-        }
-      } else {
-        setSection(null);
-        setHtml("");
-        setContent({});
-      }
+        const updatedSection: EditorSection = {
+            ...section,
+            title,
+            html,
+            contents,
+        };
+
+        console.log("Daten zum Speichern", updatedSection);
+        alert("Section saved (check console for data)!");
     };
-    loadSection();
-  }, [selectedSectionId]);
 
-  const handleHtmlChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement>,
-  ) => {
-    setHtml(event.target.value);
-  };
+    if (!selectedSectionId) return <div className="p-4">Bitte wählen Sie eine Sektion aus.</div>;
+    if (error) return <div className="p-4 text-red-500">{error}</div>;
+    if (!section) return <div className="p-4">Loading...</div>;
 
-  const handleContentChange = (key: string, value: string) => {
-    setContent({ ...content, [key]: value });
-  };
+    return (
+        <div className="p-4 max-w-4xl mx-auto bg-white rounded shadow">
+            <h2 className="text-2xl font-bold mb-4 text-gray-800">Editor</h2>
 
-  const handleLangChange = (
-    newLangCode: string,
-    sectionData: Section = section!,
-  ) => {
-    setLangCode(newLangCode);
-    const sectionContent = sectionData.contents.find((c) =>
-      c.langCode === newLangCode
+            <label className="block text-sm font-medium text-gray-700">Titel:</label>
+            <input className="w-full border p-2 mb-4 rounded" value={title} onChange={(e) => setTitle(e.target.value)} />
+
+            <div className="grid grid-cols-2 gap-4">
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">HTML:</label>
+                    <Editor height="300px" defaultLanguage="html" value={html} onChange={(value) => setHtml(value || "")} options={{ quickSuggestions: true, suggestOnTriggerCharacters: true }} />
+                </div>
+            </div>
+
+            <DndContext>
+                <DroppableArea id="drop-area">
+                    <DraggableComponent id="Button" />
+                    <DraggableComponent id="Text" />
+                </DroppableArea>
+            </DndContext>
+
+            <h3 className="text-lg font-semibold mb-2">Section Contents</h3>
+            {contents.map((contentItem, index) => (
+                <div key={contentItem.id} className="mb-4 border p-2 rounded bg-gray-100">
+                    <p className="text-xs text-gray-500">Content ID: {contentItem.id}</p>
+                    <p className="text-xs text-gray-500">LangCode: {contentItem.langCode}</p>
+                </div>
+            ))}
+
+            <button onClick={saveSection} className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Speichern</button>
+        </div>
     );
-    setContent(sectionContent ? sectionContent.content : {});
-  };
-
-  const saveSection = async () => {
-    if (!section) return;
-
-    const updatedSection: Section = {
-      ...section,
-      html,
-      contents: section.contents.map((c) =>
-        c.langCode === langCode ? { ...c, content } : c
-      ),
-    };
-
-    try {
-      // Hier muss die API aufgerufen werden.
-      console.log("Daten zum Speichern", updatedSection);
-      alert("Section saved (check console for data)!");
-    } catch (error: any) {
-      setError("Fehler beim Speichern: " + error.message);
-    }
-  };
-
-  if (!selectedSectionId) {
-    return <div className="p-4">Bitte wählen Sie eine Sektion aus.</div>;
-  }
-
-  if (error) {
-    return <div className="p-4 text-red-500">{error}</div>;
-  }
-
-  if (!section) {
-    return <div className="p-4">Loading...</div>;
-  }
-
-  return (
-    <div className="p-4">
-      <h2 className="text-xl font-bold mb-4">{section.title}</h2>
-
-      <div className="mb-4">
-        <label
-          htmlFor="lang-select"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Sprache:
-        </label>
-        <select
-          id="lang-select"
-          value={langCode}
-          onChange={(e) => handleLangChange(e.target.value)}
-          className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-        >
-          {availableLangCodes.map((code) => (
-            <option key={code} value={code}>{code}</option>
-          ))}
-        </select>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4 mb-4">
-        {/* Content Inputs */}
-        {Object.keys(section.contentTemplate).map((key) => (
-          <div key={key}>
-            <label
-              htmlFor={key}
-              className="block text-sm font-medium text-gray-700"
-            >
-              {key}
-            </label>
-            <input
-              type="text"
-              id={key}
-              value={content[key] || ""}
-              onChange={(e) => handleContentChange(key, e.target.value)}
-              className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-          </div>
-        ))}
-      </div>
-
-      <div className="mb-4">
-        <label
-          htmlFor="html-editor"
-          className="block text-sm font-medium text-gray-700"
-        >
-          HTML
-        </label>
-        <textarea
-          id="html-editor"
-          value={html}
-          onChange={handleHtmlChange}
-          className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          rows={10}
-        />
-      </div>
-
-      <button
-        onClick={saveSection}
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-      >
-        Save
-      </button>
-    </div>
-  );
 }
 
 export default SectionEditor;

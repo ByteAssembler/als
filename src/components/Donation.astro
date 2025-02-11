@@ -1,5 +1,8 @@
 ---
-// HeroSection.astro
+const currentPath = Astro.url.pathname;
+const donationPath = currentPath.endsWith("/")
+	? `${currentPath}donation`
+	: `${currentPath}/donation`;
 ---
 
 <div
@@ -15,10 +18,12 @@
 			<br />
 			Your involvement makes a difference. Donate now!
 		</p>
-		<button
-			class="rounded-md bg-gray-700 px-6 py-3 font-medium text-white hover:bg-gray-800"
-		>
-			Take Action <em>(Link to Donation Page)</em>
-		</button>
+		<a href={donationPath} class="inline-block">
+			<button
+				class="rounded-md bg-gray-700 px-6 py-3 font-medium text-white hover:bg-gray-800"
+			>
+				Take Action
+			</button>
+		</a>
 	</div>
 </div>

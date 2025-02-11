@@ -1,11 +1,9 @@
-import { PrismaClient } from "@prisma/client";
 import type { APIRoute } from "astro";
 import db from "../../../../utils/db";
 
 export const GET: APIRoute = async ({ params }) => {
-    const { siteId } = params;
-    console.log("\n\n\n\t\t\tSITE ID: " + siteId);
-    if (!siteId) {
+    const { slug } = params;
+    if (!slug) {
         return new Response(JSON.stringify({ error: "Missing siteId" }), {
             status: 400,
             headers: { "Content-Type": "application/json" },
@@ -13,10 +11,10 @@ export const GET: APIRoute = async ({ params }) => {
     }
 
     try {
-        const sections = await db.section.findMany({
-            where: { siteId: Number(siteId) },
+        const site = await db.site.findMany({
+            where: { slug: slug },
         });
-        return new Response(JSON.stringify(sections), {
+        return new Response(JSON.stringify(site), {
             status: 200,
             headers: { "Content-Type": "application/json" },
         });
@@ -26,4 +24,4 @@ export const GET: APIRoute = async ({ params }) => {
             headers: { "Content-Type": "application/json" },
         });
     }
-};
+}

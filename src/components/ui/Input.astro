@@ -5,9 +5,10 @@ interface Props {
 	label: string;
 	placeholder?: string;
 	rows?: number;
+	name?: string;
 }
 
-const { type = "text", id, label, placeholder, rows = 4 } = Astro.props;
+const { type = "text", id, label, placeholder, rows = 4, name } = Astro.props;
 ---
 
 <div>
@@ -16,6 +17,7 @@ const { type = "text", id, label, placeholder, rows = 4 } = Astro.props;
 		type === "textarea" ? (
 			<textarea
 				id={id}
+				name={name}
 				rows={rows}
 				placeholder={placeholder}
 				class="w-full rounded-md border p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
@@ -24,6 +26,7 @@ const { type = "text", id, label, placeholder, rows = 4 } = Astro.props;
 			<input
 				type={type}
 				id={id}
+				name={name}
 				placeholder={placeholder}
 				class="w-full rounded-md border p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
 			/>

@@ -4,8 +4,17 @@ import tailwind from "@astrojs/tailwind";
 import netlify from "@astrojs/netlify";
 
 export default defineConfig({
-  integrations: [tailwind()],
-  output: "static",
-  adapter: netlify(),
-  integrations: [react()],
+    integrations: [tailwind(), react()],
+    output: "server",
+    adapter: netlify(),
+
+    i18n: {
+        locales: ["de", "it", "en"],
+        defaultLocale: "de",
+    },
 });
+
+// import en from './locales/en.json';
+// import de from './locales/de.json';
+
+// export const translations = { en, de };

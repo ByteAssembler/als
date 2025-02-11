@@ -1,8 +1,8 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import Admin from "../components/Admin.tsx";
+import Layout from "./../layouts/Layout.astro";
+import AdminComponent from "./../components/Admin.tsx";
 ---
 
-<Layout title="Admin Panel">
-	<Admin client:only="react" />
+<Layout title="Admin Panel" defaultPadding={false}>
+	<AdminComponent client:only="react" />
 </Layout>

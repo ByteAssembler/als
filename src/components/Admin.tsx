@@ -2,26 +2,31 @@
 import { useState } from "react";
 import Sidebars from "./Sidebars";
 import SectionEditor from "./SectionEditor";
+import type { Section } from "@prisma/client";
+
+
+
 
 function Admin() {
-  const [selectedSiteId, setSelectedSiteId] = useState<string | null>(null);
-  const [selectedSectionId, setSelectedSectionId] = useState<string | null>(
-    null,
-  );
+    const [selectedSiteId, setSelectedSiteId] = useState<string | null>(null);
+    const [selectedSectionId, setSelectedSectionId] = useState<string | null>(
+        null,
+    );
 
-  return (
-    <>
-      <Sidebars
-        selectedSiteId={selectedSiteId}
-        onSectionSelect={setSelectedSectionId}
-        selectedSectionId={selectedSectionId}
-        onSiteSelect={setSelectedSiteId} // Wichtig: Event-Handler weitergeben
-      />
-      <div className="flex-1">
-        <SectionEditor selectedSectionId={selectedSectionId} />
-      </div>
-    </>
-  );
+    return (
+        <div className="flex">
+            <Sidebars
+                selectedSiteId={selectedSiteId}
+                onSiteSelect={setSelectedSiteId} // Wichtig: Event-Handler weitergeben
+                selectedSectionId={selectedSectionId}
+                onSectionSelect={setSelectedSectionId}
+
+            />
+            <div className="flex-1">
+                <SectionEditor selectedSectionId={selectedSectionId} />
+            </div>
+        </div>
+    );
 }
 
 export default Admin;
