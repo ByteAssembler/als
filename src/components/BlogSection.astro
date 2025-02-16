@@ -1,27 +1,21 @@
 ---
-const blogs = [
-	{
-		title: "ALS Research Breakthrough",
-		description:
-			"Discover the latest developments in ALS research and how they impact future treatments.",
-		image: "/placeholder.webp",
+import db from "../utils/db";
+
+const { lang } = Astro.params;
+
+const blogs = await db.post.findMany({
+	where: { language: lang },
+	select: {
+		title: true,
+		slug: true,
+		coverImage: true,
+		content: true,
+		language: true,
 	},
-	{
-		title: "Community Event",
-		description:
-			"Join our upcoming awareness and support event in your local community.",
-		image: "/placeholder.webp",
-	},
-	{
-		title: "New Treatment Guidelines",
-		description:
-			"Learn about the new treatment protocols and medical advances.",
-		image: "/placeholder.webp",
-	},
-];
+});
 ---
 
-<section class="px-6 py-16">
+<section id="blogs" class="mt-20 px-6 py-16 pt-20">
 	<div class="mx-auto max-w-6xl">
 		<h2 class="mb-12 text-center text-4xl font-bold text-gray-900">
 			Blogs and Research
@@ -29,19 +23,23 @@ const blogs = [
 		<div class="grid gap-8 md:grid-cols-3">
 			{
 				blogs.map((blog) => (
-					<div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg">
-						<img
-							src={blog.image}
-							alt=""
-							class="h-48 w-full object-cover"
-						/>
-						<div class="p-6">
-							<h3 class="mb-2 text-xl font-semibold text-gray-900">
-								{blog.title}
-							</h3>
-							<p class="text-gray-700">{blog.description}</p>
+					<a href={`/${lang}/blog/${blog.slug}`} class="block h-full">
+						<div class="flex h-full flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg transition-transform hover:scale-105">
+							<img
+								src={blog.coverImage || "/placeholder.webp"}
+								alt=""
+								class="h-48 w-full object-cover"
+							/>
+							<div class="flex flex-1 flex-col p-6">
+								<h3 class="mb-2 text-xl font-semibold text-gray-900">
+									{blog.title}
+								</h3>
+								<p class="line-clamp-2 flex-1 text-gray-700">
+									{blog.content.slice(0, 100)}...
+								</p>
+							</div>
 						</div>
-					</div>
+					</a>
 				))
 			}
 		</div>

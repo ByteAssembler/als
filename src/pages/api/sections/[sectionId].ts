@@ -40,6 +40,7 @@ export const GET: APIRoute = async ({ params }) => {
 
 export const PUT: APIRoute = async ({ params, request }) => {
     const sectionId = Number(params.sectionId);
+    console.log("Put" + sectionId);
     if (!sectionId) {
         return new Response(JSON.stringify({ error: "Missing sectionId" }), {
             status: 400,
@@ -53,14 +54,19 @@ export const PUT: APIRoute = async ({ params, request }) => {
         const updatedSection = await db.section.update({
             where: { id: sectionId },
             data: {
+                title: data.title,
                 html: data.html,
+                css: data.css,
+                js: data.js,
                 contents: {
                     upsert: data.contents.map((contentData: { langCode: string; content: any }) => ({
-                        where: {
-                            sectionId_langCode: { sectionId, langCode: contentData.langCode },
-                        },
+                        where: { sectionId, langCode: contentData.langCode }, // ✅ Korrektur: Direkt als Objekt
                         update: { content: contentData.content },
-                        create: { langCode: contentData.langCode, content: contentData.content, sectionId },
+                        create: {
+                            sectionId,
+                            langCode: contentData.langCode,
+                            content: contentData.content,
+                        },
                     })),
                 },
             },

@@ -2,9 +2,16 @@
 import Button from "./ui/Button.astro";
 import Input from "./ui/Input.astro";
 import SocialLinks from "./social/SocialLinks.astro";
+import {
+	FaFacebook,
+	FaInstagram,
+	FaYoutube,
+	FaLinkedin,
+	FaTwitter,
+} from "react-icons/fa";
 ---
 
-<footer class="bg-gray-900 px-6 py-12 text-white">
+<footer class="relative bottom-0 bg-gray-900 px-6 py-12 text-white">
 	<div class="mx-auto max-w-6xl">
 		<div class="mb-12 grid gap-12 md:grid-cols-2">
 			<div>
@@ -36,7 +43,34 @@ import SocialLinks from "./social/SocialLinks.astro";
 			<div class="text-sm text-gray-400">
 				© 2025 CV ALS. All rights reserved.
 			</div>
-			<SocialLinks />
+			<div class="flex gap-4">
+				<a href="facebook.com" class="text-gray-400 hover:text-white">
+					<FaFacebook size={20} />
+				</a>
+				<a href="instagram.com" class="text-gray-400 hover:text-white">
+					<FaInstagram size={20} />
+				</a>
+				<a href="youtube.com" class="text-gray-400 hover:text-white">
+					<FaYoutube size={20} />
+				</a>
+				<a
+					href="www.linkedin.com"
+					class="text-gray-400 hover:text-white"
+				>
+					<FaLinkedin size={20} />
+				</a>
+				<a href="x.com" class="text-gray-400 hover:text-white">
+					<FaTwitter size={20} />
+				</a>
+			</div>
+			<div class="flex gap-4">
+				<a href="/impressum" class="text-gray-400 hover:text-white"
+					>Impressum</a
+				>
+				<a href="/privacy" class="text-gray-400 hover:text-white"
+					>Datenschutzerklärung</a
+				>
+			</div>
 		</div>
 	</div>
 </footer>

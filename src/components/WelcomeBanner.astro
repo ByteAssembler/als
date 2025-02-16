@@ -2,7 +2,7 @@
 // src/components/WillkommensBanner.astro
 ---
 
-<div class="welcome-banner" id="welcome-banner">
+<div class="welcome-banner invisible" id="welcome-banner">
 	<div
 		class="welcome-banner-texts flex scale-[200%] flex-col md:flex-row 2xl:scale-[300%]"
 	>
@@ -185,7 +185,9 @@
 
 <script>
 	const banner = document.getElementById("welcome-banner");
-	if (banner) {
+
+	if (banner && !sessionStorage.getItem("welcomeBannerShown")) {
+		banner.classList.remove("invisible");
 		// Warten auf das Ende aller Animationen (4 Sekunden: 2s Delay + 1s Animation + 1s Puffer)
 		setTimeout(() => {
 			// Fade-out Animation starten
@@ -198,5 +200,6 @@
 				banner.remove();
 			}, 1000);
 		}, 4000);
+		sessionStorage.setItem("welcomeBannerShown", "true");
 	}
 </script>

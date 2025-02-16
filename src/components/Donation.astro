@@ -5,25 +5,27 @@ const donationPath = currentPath.endsWith("/")
 	: `${currentPath}/donation`;
 ---
 
-<div
-	class="flex justify-center bg-gray-50 px-8 py-20 sm:px-16 lg:px-24 xl:px-32"
->
-	<div class="max-w-2xl text-center">
-		<h2 class="mb-4 text-4xl font-bold text-gray-900 sm:text-5xl">
-			Join the Fight
-		</h2>
-		<p class="mb-8 text-gray-700">
-			Support ALS research by donating, volunteering, or attending our
-			events.
-			<br />
-			Your involvement makes a difference. Donate now!
-		</p>
-		<a href={donationPath} class="inline-block">
-			<button
-				class="rounded-md bg-gray-700 px-6 py-3 font-medium text-white hover:bg-gray-800"
-			>
-				Take Action
-			</button>
-		</a>
+<section id="donation" class="mt-20 bg-gray-100 pt-20">
+	<div
+		class="flex justify-center bg-gray-50 px-8 py-20 sm:px-16 lg:px-24 xl:px-32"
+	>
+		<div class="max-w-2xl text-center">
+			<h2 class="mb-4 text-4xl font-bold text-gray-900 sm:text-5xl">
+				Join the Fight
+			</h2>
+			<p class="mb-8 text-gray-700">
+				Support ALS research by donating, volunteering, or attending our
+				events.
+				<br />
+				Your involvement makes a difference. Donate now!
+			</p>
+			<a href={donationPath} class="inline-block">
+				<button
+					class="rounded-md bg-gray-700 px-6 py-3 font-medium text-white hover:bg-gray-800"
+				>
+					Take Action
+				</button>
+			</a>
+		</div>
 	</div>
-</div>
+</section>

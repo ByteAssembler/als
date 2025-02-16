@@ -1,60 +1,49 @@
 ---
-import Button from "./ui/Button.astro";
+import { PrismaClient } from "@prisma/client";
 
-const events = [
-	{
-		title: "ALS Awareness Walk",
-		date: "2024-06-15",
-		location: "Central Park, NY",
-		description:
-			"Join us for our annual awareness walk to support ALS research.",
-		image: "/placeholder.webp",
-	},
-	{
-		title: "Research Symposium",
-		date: "2024-07-20",
-		location: "Virtual Event",
-		description: "Learn about the latest developments in ALS research.",
-		image: "/placeholder.webp",
-	},
-	{
-		title: "Fundraising Gala",
-		date: "2024-08-10",
-		location: "Grand Hotel, Boston",
-		description: "An evening of hope and support for the ALS community.",
-		image: "/placeholder.webp",
-	},
-];
+const prisma = new PrismaClient();
+const events = await prisma.event.findMany();
+
+// Sprachlogik
+const currentLang = Astro.url.pathname.split("/")[1]; // Annahme: "de", "en" oder "it" ist das erste Segment
+const langPrefix = ["de", "en", "it"].includes(currentLang)
+	? currentLang
+	: "en"; // Fallback zu 'en'
 ---
 
-<section id="events" class="bg-gray-50 px-6 py-16">
+<section id="events" class="mt-20 px-6 py-16 pt-20">
 	<div class="mx-auto max-w-6xl">
-		<h2 class="mb-12 text-center text-3xl font-bold">Events</h2>
+		<h2 class="mb-12 text-center text-4xl font-bold text-gray-900">
+			Upcoming Events
+		</h2>
 		<div class="grid gap-8 md:grid-cols-3">
 			{
 				events.map((event) => (
-					<div class="overflow-hidden rounded-lg bg-white shadow-md">
-						<img
-							src={event.image}
-							alt=""
-							class="h-48 w-full object-cover"
-						/>
-						<div class="p-6">
-							<h3 class="mb-2 text-xl font-semibold">
-								{event.title}
-							</h3>
-							<div class="mb-2 text-sm text-gray-500">
-								<p>
-									{new Date(event.date).toLocaleDateString()}
+					<a
+						href={`/${langPrefix}/events/${event.slug}`}
+						class="block"
+					>
+						<div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg transition-transform hover:scale-105">
+							<img
+								src={event.image}
+								alt={event.title}
+								class="h-48 w-full object-cover"
+							/>
+							<div class="p-6">
+								<h3 class="mb-2 text-xl font-semibold text-gray-900">
+									{event.title}
+								</h3>
+								<p class="line-clamp-3 text-gray-700">
+									{event.description}
 								</p>
-								<p>{event.location}</p>
+								<p class="mt-2 text-sm text-gray-500">
+									📅{" "}
+									{new Date(event.date).toLocaleDateString()}{" "}
+									- 📍 {event.location}
+								</p>
 							</div>
-							<p class="mb-4 text-gray-600">
-								{event.description}
-							</p>
-							{/* <Button fullWidth>Register Now</Button> */}
 						</div>
-					</div>
+					</a>
 				))
 			}
 		</div>

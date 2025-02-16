@@ -4,7 +4,10 @@ import tailwind from "@astrojs/tailwind";
 import netlify from "@astrojs/netlify";
 
 export default defineConfig({
-    integrations: [tailwind(), react()],
+    integrations: [
+        tailwind(),
+        react(),
+    ],
     output: "server",
     adapter: netlify(),
 

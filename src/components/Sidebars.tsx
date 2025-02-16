@@ -22,9 +22,10 @@ interface SidebarsProps {
 }
 
 function SiteList(
-    { sites, onSiteSelect }: {
+    { sites, onSiteSelect, selectedSiteId }: {
         sites: Site[];
         onSiteSelect: (siteId: string) => void;
+        selectedSiteId: string | null;
     },
 ) {
     return (
@@ -34,7 +35,7 @@ function SiteList(
                 {sites.map((site) => (
                     <li
                         key={site.id}
-                        className="cursor-pointer hover:bg-gray-700 p-2 rounded"
+                        className={`cursor-pointer hover:bg-gray-700 p-2 rounded ${site.id === selectedSiteId ? "bg-gray-500" : ""}`}
                         onClick={() => onSiteSelect(site.id)}
                     >
                         {site.title}
@@ -81,6 +82,8 @@ export default function Sidebars(
     const [error, setError] = useState<string | null>(null);
     const [pendingSiteId, setPendingSiteId] = useState<string | null>(null);
 
+
+
     const fetchSites = async (): Promise<Site[]> => {
 
         try {
@@ -117,6 +120,8 @@ export default function Sidebars(
             try {
                 const fetchedSites = await fetchSites();
                 setSites(fetchedSites);
+                if (fetchedSites.length > 0)
+                    onSiteSelect(fetchedSites[0].id);
             } catch (err: any) {
                 setError("Failed to load sites: " + err.message);
             }
@@ -130,6 +135,8 @@ export default function Sidebars(
                 try {
                     const fetchedSections = await fetchSections(selectedSiteId);
                     setSections(fetchedSections);
+                    if (fetchedSections.length > 0)
+                        onSectionSelect(fetchedSections[0].id);
                 } catch (err: any) {
                     setError("Failed to load sections: " + err.message);
                 }
@@ -158,7 +165,9 @@ export default function Sidebars(
                     onSiteSelect={(siteId) => {
                         setPendingSiteId(siteId);
                     }}
+                    selectedSiteId={selectedSiteId}
                 />
+
                 {selectedSiteId && (
                     <SectionList
                         sections={sections}

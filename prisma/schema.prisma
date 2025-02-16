@@ -24,9 +24,8 @@ model Section {
     siteId Int
     site   Site @relation(fields: [siteId], references: [id])
 
-    contents SectionContent[] @relation("SectionContents")
-
-    SectionContent SectionContent[]
+    // keys     String[]
+    contents SectionContent[]
 }
 
 model SectionContent {
@@ -36,8 +35,6 @@ model SectionContent {
 
     sectionId Int
     section   Section @relation(fields: [sectionId], references: [id])
-
-    Section Section[] @relation("SectionContents")
 
     @@unique([sectionId, langCode])
 }
@@ -86,4 +83,51 @@ model InfoEntryLanguageRelatedContent {
     infoEntryId Int
 
     @@unique([langCode, id])
+}
+
+model Event {
+    id                  Int       @id @default(autoincrement())
+    title               String
+    date                DateTime
+    location            String
+    description         String
+    detailedDescription String?
+    image               String
+    slug                String    @unique
+    category            String?
+    language            String?   @default("en") // "de", "en" oder "it"
+    schedule            Json? // JSON für Event-Ablauf (optional)
+    ticketsUrl          String?
+    speakers            Speaker[]
+    createdAt           DateTime  @default(now())
+    updatedAt           DateTime  @updatedAt
+}
+
+model Speaker {
+    id      Int    @id @default(autoincrement())
+    name    String
+    bio     String
+    image   String
+    eventId Int
+    event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+}
+
+model Post {
+    id          Int      @id @default(autoincrement())
+    title       String
+    slug        String   @unique
+    content     String
+    language    String
+    publishedAt DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    coverImage  String? // Optionales Cover-Bild
+    authorId    Int
+    author      User     @relation(fields: [authorId], references: [id])
+}
+
+model User {
+    id     Int     @id @default(autoincrement())
+    name   String
+    avatar String?
+    posts  Post[]
 }

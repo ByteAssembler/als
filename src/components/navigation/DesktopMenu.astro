@@ -2,9 +2,18 @@
 import MenuItem from "./MenuItem.astro";
 import LanguageSelector from "./LanguageSelector.astro";
 import { menuItems } from "../../data/navigation";
+
+const { lang } = Astro.params;
 ---
 
 <nav class="hidden items-center gap-6 lg:flex">
-	{menuItems.map((item) => <MenuItem href={item.href} text={item.text} />)}
+	{
+		menuItems.map((item) => (
+			<MenuItem
+				href={Astro.url.origin + "/" + lang + "/" + item.href}
+				text={item.text}
+			/>
+		))
+	}
 	<LanguageSelector />
 </nav>

@@ -5,23 +5,24 @@ Accept: application/json
 
 
 ### PUT Update Section
-PUT http://localhost:3000/api/sections/7870b584-297d-4432-b841-630390bdddfa
+PUT http://localhost:4321/api/sections/1
 Content-Type: application/json
 
 {
-  "html": "<p>Updated content</p>",
-  "contents": [
-    {
-      "langCode": "en",
-      "content": "Updated English content"
-    },
-    {
-      "langCode": "de",
-      "content": "Aktualisierter deutscher Inhalt"
-    }
-  ]
+    "title": "Updated Section Title",
+    "html": "<p>Updated HTML</p>",
+    "css": "body { background: black; }",
+    "js": "console.log('Updated JS');",
+    "contents": [
+        {
+            "langCode": "en",
+            "content": { "text": "Updated English Content" }
+        },
+        {
+            "langCode": "de",
+            "content": { "text": "Aktualisierter deutscher Inhalt" }
+        }
+    ]
 }
 
-### GET Non-existent Section
-GET http://localhost:4321/api/sections/7870b584-297d-4432-b841-630390bdddfa
-Accept: application/json
+

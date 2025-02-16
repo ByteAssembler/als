@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Editor from "@monaco-editor/react";
-import { DndContext, useDraggable, useDroppable } from "@dnd-kit/core";
-import { CSS } from "@dnd-kit/utilities";
+import grapesjs from "grapesjs";
+import "grapesjs/dist/css/grapes.min.css";
+import grapesjsTailwind from "grapesjs-tailwind";
+import { languages } from "../data/languages";
 
 interface SectionContent {
     [key: string]: string;
@@ -30,34 +32,15 @@ interface SectionEditorProps {
     selectedSectionId: string | null;
 }
 
-function DraggableComponent({ id }: { id: string }) {
-    const { attributes, listeners, setNodeRef, transform } = useDraggable({ id });
-    const style = {
-        transform: CSS.Translate.toString(transform),
-    };
-    return (
-        <div ref={setNodeRef} style={style} {...listeners} {...attributes} className="p-2 bg-blue-300 cursor-move">
-            {id}
-        </div>
-    );
-}
-
-function DroppableArea({ id, children }: { id: string; children?: React.ReactNode }) {
-    const { isOver, setNodeRef } = useDroppable({ id });
-    return (
-        <div ref={setNodeRef} className={`p-4 border ${isOver ? "bg-green-100" : "bg-gray-100"}`}>
-            {children}
-        </div>
-    );
-}
-
 function SectionEditor({ selectedSectionId }: SectionEditorProps) {
     const [section, setSection] = useState<EditorSection | null>(null);
     const [html, setHtml] = useState<string>("");
     const [title, setTitle] = useState<string>("");
     const [contents, setContents] = useState<EditorSection["contents"]>([]);
-    const [langCode, setLangCode] = useState<string>("de");
-    const [error, setError] = useState<string | null>(null);
+    const [previewHtml, setPreviewHtml] = useState<{ __html: string }>({ __html: "" });
+    const [previewLang, setPreviewLang] = useState<string>(languages[0].code);
+    const editorRef = useRef<any | null>(null);
+    const editorContainerRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         const loadSection = async () => {
@@ -68,62 +51,122 @@ function SectionEditor({ selectedSectionId }: SectionEditorProps) {
                 setHtml(selectedSection.html || "");
                 setTitle(selectedSection.title || "");
                 setContents(selectedSection.contents);
-                setLangCode(selectedSection.contents[0]?.langCode || "de");
-            } else {
-                setError("Section not found.");
             }
         };
         loadSection();
     }, [selectedSectionId]);
 
-    const saveSection = async () => {
-        if (!section) return;
+    useEffect(() => {
+        setPreviewHtml(generatePreview());
+    }, [html, contents, previewLang]);
 
-        const updatedSection: EditorSection = {
-            ...section,
-            title,
-            html,
-            contents,
+    useEffect(() => {
+        if (editorContainerRef.current && !editorRef.current) {
+            editorRef.current = grapesjs.init({
+                container: editorContainerRef.current,
+                height: "500px",
+                width: "100%",
+                storageManager: false,
+                fromElement: true,
+                plugins: [grapesjsTailwind],
+                pluginsOpts: {
+                    [grapesjsTailwind]: {}
+                }
+            });
+
+            editorRef.current.on('component:update', () => {
+                setHtml(editorRef.current?.getHtml() || "");
+            });
+        }
+    }, []);
+
+    useEffect(() => {
+        if (editorRef.current) {
+            editorRef.current.setComponents(html);
+        }
+    }, [html]);
+
+    const handleContentChange = (index: number, key: string, value: string) => {
+        const updatedContents = [...contents];
+        updatedContents[index].content[key] = value;
+        setContents(updatedContents);
+        setPreviewHtml(generatePreview());
+    };
+
+    const handleLangChange = (index: number, value: string) => {
+        const updatedContents = [...contents];
+        updatedContents[index].langCode = value;
+        setContents(updatedContents);
+    };
+
+    const generatePreview = () => {
+        let mergedHtml = html;
+        const filteredContents = contents.filter(content => content.langCode === previewLang);
+        filteredContents.forEach(contentItem => {
+            Object.keys(contentItem.content).forEach(key => {
+                const regex = new RegExp(`{{${key}}}`, "g");
+                mergedHtml = mergedHtml.replace(regex, contentItem.content[key]);
+            });
+        });
+        return { __html: mergedHtml };
+    };
+
+    const addContentSection = (key: string, lang: string, value: string) => {
+        const newContent = {
+            sectionId: section?.id || "",
+            id: `new-${Date.now()}`,
+            langCode: lang,
+            content: { [key]: value }
         };
-
-        console.log("Daten zum Speichern", updatedSection);
-        alert("Section saved (check console for data)!");
+        setContents([...contents, newContent]);
     };
 
     if (!selectedSectionId) return <div className="p-4">Bitte wählen Sie eine Sektion aus.</div>;
-    if (error) return <div className="p-4 text-red-500">{error}</div>;
     if (!section) return <div className="p-4">Loading...</div>;
 
     return (
-        <div className="p-4 max-w-4xl mx-auto bg-white rounded shadow">
+        <div className="p-4 max-w-full mx-auto bg-white rounded shadow">
             <h2 className="text-2xl font-bold mb-4 text-gray-800">Editor</h2>
 
             <label className="block text-sm font-medium text-gray-700">Titel:</label>
             <input className="w-full border p-2 mb-4 rounded" value={title} onChange={(e) => setTitle(e.target.value)} />
 
-            <div className="grid grid-cols-2 gap-4">
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">HTML:</label>
-                    <Editor height="300px" defaultLanguage="html" value={html} onChange={(value) => setHtml(value || "")} options={{ quickSuggestions: true, suggestOnTriggerCharacters: true }} />
+            <div>
+                <div ref={editorContainerRef} className="border rounded mb-4 h-64"></div>
+            </div>
+            <hr />
+            <div className="">
+                <label className="block text-sm font-medium text-gray-700">Code Editor</label>
+                <div className="border rounded mb-4 h-64">
+                    <Editor height="300px" defaultLanguage="html" value={html} onChange={(value) => setHtml(value || "")} />
                 </div>
             </div>
-
-            <DndContext>
-                <DroppableArea id="drop-area">
-                    <DraggableComponent id="Button" />
-                    <DraggableComponent id="Text" />
-                </DroppableArea>
-            </DndContext>
-
             <h3 className="text-lg font-semibold mb-2">Section Contents</h3>
             {contents.map((contentItem, index) => (
                 <div key={contentItem.id} className="mb-4 border p-2 rounded bg-gray-100">
-                    <p className="text-xs text-gray-500">Content ID: {contentItem.id}</p>
-                    <p className="text-xs text-gray-500">LangCode: {contentItem.langCode}</p>
+                    <label className="block text-sm font-medium text-gray-700">Sprache:</label>
+                    <select className="w-full border p-2 rounded" value={contentItem.langCode} onChange={(e) => handleLangChange(index, e.target.value)}>
+                        {languages.map(lang => (
+                            <option key={lang.code} value={lang.code}>{lang.label}</option>
+                        ))}
+                    </select>
+                    {Object.keys(contentItem.content).map((key) => (
+                        <div key={key} className="mb-2">
+                            <label className="block text-sm font-medium text-gray-700">{key}:</label>
+                            <input className="w-full border p-2 rounded" type="text" value={contentItem.content[key] || ""} onChange={(e) => handleContentChange(index, key, e.target.value)} />
+                        </div>
+                    ))}
                 </div>
             ))}
 
-            <button onClick={saveSection} className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Speichern</button>
+            <h3 className="text-lg font-semibold mb-2">Preview</h3>
+            <label className="block text-sm font-medium text-gray-700">Preview Sprache:</label>
+            <select className="w-full border p-2 mb-4 rounded" value={previewLang} onChange={(e) => setPreviewLang(e.target.value)}>
+                {languages.map(lang => (
+                    <option key={lang.code} value={lang.code}>{lang.label}</option>
+                ))}
+            </select>
+            <div className="border p-4 rounded bg-gray-50" dangerouslySetInnerHTML={previewHtml}></div>
         </div>
     );
 }
