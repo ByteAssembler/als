@@ -131,3 +131,14 @@ model User {
     avatar String?
     posts  Post[]
 }
+
+model Comment {
+    id        Int      @id @default(autoincrement())
+    author    String
+    role      String?
+    comment   String
+    avatar    String   @default("/placeholder.webp")
+    language  String   @default("en") // "de", "en", "it"
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}

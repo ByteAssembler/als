@@ -26,9 +26,8 @@ const socialLinks = [
 				target="_blank"
 				rel="noopener noreferrer"
 				aria-label={`Follow us on ${link.name}`}
-			>
-				<Fragment set:html={link.icon} />
-			</a>
+				set:html={link.icon}
+			></a>
 		))
 	}
 </div>

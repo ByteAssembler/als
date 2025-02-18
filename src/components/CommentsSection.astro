@@ -1,22 +1,14 @@
 ---
-import Button from "./ui/Button.astro";
+import { PrismaClient } from "@prisma/client";
 
-const comments = [
-	{
-		author: "Max Mastermann",
-		role: "ALS Researcher & Scientist",
-		comment:
-			"ALS has challenged us in ways I never thought possible, but the support from this community has been our strength.",
-		avatar: "/placeholder.webp",
-	},
-	{
-		author: "Sarah Johnson",
-		role: "Community Member",
-		comment:
-			"The resources and support provided here have made a significant difference in our journey.",
-		avatar: "/placeholder.webp",
-	},
-];
+const { lang } = Astro.params;
+const prisma = new PrismaClient();
+const language = Astro.url.searchParams.get("lang") || "en";
+
+const comments = await prisma.comment.findMany({
+	where: { language: lang },
+	orderBy: { createdAt: "desc" },
+});
 ---
 
 <section id="comments" class="mt-20 bg-white px-6 py-16 pt-20">
@@ -29,7 +21,7 @@ const comments = [
 						<div class="flex items-start gap-4">
 							<img
 								src={comment.avatar}
-								alt=""
+								alt={comment.author}
 								class="h-12 w-12 rounded-full"
 							/>
 							<div>

@@ -21,6 +21,12 @@ const MapComponent = () => {
     const markersRef = useRef<L.Marker[]>([]);
     const [category, setCategory] = useState("");
 
+    const customIcon = L.icon({
+        iconUrl: "/marker.png",  // Stelle sicher, dass marker.png in /public liegt
+        iconSize: [30, 45],
+        iconAnchor: [15, 45]
+    });
+
     useEffect(() => {
         if (!mapRef.current) {
             mapRef.current = L.map("map-map").setView([46.7419, 12.0196], 6);
@@ -42,7 +48,7 @@ const MapComponent = () => {
         selectedCategories.forEach((category) => {
             if (category) {
                 category.locations.forEach((loc) => {
-                    const marker = L.marker([loc.position.lat, loc.position.lng])
+                    const marker = L.marker([loc.position.lat, loc.position.lng], { icon: customIcon })
                         .bindPopup(`<b>${loc.name}</b>`)
                         .addTo(mapRef.current!);
                     markersRef.current.push(marker);

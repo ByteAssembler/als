@@ -1,0 +1,27 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+---
+
+<Layout title="Admin Login">
+	<Header />
+	<div class="container mx-auto p-6">
+		<h1 class="mb-4 text-3xl font-bold">Admin Login</h1>
+		<div class="mx-auto max-w-md rounded-lg bg-white p-6 shadow-md">
+			<form>
+				<label class="mb-2 block font-semibold">Benutzername</label>
+				<input type="text" class="mb-4 w-full rounded border p-2" />
+
+				<label class="mb-2 block font-semibold">Passwort</label>
+				<input type="password" class="mb-4 w-full rounded border p-2" />
+
+				<button
+					type="submit"
+					class="w-full rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+				>
+					Login
+				</button>
+			</form>
+		</div>
+	</div>
+</Layout>

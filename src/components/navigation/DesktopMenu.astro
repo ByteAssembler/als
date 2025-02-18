@@ -10,7 +10,12 @@ const { lang } = Astro.params;
 	{
 		menuItems.map((item) => (
 			<MenuItem
-				href={Astro.url.origin + "/" + lang + "/" + item.href}
+				href={
+					Astro.url.origin +
+					(item.withLanguage ? "/" + lang : "") +
+					"/" +
+					item.href
+				}
 				text={item.text}
 			/>
 		))

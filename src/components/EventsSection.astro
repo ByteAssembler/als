@@ -1,8 +1,12 @@
 ---
 import { PrismaClient } from "@prisma/client";
 
+const { lang } = Astro.params;
+
 const prisma = new PrismaClient();
-const events = await prisma.event.findMany();
+const events = await prisma.event.findMany({
+	where: { language: lang },
+});
 
 // Sprachlogik
 const currentLang = Astro.url.pathname.split("/")[1]; // Annahme: "de", "en" oder "it" ist das erste Segment

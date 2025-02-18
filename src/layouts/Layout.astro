@@ -1,6 +1,6 @@
 ---
 import WelcomeBanner from "../components/WelcomeBanner.astro";
-import CookieBanner from "../components/CookieBanner.tsx";
+import CookieBanner from "../components/CookieBanner.astro";
 
 interface Props {
 	title: string;
@@ -22,7 +22,7 @@ const { title, defaultPadding } = Astro.props;
 	<body class:list={["min-h-screen", defaultPadding && "pt-[65px]"]}>
 		<WelcomeBanner />
 
-		<CookieBanner client:load />
+		<CookieBanner />
 		<slot />
 	</body>
 </html>

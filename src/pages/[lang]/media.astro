@@ -1,0 +1,39 @@
+---
+import fs from "fs/promises";
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+const mediaDir = "public/media";
+
+// Check if the media directory exists
+const mediaDirExists = await fs
+	.access(mediaDir)
+	.then(() => true)
+	.catch(() => false);
+
+// Get all media files
+const mediaFiles = mediaDirExists ? await fs.readdir(mediaDir) : [];
+---
+
+<Layout title="Medien" defaultPadding={true}>
+	<Header />
+	<div
+		class="mx-auto mt-10 max-w-4xl rounded-lg bg-white p-6 pt-10 shadow-md"
+	>
+		<h1 class="mb-4 text-2xl font-bold">Medien</h1>
+		<ul class="space-y-2">
+			{
+				mediaFiles.map((file) => (
+					<li class="border-b pb-2">
+						<a
+							href={`/media/${file}`}
+							target="_blank"
+							class="text-blue-500 hover:underline"
+						>
+							{file}
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</Layout>

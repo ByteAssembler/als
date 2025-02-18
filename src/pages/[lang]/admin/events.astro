@@ -1,8 +1,7 @@
 ---
 import { PrismaClient } from "@prisma/client";
-import Layout from "../../layouts/Layout.astro";
-import AdminComponent from "../../components/Admin.tsx";
-import Header from "../../components/Header.astro";
+import Layout from "../../../layouts/Layout.astro";
+import AdminComponent from "../../../components/Admin.tsx";
 
 const prisma = new PrismaClient();
 
@@ -44,8 +43,7 @@ if (Astro.request.method === "DELETE") {
 }
 ---
 
-<Layout title="Admin Panel" defaultPadding={true}>
-	<Header />
+<Layout title="Admin Panel" defaultPadding={false}>
 	<section class="mx-auto max-w-4xl py-12">
 		<h1 class="mb-6 text-3xl font-bold">Event Manager</h1>
 
@@ -92,9 +90,9 @@ if (Astro.request.method === "DELETE") {
 				required
 				class="mb-2 block w-full border p-2"
 			/>
-			<button type="submit" class="bg-blue-600 px-4 py-2 text-white"
-				>Save</button
-			>
+			<button type="submit" class="bg-blue-600 px-4 py-2 text-white">
+				Save
+			</button>
 		</form>
 
 		<!-- Event Liste -->
