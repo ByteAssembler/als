@@ -1,7 +1,10 @@
 ---
 import MenuItem from "./MenuItem.astro";
 import LanguageSelector from "./LanguageSelector.astro";
-import { menuItems } from "../../data/navigation";
+import { type Navbar } from "@prisma/client";
+
+const { lang } = Astro.params;
+const navBarItems: Navbar[] = Astro.props.navBarItems;
 ---
 
 <div
@@ -33,7 +36,7 @@ import { menuItems } from "../../data/navigation";
 		<nav class="mt-8">
 			<ul class="space-y-4">
 				{
-					menuItems.map((item) => (
+					navBarItems.map((item) => (
 						<li>
 							<MenuItem
 								href={item.href}

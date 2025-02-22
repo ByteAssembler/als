@@ -1,0 +1,79 @@
+---
+import Layout from "../../../../layouts/Layout.astro";
+import Header from "../../../../components/Header.astro";
+import db from "../../../../utils/db";
+
+const { slug, lang } = Astro.params;
+
+const post = await db.post.findUnique({
+	where: { slug, language: lang },
+});
+
+if (!post) {
+	return new Response(`Post ${slug} Not Found`, { status: 404 });
+}
+---
+
+<Layout title="Edit Post" defaultPadding={true}>
+	<Header />
+	<div class="mt-30 mx-auto max-w-3xl rounded-lg bg-white p-6 shadow-lg">
+		<h1 class="mb-4 text-2xl font-bold">Edit Post</h1>
+		<form
+			method="POST"
+			action={`/api/posts/${post.slug}`}
+			class="space-y-4"
+		>
+			<div>
+				<label class="block text-gray-700">Title</label>
+				<input
+					type="text"
+					name="title"
+					value={post.title}
+					class="w-full rounded-lg border p-2"
+				/>
+			</div>
+			<div>
+				<label class="block text-gray-700">Slug</label>
+				<input
+					type="text"
+					name="slug"
+					value={post.slug}
+					class="w-full rounded-lg border p-2"
+				/>
+			</div>
+			<div>
+				<label class="block text-gray-700">Content</label>
+				<textarea
+					name="content"
+					class="h-40 w-full rounded-lg border p-2"
+				>
+					{post.content}
+				</textarea>
+			</div>
+			<div>
+				<label class="block text-gray-700">Language</label>
+				<input
+					type="text"
+					name="language"
+					value={post.language}
+					class="w-full rounded-lg border p-2"
+				/>
+			</div>
+			<div>
+				<label class="block text-gray-700">Cover Image URL</label>
+				<input
+					type="text"
+					name="coverImage"
+					value={post.coverImage || ""}
+					class="w-full rounded-lg border p-2"
+				/>
+			</div>
+			<button
+				type="submit"
+				class="w-full rounded-lg bg-blue-500 p-2 text-white"
+			>
+				Save Changes
+			</button>
+		</form>
+	</div>;
+</Layout>

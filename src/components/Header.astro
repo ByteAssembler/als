@@ -1,6 +1,17 @@
 ---
+import prisma from "../utils/db";
 import DesktopMenu from "./navigation/DesktopMenu.astro";
 import MobileMenu from "./navigation/MobileMenu.astro";
+import db from "../utils/db";
+import { languages } from "../data/languages";
+
+const { lang } = Astro.params;
+
+const navBarItems = await db.navbar.findMany({
+	where: {
+		OR: [{ language: lang }, { language: "global" }],
+	},
+});
 ---
 
 <header
@@ -12,7 +23,7 @@ import MobileMenu from "./navigation/MobileMenu.astro";
 			<img src="/logo.png" alt="CV ALS" class="h-8" />
 		</a>
 
-		<DesktopMenu />
+		<DesktopMenu navBarItems={navBarItems} />
 
 		<button
 			id="open-menu"
@@ -35,5 +46,5 @@ import MobileMenu from "./navigation/MobileMenu.astro";
 		</button>
 	</div>
 
-	<MobileMenu />
+	<MobileMenu navBarItems={navBarItems} />
 </header>

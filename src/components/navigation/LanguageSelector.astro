@@ -5,17 +5,27 @@ const { lang } = Astro.params;
 const currentUrl = Astro.url.pathname;
 
 const getUpdatedUrl = (newLang: string) => {
+	console.log(Astro.url);
 	if (!lang) return `/${newLang}${currentUrl}`;
 	return currentUrl.replace(`/${lang}`, `/${newLang}`);
 };
+
+const currentLang = languages.find((l) => l.code === lang);
 ---
 
 <div class="group relative">
 	<button
 		class="flex items-center gap-2 font-medium text-gray-700 hover:text-primary-600"
+		aria-label="Select language"
 	>
-		🌍 Sprache wählen
-		<svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+		<span class="text-lg">{currentLang?.flag}</span>
+		<span class="sr-only">{currentLang?.label}</span>
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			class="h-4 w-4"
+			viewBox="0 0 20 20"
+			fill="currentColor"
+		>
 			<path
 				fill-rule="evenodd"
 				d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -24,15 +34,17 @@ const getUpdatedUrl = (newLang: string) => {
 	</button>
 
 	<div
-		class="absolute z-50 mt-2 w-48 rounded-md bg-white py-2 opacity-0 shadow-lg transition-opacity group-hover:opacity-100"
+		class="invisible absolute z-50 mt-2 w-48 rounded-md bg-white py-2 opacity-0 shadow-lg transition-all duration-200 group-hover:visible group-hover:opacity-100 lg:right-0"
 	>
 		{
 			languages.map((langOption) => (
 				<a
 					href={getUpdatedUrl(langOption.code)}
 					class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+					aria-label={`Switch to ${langOption.label}`}
 				>
-					{langOption.flag} {langOption.label}
+					<span class="text-lg">{langOption.flag}</span>
+					<span>{langOption.label}</span>
 				</a>
 			))
 		}
