@@ -22,7 +22,6 @@ const LanguageSwitcher = () => {
                 }
             });
         }
-        console.log(urlParts);
         return urlParts.join("/");
     };
 

@@ -4,7 +4,6 @@ import db from "../../../../utils/db";
 
 export const GET: APIRoute = async ({ params }) => {
     const { siteId } = params;
-    console.log("\n\n\n\t\t\tSITE ID: " + siteId);
     if (!siteId) {
         return new Response(JSON.stringify({ error: "Missing siteId" }), {
             status: 400,

@@ -1,0 +1,114 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import Header from "../../../components/Header.astro";
+import db from "../../../utils/db";
+const { bookid } = Astro.params;
+
+console.log(bookid);
+
+if (!bookid) {
+	throw new Error("bookId is required");
+}
+
+const book = await db.book.findUnique({
+	where: { id: parseInt(bookid) },
+	include: { covers: true, links: true },
+});
+---
+
+<Layout title={book ? book.title : "Book not found"} defaultPadding={true}>
+	<Header />
+	<div class="p-10">
+		{
+			book ? (
+				<>
+					<h1 class="text-4xl font-bold">{book.title}</h1>
+					<p class="text-gray-700">von {book.author}</p>
+
+					<div class="mt-6" set:html={book.content} />
+
+					{book.links.length > 0 && (
+						<h2 class="mt-8 text-2xl font-bold">Links</h2>
+
+					<ul class="ml-5 list-disc">
+						{book.links.map((link) => (
+							<li>
+								<a
+									href={link.url}
+									class="text-blue-500 hover:underline"
+								>
+									{link.url}
+								</a>
+							</li>
+						))}
+					</ul>
+					)}
+
+					{book.covers.length > 0 && (
+						<h2 class="mt-8 text-2xl font-bold">Images</h2>
+                        <div class="relative mx-auto mt-6 w-full max-w-md">
+						<div class="slider overflow-hidden">
+							{book.covers.map((cover, i) => (
+								<img
+									src={"/media/books/" + cover.path}
+									class={`w-full rounded-lg shadow-lg transition-opacity duration-500 ${i === 0 ? "" : "hidden"}`}
+								/>
+							))}
+						</div>
+						<button
+							id="prev"
+							class="absolute left-0 top-1/2 -translate-y-1/2 transform rounded-l-lg bg-gray-800 px-3 py-1 text-white"
+						>
+							←
+						</button>
+						<button
+							id="next"
+							class="absolute right-0 top-1/2 -translate-y-1/2 transform rounded-r-lg bg-gray-800 px-3 py-1 text-white"
+						>
+							→
+						</button>
+					</div>
+					)}
+
+					
+				</>
+			) : (
+				<p>Book not found</p>
+			)
+		}
+	</div>
+</Layout>
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+		let index = 0;
+		const images = document.querySelectorAll(".slider img");
+		const total = images.length;
+
+		console.log(total);
+
+		function showImage(i: number) {
+			images.forEach((img) => img.classList.add("hidden"));
+			images[i].classList.remove("hidden");
+		}
+
+		const nextButton = document.getElementById("next");
+		if (nextButton) {
+			nextButton.addEventListener("click", () => {
+				index = (index + 1) % total;
+				showImage(index);
+				console.log(index);
+			});
+		}
+
+		const prevButton = document.getElementById("prev");
+		if (prevButton) {
+			prevButton.addEventListener("click", () => {
+				index = (index - 1 + total) % total;
+				showImage(index);
+				console.log(index);
+			});
+		}
+
+		showImage(index);
+	});
+</script>

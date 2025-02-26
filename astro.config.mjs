@@ -15,6 +15,7 @@ export default defineConfig({
         locales: ["de", "it", "en"],
         defaultLocale: "de",
     },
+    middleware: "./src/middleware.ts",
 });
 
 // import en from './locales/en.json';

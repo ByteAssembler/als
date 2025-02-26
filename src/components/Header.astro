@@ -4,12 +4,13 @@ import DesktopMenu from "./navigation/DesktopMenu.astro";
 import MobileMenu from "./navigation/MobileMenu.astro";
 import db from "../utils/db";
 import { languages } from "../data/languages";
+// import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const { lang } = Astro.params;
 
 const navBarItems = await db.navbar.findMany({
 	where: {
-		OR: [{ language: lang }, { language: "global" }],
+		OR: [{ language: lang ? lang : "en" }, { language: "global" }],
 	},
 });
 ---

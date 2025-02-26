@@ -34,3 +34,5 @@ pnpm-debug.log*
 *hide*
 *~*
 other/
+.netlify/
+tests/

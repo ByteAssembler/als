@@ -5,7 +5,6 @@ const { lang } = Astro.params;
 const currentUrl = Astro.url.pathname;
 
 const getUpdatedUrl = (newLang: string) => {
-	console.log(Astro.url);
 	if (!lang) return `/${newLang}${currentUrl}`;
 	return currentUrl.replace(`/${lang}`, `/${newLang}`);
 };
