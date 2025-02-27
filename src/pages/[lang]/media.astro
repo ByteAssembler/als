@@ -12,6 +12,8 @@ const mediaDirExists = await fs
 
 // Get all media files
 const mediaFiles = mediaDirExists ? await fs.readdir(mediaDir) : [];
+
+const { lang } = Astro.params;
 ---
 
 <Layout title="Medien" defaultPadding={true}>
@@ -20,7 +22,14 @@ const mediaFiles = mediaDirExists ? await fs.readdir(mediaDir) : [];
 		class="mx-auto mt-10 max-w-4xl rounded-lg bg-white p-6 pt-10 shadow-md"
 	>
 		<h1 class="mb-4 text-2xl font-bold">Medien</h1>
+
 		<ul class="space-y-2">
+			<li class="border-b pb-2">
+				<a
+					class="text-blue-900 hover:underline"
+					href={"/" + (lang ? lang : "/en") + "/books"}>Bücher</a
+				>
+			</li>
 			{
 				mediaFiles.map((file) => (
 					<li class="border-b pb-2">

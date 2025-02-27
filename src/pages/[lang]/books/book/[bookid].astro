@@ -1,17 +1,19 @@
 ---
-import Layout from "../../../layouts/Layout.astro";
-import Header from "../../../components/Header.astro";
-import db from "../../../utils/db";
-const { bookid } = Astro.params;
+import Layout from "../../../../layouts/Layout.astro";
+import Header from "../../../../components/Header.astro";
+import db from "../../../../utils/db";
+const { lang, bookid } = Astro.params;
 
 console.log(bookid);
 
-if (!bookid) {
+if (!bookid || isNaN(parseInt(bookid))) {
 	throw new Error("bookId is required");
 }
 
-const book = await db.book.findUnique({
-	where: { id: parseInt(bookid) },
+const book = await db.book.findFirst({
+	where: { 
+		id: parseInt(bookid),
+	},
 	include: { covers: true, links: true },
 });
 ---
@@ -70,6 +72,13 @@ const book = await db.book.findUnique({
 					</div>
 					)}
 
+                    
+                    <div class="mt-10">
+                        <a href={`/${lang}/books`}
+                        class="font-medium text-blue-600 hover:text-blue-800 " >
+                        ← Zurück zur Übersicht
+                        </a>
+					</div>
 					
 				</>
 			) : (

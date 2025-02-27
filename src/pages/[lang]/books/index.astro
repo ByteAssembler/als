@@ -6,6 +6,7 @@ import db from "../../../utils/db";
 const { lang } = Astro.params;
 
 const books = await db.book.findMany({
+	where: { language: lang },
 	select: {
 		id: true,
 		author: true,
@@ -25,7 +26,7 @@ const books = await db.book.findMany({
 			{
 				books.map((book) => (
 					<a
-						href={"/" + (lang || "en") + `/books/${book.id}`}
+						href={"/" + (lang || "en") + `/books/book/${book.id}`}
 						class="block rounded-lg bg-white p-4 shadow hover:shadow-lg"
 					>
 						<img
