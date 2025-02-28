@@ -2,6 +2,7 @@
 import fs from "fs/promises";
 import Layout from "../../layouts/Layout.astro";
 import Header from "../../components/Header.astro";
+
 const mediaDir = "public/media";
 
 // Check if the media directory exists
@@ -12,6 +13,28 @@ const mediaDirExists = await fs
 
 // Get all media files
 const mediaFiles = mediaDirExists ? await fs.readdir(mediaDir) : [];
+
+const audioExtensions = [".mp3", ".wav", ".ogg"];
+const videoExtensions = [".mp4", ".mkv", ".webm"];
+const imageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp"];
+
+// Helper to remove file extension
+function removeExtension(filename: string) {
+	return filename.replace(/\.[^/.]+$/, "");
+}
+
+// Sort files into categories
+const audios = mediaFiles.filter((file) =>
+	audioExtensions.some((ext) => file.toLowerCase().endsWith(ext)),
+);
+
+const videos = mediaFiles.filter((file) =>
+	videoExtensions.some((ext) => file.toLowerCase().endsWith(ext)),
+);
+
+const images = mediaFiles.filter((file) =>
+	imageExtensions.some((ext) => file.toLowerCase().endsWith(ext)),
+);
 
 const { lang } = Astro.params;
 ---
@@ -27,22 +50,65 @@ const { lang } = Astro.params;
 			<li class="border-b pb-2">
 				<a
 					class="text-blue-900 hover:underline"
-					href={"/" + (lang ? lang : "/en") + "/books"}>Bücher</a
+					href={"/" + (lang ? lang : "/en") + "/books"}
 				>
+					Bücher
+				</a>
 			</li>
+		</ul>
+
+        {audios.length > 0 &&
+		<h2 class="mt-6 text-xl font-semibold">Audios</h2>
+		<ul class="space-y-2">
 			{
-				mediaFiles.map((file) => (
+				audios.map((file) => (
 					<li class="border-b pb-2">
 						<a
 							href={`/media/${file}`}
 							target="_blank"
 							class="text-blue-500 hover:underline"
 						>
-							{file}
+							{removeExtension(file)}
+						</a>
+					</li>
+				))
+			}
+		</ul>}
+        {videos.length > 0 &&
+		<h2 class="mt-6 text-xl font-semibold">Videos</h2>
+		<ul class="space-y-2">
+			{
+				videos.map((file) => (
+					<li class="border-b pb-2">
+						<a
+							href={`/media/${file}`}
+							target="_blank"
+							class="text-blue-500 hover:underline"
+						>
+							{removeExtension(file)}
 						</a>
 					</li>
 				))
 			}
 		</ul>
+        }
+        {images.length > 0 &&
+		<h2 class="mt-6 text-xl font-semibold">Bilder</h2>
+		<ul class="space-y-2">
+			{
+				images.map((file) => (
+					<li class="border-b pb-2">
+						<a
+							href={`/media/${file}`}
+							target="_blank"
+							class="text-blue-500 hover:underline"
+						>
+							{removeExtension(file)}
+						</a>
+					</li>
+				))
+			}
+		</ul>
+        }
 	</div>
 </Layout>

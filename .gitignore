@@ -1,7 +1,3 @@
-# Media folder
-public/media/
-media/
-*media*
 
 # build output
 dist/

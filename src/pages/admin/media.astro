@@ -1,0 +1,107 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+import { writeFile, unlink, readdir } from "fs/promises";
+import { extname } from "path";
+
+const uploadDir = "./public/media";
+
+const {lang} = Astro.params;
+
+// Erlaubte Dateitypen (kann erweitert werden)
+const allowedExtensions = [
+    // Bilder
+    ".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".ico", ".bmp", ".tiff", ".tif", ".heif", ".heic", ".jfif",
+
+    // Dokumente
+    ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".odt", ".ods", ".odp", ".txt", ".rtf", ".csv", ".xml", ".json",
+
+    // Audio
+    ".mp3", ".wav", ".ogg", ".flac", ".aac", ".wma", ".m4a", ".aiff", ".alac", ".opus",
+
+    // Video
+    ".mp4", ".webm", ".mkv", ".flv", ".avi", ".mov", ".wmv", ".m4v", ".mpg", ".mpeg", ".3gp", ".3g2", ".ogv", ".h264", ".h265", ".hevc", ".av1",
+];
+
+// 📂 Hochgeladene Dateien abrufen
+const files = await readdir(uploadDir);
+
+// 📤 Datei hochladen
+if (Astro.request.method === "POST") {
+    const formData = await Astro.request.formData();
+    const file = formData.get("file");
+
+    if (file instanceof File) {
+        const ext = extname(file.name).toLowerCase();
+        if (!allowedExtensions.includes(ext)) {
+            return new Response("Ungültiger Dateityp!", { status: 400 });
+        }
+
+        const bytes = await (file as Blob).arrayBuffer();
+        const buffer = Buffer.from(bytes);
+        const filename = `${Date.now()}-${(file as File).name}`;
+        const filePath = `${uploadDir}/${filename}`;
+
+        await writeFile(filePath, buffer);
+        console.log("LANG::::::: ", lang);
+
+        return Astro.redirect("/admin/files");
+    }
+}
+
+// ❌ Datei löschen
+if (Astro.request.method === "POST") {
+    const formData = await Astro.request.formData();
+    if (formData.get("data-delete-file") === "true") {
+        const filename = formData.get("filename");
+
+        if (filename) {
+            try {
+                await unlink(`${uploadDir}/${filename}`);
+            } catch (error) {
+                console.error("Fehler beim Löschen:", error);
+            }
+        }
+        return Astro.redirect("/admin/files");
+    }
+}
+---
+
+
+
+    <Layout title="Media" defaultPadding={true}>
+
+        <section class="mx-auto max-w-4xl py-12">
+            <h1 class="mb-6 text-3xl font-bold">📂 Datei-Manager</h1>
+    
+            <!-- 📤 Datei-Upload -->
+            <form method="POST" enctype="multipart/form-data" class="mb-6 bg-white p-6 rounded-md shadow-md">
+                <input type="file" name="file" required class="mb-2 w-full border p-2 rounded-md" />
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md">Hochladen</button>
+            </form>
+    
+            <!-- 📁 Hochgeladene Dateien -->
+            <ul class="mt-6 bg-white p-4 rounded-md shadow-md">
+                {
+                    files.length === 0
+                    ? <p class="text-gray-500">Keine Dateien hochgeladen.</p>
+                    : files.map((file) => (
+                        <>
+                        <li class="flex justify-between items-center p-2 border-b last:border-0">
+                            <a href={`/uploads/${file}`} target="_blank" class="text-blue-600 hover:underline">{file}</a>
+                            
+                            <!-- ❌ Löschen-Button -->
+                            <form method="POST" onsubmit="return confirm('Datei wirklich löschen?');" class="inline-block">
+                                <input type="hidden" name="filename" value={file} />
+                                <button type="submit" class="bg-red-600 text-white px-2 py-1 rounded-md" formaction="/admin/files" formmethod="POST" onclick="this.form.setAttribute('data-delete-file', 'true');">
+                                    Löschen
+                                </button>
+                            </form>
+                        </li>
+                        </>
+                    ))
+                }
+            </ul>
+        </section>
+
+    </Layout>
