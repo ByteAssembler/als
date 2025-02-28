@@ -17,7 +17,7 @@ const mediaFiles = mediaDirExists ? await fs.readdir(mediaDir) : [];
 const audioExtensions = [".mp3", ".wav", ".ogg"];
 const videoExtensions = [".mp4", ".mkv", ".webm"];
 const imageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp"];
-
+const infomationFilesExtensions = [".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".odt", ".ods", ".odp", ".txt", ".rtf", ".csv", ".xml", ".json"];
 // Helper to remove file extension
 function removeExtension(filename: string) {
 	return filename.replace(/\.[^/.]+$/, "");
@@ -109,6 +109,25 @@ const { lang } = Astro.params;
 				))
 			}
 		</ul>
+        }
+        {infomationFilesExtensions.length > 0 &&
+        <h2 class="mt-6 text-xl font-semibold">Informationen</h2>
+            
+            <ul class="space-y-2">
+                {
+                    infomationFilesExtensions.map((file) => (
+                        <li class="border-b pb-2">
+                            <a
+                                href={`/media/${file}`}
+                                target="_blank"
+                                class="text-blue-500 hover:underline"
+                            >
+                                {removeExtension(file)}
+                            </a>
+                        </li>
+                    ))
+                }
+            </ul>
         }
 	</div>
 </Layout>
