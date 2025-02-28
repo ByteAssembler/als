@@ -34,22 +34,24 @@ const navBarItems: Navbar[] = Astro.props.navBarItems;
 			</button>
 		</div>
 		<nav class="mt-8">
-			<ul class="space-y-4">
-				{
-					navBarItems.map((item) => (
-						<li>
-							<MenuItem
-								href={item.href}
-								text={item.text}
-								className="text-xl block py-2"
-							/>
-						</li>
-					))
-				}
-				<li class="border-t pt-4">
+			<div class="flex flex-row">
+				<ul class="space-y-2">
+					{
+						navBarItems.map((item) => (
+							<li>
+								<MenuItem
+									href={item.href}
+									text={item.text}
+									className="text-xl block py-2"
+								/>
+							</li>
+						))
+					}
+				</ul>
+				<div class="m-2 ml-6">
 					<LanguageSelector />
-				</li>
-			</ul>
+				</div>
+			</div>
 		</nav>
 	</div>
 </div>

@@ -36,6 +36,10 @@ const images = mediaFiles.filter((file) =>
 	imageExtensions.some((ext) => file.toLowerCase().endsWith(ext)),
 );
 
+const informationFiles = mediaFiles.filter((file) =>
+    infomationFilesExtensions.some((ext) => file.toLowerCase().endsWith(ext)),
+);
+
 const { lang } = Astro.params;
 ---
 
@@ -110,12 +114,12 @@ const { lang } = Astro.params;
 			}
 		</ul>
         }
-        {infomationFilesExtensions.length > 0 &&
+        {informationFiles.length > 0 &&
         <h2 class="mt-6 text-xl font-semibold">Informationen</h2>
             
             <ul class="space-y-2">
                 {
-                    infomationFilesExtensions.map((file) => (
+                    informationFiles.map((file) => (
                         <li class="border-b pb-2">
                             <a
                                 href={`/media/${file}`}
