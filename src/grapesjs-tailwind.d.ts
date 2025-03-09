@@ -1,4 +1,4 @@
-declare module 'grapesjs-tailwind' {
-    const plugin: any;
-    export default plugin;
+declare module "grapesjs-tailwind" {
+  const plugin: any;
+  export default plugin;
 }
