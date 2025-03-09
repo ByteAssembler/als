@@ -11,7 +11,7 @@ if (!bookid || isNaN(parseInt(bookid))) {
 }
 
 const book = await db.book.findFirst({
-	where: { 
+	where: {
 		id: parseInt(bookid),
 	},
 	include: { covers: true, links: true },
@@ -72,14 +72,12 @@ const book = await db.book.findFirst({
 					</div>
 					)}
 
-                    
                     <div class="mt-10">
                         <a href={`/${lang}/books`}
                         class="font-medium text-blue-600 hover:text-blue-800 " >
                         ← Zurück zur Übersicht
                         </a>
 					</div>
-					
 				</>
 			) : (
 				<p>Book not found</p>
