@@ -1,13 +1,17 @@
 ---
 import WelcomeBanner from "../components/WelcomeBanner.astro";
 import CookieBanner from "../components/CookieBanner.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
 
 interface Props {
 	title: string;
 	defaultPadding?: boolean;
+    noFooter?: boolean;
+    noHeader?: boolean;
 }
 
-const { title, defaultPadding } = Astro.props;
+const { title, defaultPadding, noFooter, noHeader } = Astro.props;
 ---
 
 <!doctype html>
@@ -21,9 +25,10 @@ const { title, defaultPadding } = Astro.props;
 	</head>
 	<body class:list={["min-h-screen", defaultPadding && "pt-[65px]"]}>
 		<WelcomeBanner />
-
 		<CookieBanner />
+        {!noHeader && <Header />}
 		<slot />
+        {!noFooter && <Footer />}
 	</body>
 </html>
 

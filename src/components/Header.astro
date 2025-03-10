@@ -1,12 +1,14 @@
 ---
-import prisma from "../utils/db";
 import DesktopMenu from "./navigation/DesktopMenu.astro";
 import MobileMenu from "./navigation/MobileMenu.astro";
 import db from "../utils/db";
-import { languages } from "../data/languages";
+import type { Navbar } from "@prisma/client";
 // import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const { lang } = Astro.params;
+
+// ONLY FOR TESTING: TODO
+// const navBarItems: Navbar[] = [];
 
 const navBarItems = await db.navbar.findMany({
 	where: {

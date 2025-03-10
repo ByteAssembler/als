@@ -1,13 +1,11 @@
 ---
 import { PrismaClient } from "@prisma/client";
 import Layout from "../../layouts/Layout.astro";
-import Header from "../../components/Header.astro";
 const prisma = new PrismaClient();
 const links = await prisma.link.findMany();
 ---
 
 <Layout title="Links" defaultPadding={true}>
-	<Header title="Links" />
 	<main class="mx-auto mt-10 max-w-4xl">
 		<ul class="space-y-4">
 			{

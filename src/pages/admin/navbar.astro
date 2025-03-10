@@ -2,14 +2,14 @@
 import type { Navbar } from "@prisma/client";
 import db from "../../utils/db";
 import Layout from "../../layouts/Layout.astro";
-import Header from "../../components/Header.astro";
+
 
 const navbarItems = await db.navbar.findMany();
 const languages = ["de", "en", "fr", "es"];
 ---
 
 <Layout title="Navbar" defaultPadding={true}>
-	<Header />
+	
 	<div class="mx-auto mt-10 max-w-3xl rounded-lg bg-white p-6 shadow">
 		<h1 class="mb-4 text-2xl font-bold">Navbar Verwaltung</h1>
 

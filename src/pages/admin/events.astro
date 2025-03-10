@@ -1,8 +1,6 @@
 ---
 import { PrismaClient } from "@prisma/client";
 import Layout from "../../layouts/Layout.astro";
-import AdminComponent from "../../components/Admin.tsx";
-import Header from "../../components/Header.astro";
 
 const prisma = new PrismaClient();
 
@@ -45,7 +43,7 @@ if (Astro.request.method === "DELETE") {
 ---
 
 <Layout title="Admin Panel" defaultPadding={true}>
-	<Header />
+	
 	<section class="mx-auto max-w-4xl py-12">
 		<h1 class="mb-6 text-3xl font-bold">Event Manager</h1>
 

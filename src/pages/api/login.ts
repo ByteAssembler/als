@@ -5,7 +5,7 @@ import db from "../../utils/db";
 const SECRET_KEY = process.env.JWT_SECRET || "supersecretkey";
 
 export async function POST({ request }: { request: Request }) {
-    console.log("ROST REQUEST");
+    console.log("POST REQUEST");
     const { username, password } = await request.json();
     const admin = await db.admin.findUnique({ where: { username } });
 
