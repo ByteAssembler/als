@@ -1,5 +1,6 @@
 ---
 import db from "../utils/db";
+import Section from "../layouts/Section.astro";
 
 const { lang } = Astro.params;
 
@@ -15,11 +16,8 @@ const blogs = await db.post.findMany({
 });
 ---
 
-<section id="blogs" class="mt-20 px-6 py-16 pt-20">
+<Section sectionTitle="Blogs und Forschung" sectionId="blogs">
 	<div class="mx-auto max-w-6xl">
-		<h2 class="mb-12 text-center text-4xl font-bold text-gray-900">
-			Blogs und Forschung
-		</h2>
 		<div class="grid gap-8 md:grid-cols-3">
 			{
 				blogs.map((blog) => (
@@ -44,4 +42,4 @@ const blogs = await db.post.findMany({
 			}
 		</div>
 	</div>
-</section>
+</Section>

@@ -1,0 +1,16 @@
+---
+interface Props {
+	sectionTitle: string;
+    sectionId: string;
+}
+
+const { sectionTitle, sectionId } = Astro.props;
+
+---
+
+<section class="" >
+    <div class="mb-10 pb-10" id={sectionId} />
+    <h2 class="mb-12 text-center text-4xl font-bold text-gray-900">{sectionTitle}</h2>
+    
+    <slot />
+</section>

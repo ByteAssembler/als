@@ -6,12 +6,13 @@ import Footer from "../components/Footer.astro";
 
 interface Props {
 	title: string;
+    showTitle?: boolean;
 	defaultPadding?: boolean;
-    noFooter?: boolean;
-    noHeader?: boolean;
+    footer?: boolean;
+    header?: boolean;
 }
 
-const { title, defaultPadding, noFooter, noHeader } = Astro.props;
+const { title, showTitle = true, defaultPadding = true, footer = true, header = true } = Astro.props;
 ---
 
 <!doctype html>
@@ -26,13 +27,15 @@ const { title, defaultPadding, noFooter, noHeader } = Astro.props;
 	<body class="flex min-h-screen flex-col">
         <WelcomeBanner />
         <CookieBanner />
-        {!noHeader && <Header />}
+        {header && <Header />}
         <main class="flex-1">
+            {
+                showTitle && <h1 class="pt-20 mb-12 text-center text-4xl font-bold text-gray-900">{title}</h1>
+            }
             <slot />
         </main>
-        {!noFooter && <Footer />}
+        {footer && <Footer />}
     </body>
-
 </html>
 
 <style is:global>
@@ -46,4 +49,5 @@ const { title, defaultPadding, noFooter, noHeader } = Astro.props;
 		background: #fff;
 		scroll-behavior: smooth;
 	}
+
 </style>
