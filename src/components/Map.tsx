@@ -1,30 +1,32 @@
 import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import type { MapPoint, MapPointType } from "@prisma/client";
+import CategorySelector from "./CategorySelector";
 
+// const data = [
+//     {
+//         name: "Hauptsitz",
+//         locations: [{ name: "Olang", position: { lat: 46.7419, lng: 12.0196 } }],
+//     },
+//     {
+//         name: "Krankenhäuser",
+//         locations: [
+//             { name: "Zentrum ALS Ulm", position: { lat: 48.402, lng: 10.0014 } },
+//             { name: "Charité - Universitätsmedizin Berlin", position: { lat: 52.5268, lng: 13.3766 } },
+//         ],
+//     },
+// ];
 
-const data = [
-    {
-        name: "Hauptsitz",
-        locations: [{ name: "Olang", position: { lat: 46.7419, lng: 12.0196 } }],
-    },
-    {
-        name: "Krankenhäuser",
-        locations: [
-            { name: "Zentrum ALS Ulm", position: { lat: 48.402, lng: 10.0014 } },
-            { name: "Charité - Universitätsmedizin Berlin", position: { lat: 52.5268, lng: 13.3766 } },
-        ],
-    },
-];
-
-const MapComponent = () => {
+function MapComponent({ data, types }: { data: MapPoint[]; types: MapPointType[] }) {
+    console.log(types);
     const mapRef = useRef<L.Map | null>(null);
     const markersRef = useRef<L.Marker[]>([]);
-    const [category, setCategory] = useState("");
+    const [category, setCategory] = useState<string>("");
 
     const customIcon = L.icon({
-        iconUrl: "/marker.png",  // Stelle sicher, dass marker.png in /public liegt
-        iconSize: [30, 45],
+        iconUrl: "/icons8-google-maps-doodle/icons8-google-maps-48.png",  // Stelle sicher, dass marker.png in /public liegt
+        iconSize: [40, 40],
         iconAnchor: [15, 45]
     });
 
@@ -43,18 +45,21 @@ const MapComponent = () => {
         markersRef.current.forEach((marker) => mapRef.current?.removeLayer(marker));
         markersRef.current = [];
 
-        const selectedCategories = category ? [data.find((item) => item.name === category)] : data;
+        const selectedCategories = (category ? [types.find((type) => type.name === category)]
+        .filter((type): type is MapPointType => type !== undefined) : data)
+        const selectedCategoriesIds: number[] = selectedCategories.length > 0 ? selectedCategories.map((type) => type.id) : [];
+
         let group: L.Marker[] = [];
 
-        selectedCategories.forEach((category) => {
-            if (category) {
-                category.locations.forEach((loc) => {
-                    const marker = L.marker([loc.position.lat, loc.position.lng], { icon: customIcon })
-                        .bindPopup(`<b>${loc.name}</b>`)
-                        .addTo(mapRef.current!);
-                    markersRef.current.push(marker);
-                    group.push(marker);
-                });
+        const points: MapPoint[] = data.filter((point) => selectedCategoriesIds.includes(point.typeId));
+        
+        points.forEach((point) => {
+            if (point) {
+                const marker = L.marker([point.latitude, point.longitude], { icon: customIcon })
+                    .bindPopup(`<b>${point.name}</b><br><p>${point.description}</p>`)
+                    .addTo(mapRef.current!);
+                markersRef.current.push(marker);
+                group.push(marker);
             }
         });
 
@@ -67,16 +72,25 @@ const MapComponent = () => {
     }, [category]);
 
     return (
-        <div>
-            <select className="dropdown" value={category} onChange={(e) => setCategory(e.target.value)}>
-                <option value="">Alle Kategorien</option>
-                {data.map((category) => (
-                    <option key={category.name} value={category.name}>
-                        {category.name}
-                    </option>
-                ))}
-            </select>
-            <div id="map-map" className="h-[500px] w-full rounded-lg shadow-md mt-2"></div>
+        <div className="w-full ">
+            <div className="relative">
+                <select 
+                    className="w-full p-3 text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none"
+                    value={category} 
+                    onChange={(e) => setCategory(e.target.value)}
+                >
+                    <option value="" key="all">Alle Kategorien</option>
+                    {types.length > 0 && types.map((type) => (
+                        <option key={type.id} value={type.name}>
+                            {type.name}
+                        </option>
+                    ))}
+                </select>
+                <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                    ▼
+                </div>
+            </div>
+            <div id="map-map" className="h-96 w-full rounded-lg shadow-md mt-4 bg-gray-100 pt-5"></div>
         </div>
     );
 };
