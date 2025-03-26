@@ -1,20 +1,16 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 
-import FileUploaderComponent from "../../utils/FileUploader.jsx";
-import  BlobAPI  from "../../utils/api";
+import FileUploaderComponent from "../../utils/FileUploader.js";
+import BlobAPI  from "../../utils/api";
 
-// console.log(Permissions.allFullPermissions());
-
-const fileServerURL = "https://cv-als-fileserver.sicklevel.com/api";
-const fileServerToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlNjQ3NGIyMWJjZTMyY2VlMzg4MzA0YzEiLCJleHBpcmVzIjoiZm9yZXZlciIsImlhdCI6MTc0MTU1NTIzM30.YcU9l9Yf3YqotTqzuwvPR0VBvkka1VOYZDaen0Kpn0M"
-
+const fileServerURL = process.env.FILE_SERVER_URL;
+const fileServerToken = process.env.FILE_SERVER_TOKEN;
 const blobApi = new BlobAPI(fileServerURL, fileServerToken);
 
 const bucketId = "af6642da722af38705457f99"; // Full permissions: 131071
 
 const {lang} = Astro.params;
-
 
 // Erlaubte Dateitypen (kann erweitert werden)
 const allowedExtensions = [

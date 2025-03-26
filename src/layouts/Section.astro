@@ -2,15 +2,18 @@
 interface Props {
 	sectionTitle: string;
     sectionId: string;
+    noMargin?: boolean;
+    noTitle?: boolean;
 }
 
-const { sectionTitle, sectionId } = Astro.props;
+const { sectionTitle, sectionId, noMargin = false, noTitle = false } = Astro.props;
 
 ---
 
-<section class="" >
-    <div class="mb-10 pb-10" id={sectionId} />
-    <h2 class="mb-12 text-center text-4xl font-bold text-gray-900">{sectionTitle}</h2>
-    
+<section class={noMargin ? "" : "mx-5"}>
+    {!noTitle &&
+        <div class="mb-10 pb-10" id={sectionId} />
+        <h2 class="mb-12 text-center text-4xl font-bold text-gray-900">{sectionTitle}</h2>
+    }
     <slot />
 </section>
