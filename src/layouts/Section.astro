@@ -10,9 +10,9 @@ const { sectionTitle, sectionId, noMargin = false, noTitle = false } = Astro.pro
 
 ---
 
-<section class={noMargin ? "" : "mx-5"}>
+<section class={noMargin ? "" : "mx-5"} id={sectionId} >
     {!noTitle &&
-        <div class="mb-10 pb-10" id={sectionId} />
+        <div class="mb-10 pb-10" />
         <h2 class="mb-12 text-center text-4xl font-bold text-gray-900">{sectionTitle}</h2>
     }
     <slot />

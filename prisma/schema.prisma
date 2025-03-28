@@ -57,33 +57,33 @@ model Site {
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-model InfoEntry {
-    id   Int    @id @default(autoincrement())
-    slug String @unique
+// model InfoEntry {
+//     id   Int    @id @default(autoincrement())
+//     slug String @unique
 
-    contents InfoEntryLanguageRelatedContent[]
+//     contents InfoEntryLanguageRelatedContent[]
 
-    kind String
+//     kind String
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-}
+//     createdAt DateTime @default(now())
+//     updatedAt DateTime @updatedAt
+// }
 
-model InfoEntryLanguageRelatedContent {
-    id Int @id @default(autoincrement())
+// model InfoEntryLanguageRelatedContent {
+//     id Int @id @default(autoincrement())
 
-    langCode String @unique
+//     langCode String @unique
 
-    title    String
-    subtitle String
-    author   String
-    content  String
+//     title    String
+//     subtitle String
+//     author   String
+//     content  String
 
-    infoEntry   InfoEntry? @relation(fields: [infoEntryId], references: [id])
-    infoEntryId Int
+//     infoEntry   InfoEntry? @relation(fields: [infoEntryId], references: [id])
+//     infoEntryId Int
 
-    @@unique([langCode, id])
-}
+//     @@unique([langCode, id])
+// }
 
 model Event {
     id                  Int       @id @default(autoincrement())
@@ -217,4 +217,15 @@ model MapPoint {
     longitude   Float
     createdAt   DateTime     @default(now())
     updatedAt   DateTime     @updatedAt
+}
+
+model Celebrity {
+    id         Int       @id @default(autoincrement())
+    name       String
+    profession String
+    born       DateTime
+    died       DateTime?
+    alsYear    Int // Jahr der ALS-Diagnose
+    bio        String // Kurzbiografie
+    image      String? // URL zum Bild
 }
