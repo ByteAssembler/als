@@ -1,5 +1,6 @@
 ---
 import { PrismaClient } from "@prisma/client";
+import Section from "../layouts/Section.astro";
 
 const { lang } = Astro.params;
 const prisma = new PrismaClient();
@@ -11,9 +12,8 @@ const comments = await prisma.comment.findMany({
 });
 ---
 
-<section id="comments" class="mt-20 bg-white px-6 py-16 pt-20">
+<Section sectionTitle="Kommentare" sectionId="comments">
 	<div class="mx-auto max-w-4xl">
-		<h2 class="mb-12 text-center text-3xl font-bold">Kommentare</h2>
 		<div class="space-y-8">
 			{
 				comments.map((comment) => (

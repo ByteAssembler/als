@@ -1,8 +1,9 @@
 ---
 import db from "../utils/db";
+import Section from "../layouts/Section.astro";
 ---
 
-<section id="hero">
+<Section sectionTitle="Hero" sectionId="hero" noMargin={true} noTitle={true}>
 	<div
 		class="relative flex h-screen w-full items-center justify-center bg-cover bg-center px-6 text-center"
 		style="background-image: url('/home_image.jpg');"
@@ -34,4 +35,4 @@ import db from "../utils/db";
 			</a>
 		</div>
 	</div>
-</section>
+</Section>

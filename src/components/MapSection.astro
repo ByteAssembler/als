@@ -1,10 +1,14 @@
 ---
 import MapComponent from "./Map.tsx";
+import Section from "../layouts/Section.astro";
+import db from "../utils/db";
+import type { MapPoint, MapPointType } from "@prisma/client";
+const mapPointsData: MapPoint[] = await db.mapPoint.findMany();
+const mapPointTypes: MapPointType[] = await db.mapPointType.findMany();
 ---
 
-<section id="map" class="z-0 mt-20 bg-gray-50 px-6 py-16 pt-20">
+<Section sectionTitle="Wo Sie Hilfe finden" sectionId="map">
 	<div class="z-0 mx-auto max-w-6xl">
-		<h2 class="mb-4 text-center text-3xl font-bold">Wo Sie uns finden</h2>
-		<MapComponent client:only="react" />
+		<MapComponent client:only="react" data={mapPointsData} types={mapPointTypes}/>
 	</div>
-</section>
+</Section>

@@ -19,11 +19,10 @@ const book = await db.book.findFirst({
 
 <Layout title={book ? book.title : "Book not found"} defaultPadding={true}>
 	
-	<div class="p-10">
+	<div class="p-5">
 		{
 			book ? (
 				<>
-					<h1 class="text-4xl font-bold">{book.title}</h1>
 					<p class="text-gray-700">von {book.author}</p>
 
 					<div class="mt-6" set:html={book.content} />

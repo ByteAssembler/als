@@ -1,18 +1,17 @@
 ---
 import fs from "fs/promises";
 import Layout from "../../layouts/Layout.astro";
+import  BlobAPI  from "../../utils/api";
+
+const fileServerURL = process.env.FILE_SERVER_URL;
+const fileServerToken = process.env.FILE_SERVER_TOKEN;
+
+const blobApi = new BlobAPI(fileServerURL, fileServerToken);
+
+const bucketId = "af6642da722af38705457f99"; // Full permissions: 131071
 
 
-const mediaDir = "public/media";
-
-// Check if the media directory exists
-const mediaDirExists = await fs
-	.access(mediaDir)
-	.then(() => true)
-	.catch(() => false);
-
-// Get all media files
-const mediaFiles = mediaDirExists ? await fs.readdir(mediaDir) : [];
+const mediaFiles = await blobApi.listFilesInBucket(bucketId);// mediaDirExists ? await fs.readdir(mediaDir) : [];
 
 const audioExtensions = [".mp3", ".wav", ".ogg"];
 const videoExtensions = [".mp4", ".mkv", ".webm"];
@@ -25,25 +24,25 @@ function removeExtension(filename: string) {
 
 // Sort files into categories
 const audios = mediaFiles.filter((file) =>
-	audioExtensions.some((ext) => file.toLowerCase().endsWith(ext)),
+	audioExtensions.some((ext) => file.name.toLowerCase().endsWith(ext)),
 );
 
 const videos = mediaFiles.filter((file) =>
-	videoExtensions.some((ext) => file.toLowerCase().endsWith(ext)),
+	videoExtensions.some((ext) => file.name.toLowerCase().endsWith(ext)),
 );
 
 const images = mediaFiles.filter((file) =>
-	imageExtensions.some((ext) => file.toLowerCase().endsWith(ext)),
+	imageExtensions.some((ext) => file.name.toLowerCase().endsWith(ext)),
 );
 
 const informationFiles = mediaFiles.filter((file) =>
-    infomationFilesExtensions.some((ext) => file.toLowerCase().endsWith(ext)),
+    infomationFilesExtensions.some((ext) => file.name.toLowerCase().endsWith(ext)),
 );
 
 const { lang } = Astro.params;
 ---
 
-<Layout title="Medien" defaultPadding={true}>
+<Layout title="Medien" defaultPadding={true} showTitle={true}>
 	<div
 		class="mx-auto mt-10 max-w-4xl rounded-lg bg-white p-6 pt-10 shadow-md"
 	>
@@ -66,12 +65,8 @@ const { lang } = Astro.params;
 			{
 				audios.map((file) => (
 					<li class="border-b pb-2">
-						<a
-							href={`/media/${file}`}
-							target="_blank"
-							class="text-blue-500 hover:underline"
-						>
-							{removeExtension(file)}
+						<a href={`${fileServerURL}/files/${bucketId}/${file.id}`} target="_blank" class="text-blue-600 hover:underline">
+							{removeExtension(file.name)}
 						</a>
 					</li>
 				))
@@ -83,12 +78,8 @@ const { lang } = Astro.params;
 			{
 				videos.map((file) => (
 					<li class="border-b pb-2">
-						<a
-							href={`/media/${file}`}
-							target="_blank"
-							class="text-blue-500 hover:underline"
-						>
-							{removeExtension(file)}
+						<a href={`${fileServerURL}/files/${bucketId}/${file.id}`} target="_blank" class="text-blue-600 hover:underline">
+							{removeExtension(file.name)}
 						</a>
 					</li>
 				))
@@ -101,12 +92,8 @@ const { lang } = Astro.params;
 			{
 				images.map((file) => (
 					<li class="border-b pb-2">
-						<a
-							href={`/media/${file}`}
-							target="_blank"
-							class="text-blue-500 hover:underline"
-						>
-							{removeExtension(file)}
+						<a href={`${fileServerURL}/files/${bucketId}/${file.id}`} target="_blank" class="text-blue-600 hover:underline">
+							{removeExtension(file.name)}
 						</a>
 					</li>
 				))
@@ -120,12 +107,8 @@ const { lang } = Astro.params;
                 {
                     informationFiles.map((file) => (
                         <li class="border-b pb-2">
-                            <a
-                                href={`/media/${file}`}
-                                target="_blank"
-                                class="text-blue-500 hover:underline"
-                            >
-                                {removeExtension(file)}
+                            <a href={`${fileServerURL}/files/${bucketId}/${file.id}`} target="_blank" class="text-blue-600 hover:underline">
+                                {removeExtension(file.name)}
                             </a>
                         </li>
                     ))

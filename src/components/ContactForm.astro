@@ -1,11 +1,11 @@
 ---
+import Section from "../layouts/Section.astro";
 import Button from "./ui/Button.astro";
 import Input from "./ui/Input.astro";
 ---
 
-<section id="contact" class="mt-20 bg-gray-100 px-6 py-16 pt-20">
+<Section sectionTitle="Kontakt" sectionId="contact">
 	<div class="mx-auto max-w-3xl">
-		<h2 class="mb-12 text-center text-3xl font-bold">Contact Us</h2>
 		<form
 			class="space-y-6"
 			action="mailto:cv-als@pec.it"
@@ -15,25 +15,25 @@ import Input from "./ui/Input.astro";
 			<Input id="name" label="Name" type="text" name="name" />
 			<Input id="email" label="Email" type="email" name="email" />
 			<Input
-				id="message"
-				label="Why are you contacting us?"
+				id="Nachricht"
+				label="Warum kontaktieren Sie uns?"
 				type="textarea"
 				name="message"
 			/>
-			<Button type="submit" fullWidth>Submit</Button>
+			<Button type="submit" fullWidth>Absenden</Button>
 		</form>
 
 		<div class="mt-12 rounded-lg bg-white p-6 shadow-md">
 			<h3 class="text-center text-2xl font-semibold">
-				Additional Contact Information
+				Zusätzliche Kontaktinformationen
 			</h3>
 			<p class="mt-4 text-center text-gray-700">
-				For more details or direct assistance, please reach out to us:
+                Für mehr Details oder direkte Unterstützung, kontaktieren Sie uns bitte:
 			</p>
 			<ul class="mt-4 space-y-2 text-center">
 				<li>
-					<strong>Address:</strong> Rienzstr.21, 39030 Olang, South Tyrol
-					- ITALY
+					<strong>Address:</strong> Rienzstr.21, 39030 Olang, Südtirol
+					- Italien
 				</li>
 				<li>
 					<strong>Email:</strong>
@@ -43,19 +43,19 @@ import Input from "./ui/Input.astro";
 					>
 				</li>
 				<li>
-					<strong>Alternate Email:</strong>
+					<strong>Alternative Email:</strong>
 					<a
 						href="mailto:gerdsteger@hotmail.com"
 						class="text-blue-600 hover:underline"
 						>gerdsteger@hotmail.com</a
 					>
 				</li>
-				<li><strong>Phone:</strong> +39 328 45 345 83</li>
+				<li><strong>Handynummer:</strong> +39 328 45 345 83</li>
 				<li>
 					<strong>IBAN:</strong> IT 59 Z060 4559 0400 0000 5001 502
 				</li>
-				<li><strong>Tax Number:</strong> 92073470210</li>
+				<li><strong>Tax Nummer:</strong> 92073470210</li>
 			</ul>
 		</div>
 	</div>
-</section>
+</Section>

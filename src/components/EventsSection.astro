@@ -1,6 +1,6 @@
 ---
 import { PrismaClient } from "@prisma/client";
-
+import Section from "../layouts/Section.astro";
 const { lang } = Astro.params;
 
 const prisma = new PrismaClient();
@@ -15,11 +15,8 @@ const langPrefix = ["de", "en", "it"].includes(currentLang)
 	: "en"; // Fallback zu 'en'
 ---
 
-<section id="events" class="mt-20 px-6 py-16 pt-20">
+<Section sectionTitle="Kommende Veranstaltungen" sectionId="events">
 	<div class="mx-auto max-w-6xl">
-		<h2 class="mb-12 text-center text-4xl font-bold text-gray-900">
-			Kommende Veranstaltungen
-		</h2>
 		<div class="grid gap-8 md:grid-cols-3">
 			{
 				events.map((event) => (
@@ -52,4 +49,4 @@ const langPrefix = ["de", "en", "it"].includes(currentLang)
 			}
 		</div>
 	</div>
-</section>
+</Section>
