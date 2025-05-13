@@ -1,7 +1,7 @@
 ---
 import fs from "fs/promises";
 import Layout from "../../layouts/Layout.astro";
-import Header from "../../components/Header.astro";
+
 
 const mediaDir = "public/media";
 
@@ -44,7 +44,6 @@ const { lang } = Astro.params;
 ---
 
 <Layout title="Medien" defaultPadding={true}>
-	<Header />
 	<div
 		class="mx-auto mt-10 max-w-4xl rounded-lg bg-white p-6 pt-10 shadow-md"
 	>

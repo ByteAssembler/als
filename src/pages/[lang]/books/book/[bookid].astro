@@ -1,6 +1,5 @@
 ---
 import Layout from "../../../../layouts/Layout.astro";
-import Header from "../../../../components/Header.astro";
 import db from "../../../../utils/db";
 const { lang, bookid } = Astro.params;
 
@@ -19,7 +18,7 @@ const book = await db.book.findFirst({
 ---
 
 <Layout title={book ? book.title : "Book not found"} defaultPadding={true}>
-	<Header />
+	
 	<div class="p-10">
 		{
 			book ? (

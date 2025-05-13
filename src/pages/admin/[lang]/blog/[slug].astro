@@ -1,6 +1,5 @@
 ---
 import Layout from "../../../../layouts/Layout.astro";
-import Header from "../../../../components/Header.astro";
 import db from "../../../../utils/db";
 
 const { slug, lang } = Astro.params;
@@ -15,7 +14,7 @@ if (!post) {
 ---
 
 <Layout title="Edit Post" defaultPadding={true}>
-	<Header />
+	
 	<div class="mt-30 mx-auto max-w-3xl rounded-lg bg-white p-6 shadow-lg">
 		<h1 class="mb-4 text-2xl font-bold">Edit Post</h1>
 		<form

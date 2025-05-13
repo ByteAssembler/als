@@ -1,13 +1,17 @@
 ---
 import WelcomeBanner from "../components/WelcomeBanner.astro";
 import CookieBanner from "../components/CookieBanner.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
 
 interface Props {
 	title: string;
 	defaultPadding?: boolean;
+    noFooter?: boolean;
+    noHeader?: boolean;
 }
 
-const { title, defaultPadding } = Astro.props;
+const { title, defaultPadding, noFooter, noHeader } = Astro.props;
 ---
 
 <!doctype html>
@@ -19,12 +23,16 @@ const { title, defaultPadding } = Astro.props;
 		<link rel="icon" type="image/svg+xml" href="/favicon.png" />
 		<title>{title}</title>
 	</head>
-	<body class:list={["min-h-screen", defaultPadding && "pt-[65px]"]}>
-		<WelcomeBanner />
+	<body class="flex min-h-screen flex-col">
+        <WelcomeBanner />
+        <CookieBanner />
+        {!noHeader && <Header />}
+        <main class="flex-1">
+            <slot />
+        </main>
+        {!noFooter && <Footer />}
+    </body>
 
-		<CookieBanner />
-		<slot />
-	</body>
 </html>
 
 <style is:global>

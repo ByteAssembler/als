@@ -1,7 +1,5 @@
 ---
 import Layout from "../../../layouts/Layout.astro";
-import Header from "../../../components/Header.astro";
-import Footer from "../../../components/Footer.astro";
 import FormattedDate from "../../../components/FormattedDate.astro";
 import db from "../../../utils/db";
 
@@ -17,7 +15,6 @@ if (!post) {
 ---
 
 <Layout title={post.title}>
-	<Header />
 	<main class="mx-auto mt-10 max-w-4xl px-6 py-16 pt-10 sm:px-8 lg:px-12">
 		<article class="prose lg:prose-xl mx-auto">
 			<div class="mb-12 space-y-6 rounded-xl bg-gray-100 p-8 shadow-lg">
@@ -72,5 +69,4 @@ if (!post) {
 			</div>
 		</article>
 	</main>
-	<Footer />
 </Layout>

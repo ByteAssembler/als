@@ -1,8 +1,6 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import Footer from "../../components/Footer.astro";
 import db from "../../utils/db";
-import Header from "../../components/Header.astro";
 
 const { lang, site_slug } = Astro.params;
 
@@ -36,7 +34,6 @@ function prepareHtml(html: string, content: { [key: string]: string }) {
 ---
 
 <Layout title="" defaultPadding={false}>
-	<Header />
 	<main>
 		<h1>{site.title}</h1>
 		{
@@ -72,5 +69,4 @@ function prepareHtml(html: string, content: { [key: string]: string }) {
 			})
 		}
 	</main>
-	<Footer />
 </Layout>
