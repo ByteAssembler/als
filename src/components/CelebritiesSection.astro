@@ -3,41 +3,46 @@ import Section from "../layouts/Section.astro";
 import db from "../utils/db";
 
 const celebrities = await db.celebrity.findMany({
-  orderBy: { alsYear: 'asc' },
+    orderBy: { alsYear: "asc" },
 });
-
 ---
 
 <Section sectionTitle="Prominente ALS-Kämpfer" sectionId="promis">
-
-  <div class="container mx-auto px-4 py-8 max-w-4xl">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {celebrities.map(celebrity => (
-        <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-          <div class="flex items-start space-x-4">
-            {celebrity.image && (
-              <img 
-                src={celebrity.image} 
-                alt={celebrity.name}
-                class="w-20 h-20 object-cover rounded-full"
-              />
-            )}
-            <div>
-              <h3 class="text-lg font-bold text-blue-700">
-                {celebrity.name}
-                {celebrity.died && (
-                  <span class="text-gray-500 font-normal"> ({new Date(celebrity.born).getFullYear()}-{new Date(celebrity.died).getFullYear()})</span>
-                )}
-              </h3>
-              <p class="text-gray-600 mt-1">
-                Diagnose: {celebrity.alsYear} (Alter {celebrity.alsYear - new Date(celebrity.born).getFullYear()})
-              </p>
-              <p class="text-gray-600">{celebrity.profession}</p>
-              <p class="mt-2 text-gray-700">{celebrity.bio}</p>
-            </div>
-          </div>
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {
+                celebrities.map((celebrity) => (
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                        <div class="flex items-start space-x-4">
+                            {celebrity.image && (
+                                <img
+                                    src={celebrity.image}
+                                    alt={celebrity.name}
+                                    class="w-20 h-20 object-cover rounded-full"
+                                />
+                            )}
+                            <div>
+                                <h3 class="text-lg font-bold text-blue-700">
+                                    {celebrity.name}
+                                    {celebrity.died && (
+                                        <span class="text-gray-500 font-normal">
+                                            {" "}
+                                            ({new Date(celebrity.born).getFullYear()}-
+                                            {new Date(celebrity.died).getFullYear()})
+                                        </span>
+                                    )}
+                                </h3>
+                                <p class="text-gray-600 mt-1">
+                                    Diagnose: {celebrity.alsYear} (Alter{" "}
+                                    {celebrity.alsYear - new Date(celebrity.born).getFullYear()})
+                                </p>
+                                <p class="text-gray-600">{celebrity.profession}</p>
+                                <p class="mt-2 text-gray-700">{celebrity.bio}</p>
+                            </div>
+                        </div>
+                    </div>
+                ))
+            }
         </div>
-      ))}
     </div>
-  </div>
 </Section>

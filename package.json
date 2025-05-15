@@ -9,7 +9,7 @@
 		"build": "astro build",
 		"preview": "astro preview",
 		"astro": "astro",
-		"pretty": "prettier --write \".//*.{js,jsx,mjs,cjs,ts,tsx,json,astro,mjs}\"",
+		"pretty": "prettier --write .",
 		"db:generate": "prisma generate",
 		"db:studio": "prisma studio",
 		"db:push": "prisma db push"

@@ -3,136 +3,99 @@ import type { Navbar } from "@prisma/client";
 import db from "../../utils/db";
 import Layout from "../../layouts/Layout.astro";
 
-
 const navbarItems = await db.navbar.findMany();
 const languages = ["de", "en", "fr", "es"];
 ---
 
 <Layout title="Navbar" defaultPadding={true}>
-	
-	<div class="mx-auto mt-10 max-w-3xl rounded-lg bg-white p-6 shadow">
-		<h1 class="mb-4 text-2xl font-bold">Navbar Verwaltung</h1>
+    <div class="mx-auto mt-10 max-w-3xl rounded-lg bg-white p-6 shadow">
+        <h1 class="mb-4 text-2xl font-bold">Navbar Verwaltung</h1>
 
-		<!-- Formular -->
-		<div class="mb-4 space-y-2">
-			<div>
-				<div class="flex items-center space-x-2">
-					<input type="checkbox" id="slugCheckbox" class="h-5 w-5" />
-					<label for="slugCheckbox" class="text-sm"
-						>In Sprach-Slug aufnehmen</label
-					>
-				</div>
-				<label for="languageSelect" class="block text-sm font-medium"
-					>Sprache:</label
-				>
-				<select id="languageSelect" class="w-full rounded border p-2">
-					{
-						languages.map((lang) => (
-							<option value={lang}>{lang}</option>
-						))
-					}
-				</select>
-			</div>
+        <!-- Formular -->
+        <div class="mb-4 space-y-2">
+            <div>
+                <div class="flex items-center space-x-2">
+                    <input type="checkbox" id="slugCheckbox" class="h-5 w-5" />
+                    <label for="slugCheckbox" class="text-sm">In Sprach-Slug aufnehmen</label>
+                </div>
+                <label for="languageSelect" class="block text-sm font-medium">Sprache:</label>
+                <select id="languageSelect" class="w-full rounded border p-2">
+                    {languages.map((lang) => <option value={lang}>{lang}</option>)}
+                </select>
+            </div>
 
-			<div>
-				<label for="textInput" class="block text-sm font-medium"
-					>Text:</label
-				>
-				<input
-					type="text"
-					id="textInput"
-					placeholder="Navbar-Text"
-					class="w-full rounded border p-2"
-				/>
-			</div>
+            <div>
+                <label for="textInput" class="block text-sm font-medium">Text:</label>
+                <input type="text" id="textInput" placeholder="Navbar-Text" class="w-full rounded border p-2" />
+            </div>
 
-			<div>
-				<label for="hrefInput" class="block text-sm font-medium"
-					>Link:</label
-				>
-				<input
-					type="text"
-					id="hrefInput"
-					placeholder="/link"
-					class="w-full rounded border p-2"
-				/>
-			</div>
+            <div>
+                <label for="hrefInput" class="block text-sm font-medium">Link:</label>
+                <input type="text" id="hrefInput" placeholder="/link" class="w-full rounded border p-2" />
+            </div>
 
-			<button
-				onclick="addItem()"
-				class="w-full rounded bg-blue-600 p-2 text-white hover:bg-blue-700"
-			>
-				Neues Item hinzufügen
-			</button>
-		</div>
+            <button onclick="addItem()" class="w-full rounded bg-blue-600 p-2 text-white hover:bg-blue-700">
+                Neues Item hinzufügen
+            </button>
+        </div>
 
-		<!-- Tabelle -->
-		<table class="mt-4 w-full border-collapse border border-gray-300">
-			<thead class="bg-gray-200">
-				<tr>
-					<th class="border p-2">Sprache</th>
-					<th class="border p-2">Text</th>
-					<th class="border p-2">Link</th>
-					<th class="border p-2">Slug</th>
-					<th class="border p-2">Aktionen</th>
-				</tr>
-			</thead>
-			<tbody>
-				{
-					navbarItems.map((item: Navbar) => (
-						<tr class="hover:bg-gray-100">
-							<td class="border p-2 text-center">
-								{item.language}
-							</td>
-							<td class="border p-2">{item.text}</td>
-							<td class="border p-2">{item.href}</td>
-							<td class="border p-2 text-center">
-								{item.onLanguageSlug ? "✅" : "❌"}
-							</td>
-							<td class="border p-2 text-center">
-								<button
-									onclick={`deleteItem(${item.id})`}
-									class="rounded bg-rose-600 px-3 py-1 text-black hover:bg-red-600"
-								>
-									Löschen
-								</button>
-							</td>
-						</tr>
-					))
-				}
-			</tbody>
-		</table>
-	</div>
+        <!-- Tabelle -->
+        <table class="mt-4 w-full border-collapse border border-gray-300">
+            <thead class="bg-gray-200">
+                <tr>
+                    <th class="border p-2">Sprache</th>
+                    <th class="border p-2">Text</th>
+                    <th class="border p-2">Link</th>
+                    <th class="border p-2">Slug</th>
+                    <th class="border p-2">Aktionen</th>
+                </tr>
+            </thead>
+            <tbody>
+                {
+                    navbarItems.map((item: Navbar) => (
+                        <tr class="hover:bg-gray-100">
+                            <td class="border p-2 text-center">{item.language}</td>
+                            <td class="border p-2">{item.text}</td>
+                            <td class="border p-2">{item.href}</td>
+                            <td class="border p-2 text-center">{item.onLanguageSlug ? "✅" : "❌"}</td>
+                            <td class="border p-2 text-center">
+                                <button
+                                    onclick={`deleteItem(${item.id})`}
+                                    class="rounded bg-rose-600 px-3 py-1 text-black hover:bg-red-600"
+                                >
+                                    Löschen
+                                </button>
+                            </td>
+                        </tr>
+                    ))
+                }
+            </tbody>
+        </table>
+    </div>
 </Layout>
 
 <script>
-	async function addItem() {
-		const language = (
-			document.getElementById("languageSelect") as HTMLSelectElement
-		)?.value;
-		const text = (document.getElementById("textInput") as HTMLInputElement)
-			.value;
-		const href = (document.getElementById("hrefInput") as HTMLInputElement)
-			.value;
-		const onLanguageSlug = (
-			document.getElementById("slugCheckbox") as HTMLInputElement
-		).checked;
+    async function addItem() {
+        const language = (document.getElementById("languageSelect") as HTMLSelectElement)?.value;
+        const text = (document.getElementById("textInput") as HTMLInputElement).value;
+        const href = (document.getElementById("hrefInput") as HTMLInputElement).value;
+        const onLanguageSlug = (document.getElementById("slugCheckbox") as HTMLInputElement).checked;
 
-		const newItem = { language, text, href, onLanguageSlug };
-		await fetch("/api/navbar", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify(newItem),
-		});
-		location.reload();
-	}
+        const newItem = { language, text, href, onLanguageSlug };
+        await fetch("/api/navbar", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(newItem),
+        });
+        location.reload();
+    }
 
-	async function deleteItem(id: number) {
-		await fetch("/api/navbar", {
-			method: "DELETE",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ id }),
-		});
-		location.reload();
-	}
+    async function deleteItem(id: number) {
+        await fetch("/api/navbar", {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id }),
+        });
+        location.reload();
+    }
 </script>

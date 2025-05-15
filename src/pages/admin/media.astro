@@ -2,7 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 
 import FileUploaderComponent from "../../utils/FileUploader.js";
-import BlobAPI  from "../../utils/api";
+import BlobAPI from "../../utils/api";
 
 const fileServerURL = process.env.FILE_SERVER_URL;
 const fileServerToken = process.env.FILE_SERVER_TOKEN;
@@ -10,21 +10,72 @@ const blobApi = new BlobAPI(fileServerURL, fileServerToken);
 
 const bucketId = "af6642da722af38705457f99"; // Full permissions: 131071
 
-const {lang} = Astro.params;
+const { lang } = Astro.params;
 
 // Erlaubte Dateitypen (kann erweitert werden)
 const allowedExtensions = [
     // Bilder
-    ".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".ico", ".bmp", ".tiff", ".tif", ".heif", ".heic", ".jfif",
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".gif",
+    ".webp",
+    ".svg",
+    ".ico",
+    ".bmp",
+    ".tiff",
+    ".tif",
+    ".heif",
+    ".heic",
+    ".jfif",
 
     // Dokumente
-    ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".odt", ".ods", ".odp", ".txt", ".rtf", ".csv", ".xml", ".json",
+    ".pdf",
+    ".doc",
+    ".docx",
+    ".xls",
+    ".xlsx",
+    ".ppt",
+    ".pptx",
+    ".odt",
+    ".ods",
+    ".odp",
+    ".txt",
+    ".rtf",
+    ".csv",
+    ".xml",
+    ".json",
 
     // Audio
-    ".mp3", ".wav", ".ogg", ".flac", ".aac", ".wma", ".m4a", ".aiff", ".alac", ".opus",
+    ".mp3",
+    ".wav",
+    ".ogg",
+    ".flac",
+    ".aac",
+    ".wma",
+    ".m4a",
+    ".aiff",
+    ".alac",
+    ".opus",
 
     // Video
-    ".mp4", ".webm", ".mkv", ".flv", ".avi", ".mov", ".wmv", ".m4v", ".mpg", ".mpeg", ".3gp", ".3g2", ".ogv", ".h264", ".h265", ".hevc", ".av1",
+    ".mp4",
+    ".webm",
+    ".mkv",
+    ".flv",
+    ".avi",
+    ".mov",
+    ".wmv",
+    ".m4v",
+    ".mpg",
+    ".mpeg",
+    ".3gp",
+    ".3g2",
+    ".ogv",
+    ".h264",
+    ".h265",
+    ".hevc",
+    ".av1",
 ];
 
 // 📂 Hochgeladene Dateien abrufen
@@ -33,63 +84,73 @@ const files = await blobApi.listFilesInBucket(bucketId);
 // ❌ Datei löschen
 if (Astro.request.method === "POST") {
     const formData = await Astro.request.formData();
-        const fileid = formData.get("fileid");
+    const fileid = formData.get("fileid");
 
-        // Check if fileid is a string
-        if (fileid && typeof fileid === "string") {
-            try {
-                const resp = await blobApi.deleteFile(bucketId, fileid);
-                return Astro.redirect("/admin/media");
-            } catch {
-            }
-        } else {
-            console.log("No fileid provided.");
-             return Astro.redirect("/admin/media");
-        }
+    // Check if fileid is a string
+    if (fileid && typeof fileid === "string") {
+        try {
+            const resp = await blobApi.deleteFile(bucketId, fileid);
+            return Astro.redirect("/admin/media");
+        } catch {}
+    } else {
+        console.log("No fileid provided.");
+        return Astro.redirect("/admin/media");
+    }
 }
 ---
-    <Layout title="Media" defaultPadding={true}>
 
-        <section class="mx-auto max-w-4xl py-12">
-            <h1 class="mb-6 text-3xl font-bold">📂 Datei-Manager</h1>
+<Layout title="Media" defaultPadding={true}>
+    <section class="mx-auto max-w-4xl py-12">
+        <h1 class="mb-6 text-3xl font-bold">📂 Datei-Manager</h1>
 
-            <FileUploaderComponent
-                client:load
-                baseUrl={fileServerURL}
-                bucketId={bucketId}
-                token={fileServerToken}
-                chunkSize={1024 * 1024 * 18}
-            />
+        <FileUploaderComponent
+            client:load
+            baseUrl={fileServerURL}
+            bucketId={bucketId}
+            token={fileServerToken}
+            chunkSize={1024 * 1024 * 18}
+        />
 
-            <button class="bg-blue-500 text-white px-4 py-2 rounded-md" onclick="window.location.reload()">Reload</button>
-            <ul class="mt-6 bg-white p-4 rounded-md shadow-md">
-                {
-                    files.length === 0
-                    ? <p class="text-gray-500">Keine Dateien hochgeladen.</p>
-                    : files.map((file) => (
+        <button class="bg-blue-500 text-white px-4 py-2 rounded-md" onclick="window.location.reload()">Reload</button>
+        <ul class="mt-6 bg-white p-4 rounded-md shadow-md">
+            {
+                files.length === 0 ? (
+                    <p class="text-gray-500">Keine Dateien hochgeladen.</p>
+                ) : (
+                    files.map((file) => (
                         <>
-                        <li class="flex justify-between items-center p-2 border-b last:border-0">
-                            <a href={`${fileServerURL}/files/${bucketId}/${file.id}`} target="_blank" class="text-blue-600 hover:underline">{file.name}</a>
+                            <li class="flex justify-between items-center p-2 border-b last:border-0">
+                                <a
+                                    href={`${fileServerURL}/files/${bucketId}/${file.id}`}
+                                    target="_blank"
+                                    class="text-blue-600 hover:underline"
+                                >
+                                    {file.name}
+                                </a>
 
-                            
-                            <form
-                                method="POST"
-                                onsubmit="return (() => {
+                                <form
+                                    method="POST"
+                                    onsubmit="return (() => {
                                 confirm('Datei wirklich löschen?');
                                 window.location.reload();
                                 })()"
-                                class="inline-block"
-                            >
-                                <input type="hidden" name="fileid" value={file.id} />
-                                <button type="submit" class="bg-red-600 text-white px-2 py-1 rounded-md" formaction="/admin/media" formmethod="POST">
-                                    Löschen
-                                </button>
-                            </form>
-                        </li>
+                                    class="inline-block"
+                                >
+                                    <input type="hidden" name="fileid" value={file.id} />
+                                    <button
+                                        type="submit"
+                                        class="bg-red-600 text-white px-2 py-1 rounded-md"
+                                        formaction="/admin/media"
+                                        formmethod="POST"
+                                    >
+                                        Löschen
+                                    </button>
+                                </form>
+                            </li>
                         </>
                     ))
-                }
-            </ul>
-        </section>
-
-    </Layout>
+                )
+            }
+        </ul>
+    </section>
+</Layout>

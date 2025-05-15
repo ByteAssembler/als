@@ -3,119 +3,111 @@
 ---
 
 <div
-	class="fixed bottom-4 left-4 right-4 z-[9999] flex flex-col rounded-xl bg-[#1E2A3A] p-6 text-white shadow-xl md:flex-row md:items-center md:justify-between"
-	style="display: none;"
-	id="cookie-banner-wrapper"
+    class="fixed bottom-4 left-4 right-4 z-[9999] flex flex-col rounded-xl bg-[#1E2A3A] p-6 text-white shadow-xl md:flex-row md:items-center md:justify-between"
+    style="display: none;"
+    id="cookie-banner-wrapper"
 >
-	<p class="mb-3 text-lg md:mb-0">
-		Diese Website verwendet Cookies. Mehr Infos in unserer{" "}
-		<a href="/privacy" class="text-blue-400 underline hover:text-blue-300">
-			Datenschutzerklärung
-		</a>.
-	</p>
-	<div class="flex flex-col">
-		<label class="my-2 flex items-center gap-2">
-			Dieses Banner in Zukunft nicht mehr anzeigen
-			<input
-				type="checkbox"
-				class="h-5 w-5 cursor-pointer accent-blue-500"
-				id="cookie-banner-input"
-			/>
-		</label>
-		<div class="flex gap-2">
-			<button
-				class="rounded-lg bg-blue-500 px-5 py-2 font-semibold text-white hover:bg-blue-600"
-				id="cookie-banner-accept"
-			>
-				Alle akzeptieren
-			</button>
-			<button
-				class="rounded-lg bg-gray-600 px-5 py-2 font-semibold text-white hover:bg-gray-700"
-				id="cookie-banner-essential"
-			>
-				Nur essenzielle akzeptieren
-			</button>
-		</div>
-	</div>
+    <p class="mb-3 text-lg md:mb-0">
+        Diese Website verwendet Cookies. Mehr Infos in unserer{" "}
+        <a href="/privacy" class="text-blue-400 underline hover:text-blue-300"> Datenschutzerklärung </a>.
+    </p>
+    <div class="flex flex-col">
+        <label class="my-2 flex items-center gap-2">
+            Dieses Banner in Zukunft nicht mehr anzeigen
+            <input type="checkbox" class="h-5 w-5 cursor-pointer accent-blue-500" id="cookie-banner-input" />
+        </label>
+        <div class="flex gap-2">
+            <button
+                class="rounded-lg bg-blue-500 px-5 py-2 font-semibold text-white hover:bg-blue-600"
+                id="cookie-banner-accept"
+            >
+                Alle akzeptieren
+            </button>
+            <button
+                class="rounded-lg bg-gray-600 px-5 py-2 font-semibold text-white hover:bg-gray-700"
+                id="cookie-banner-essential"
+            >
+                Nur essenzielle akzeptieren
+            </button>
+        </div>
+    </div>
 </div>
 
 <script defer is:inline>
-	const cookieBanner = document.getElementById("cookie-banner-wrapper");
-	const cookieBannerAccept = document.getElementById("cookie-banner-accept");
-	const cookieBannerEssential = document.getElementById(
-		"cookie-banner-essential",
-	);
-	const cookieBannerInput = document.getElementById("cookie-banner-input");
+    const cookieBanner = document.getElementById("cookie-banner-wrapper");
+    const cookieBannerAccept = document.getElementById("cookie-banner-accept");
+    const cookieBannerEssential = document.getElementById("cookie-banner-essential");
+    const cookieBannerInput = document.getElementById("cookie-banner-input");
 
-	function setCookie(cname, cvalue, exdays) {
-		const d = new Date();
-		d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
-		const expires = "expires=" + d.toUTCString();
-		document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-	}
+    function setCookie(cname, cvalue, exdays) {
+        const d = new Date();
+        d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
+        const expires = "expires=" + d.toUTCString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    }
 
-	function getCookie(cname) {
-		const name = cname + "=";
-		const ca = document.cookie.split(";");
-		for (let i = 0; i < ca.length; i++) {
-			let c = ca[i];
-			while (c.charAt(0) === " ") {
-				c = c.substring(1);
-			}
-			if (c.indexOf(name) === 0) {
-				return c.substring(name.length, c.length);
-			}
-		}
-		return "";
-	}
+    function getCookie(cname) {
+        const name = cname + "=";
+        const ca = document.cookie.split(";");
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) === " ") {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) === 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
 
-	function cookieBannerShow() {
-		const cookieValue = getCookie("cookieConsent");
+    function cookieBannerShow() {
+        const cookieValue = getCookie("cookieConsent");
 
-		if (cookieValue === "") {
-			cookieBanner.style.display = "";
-		} else {
-			const consent = JSON.parse(atob(cookieValue));
-			if (consent.showAgain) {
-				cookieBanner.style.display = "";
-			} else {
-				cookieBanner.style.display = "none";
-			}
-		}
-	}
+        if (cookieValue === "") {
+            cookieBanner.style.display = "";
+        } else {
+            const consent = JSON.parse(atob(cookieValue));
+            if (consent.showAgain) {
+                cookieBanner.style.display = "";
+            } else {
+                cookieBanner.style.display = "none";
+            }
+        }
+    }
 
-	function cookieBannerSetUpEvents() {
-		cookieBannerAccept.addEventListener("click", () => {
-			setCookie(
-				"cookieConsent",
-				btoa(
-					JSON.stringify({
-						general: true,
-						tracking: true,
-						showAgain: !cookieBannerInput.checked,
-					}),
-				),
-				365,
-			);
-			cookieBanner.style.display = "none";
-		});
+    function cookieBannerSetUpEvents() {
+        cookieBannerAccept.addEventListener("click", () => {
+            setCookie(
+                "cookieConsent",
+                btoa(
+                    JSON.stringify({
+                        general: true,
+                        tracking: true,
+                        showAgain: !cookieBannerInput.checked,
+                    })
+                ),
+                365
+            );
+            cookieBanner.style.display = "none";
+        });
 
-		cookieBannerEssential.addEventListener("click", () => {
-			setCookie(
-				"cookieConsent",
-				btoa(
-					JSON.stringify({
-						general: true,
-						tracking: false,
-						showAgain: !cookieBannerInput.checked,
-					}),
-				),
-				365,
-			);
-			cookieBanner.style.display = "none";
-		});
-	}
+        cookieBannerEssential.addEventListener("click", () => {
+            setCookie(
+                "cookieConsent",
+                btoa(
+                    JSON.stringify({
+                        general: true,
+                        tracking: false,
+                        showAgain: !cookieBannerInput.checked,
+                    })
+                ),
+                365
+            );
+            cookieBanner.style.display = "none";
+        });
+    }
 
-	cookieBannerShow();
-	cookieBannerSetUpEvents();
+    cookieBannerShow();
+    cookieBannerSetUpEvents();
 </script>

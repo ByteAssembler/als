@@ -1,0 +1,27 @@
+{
+	// Prettier als Standard-Formatter einstellen
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	// Beim Speichern automatisch formatieren lassen
+	"editor.formatOnSave": true,
+	"editor.formatOnPaste": true, // Optional: Auch beim Einfügen formatieren
+	// Grundlegende Editor-Einrückungseinstellungen (entsprechend Prettier-Defaults)
+	// Diese beeinflussen das Tippen, werden aber beim Formatieren von Prettier überschrieben
+	"editor.tabSize": 2,
+	"editor.insertSpaces": true,
+	"editor.detectIndentation": false, // Deaktivieren, da Prettier die Regeln vorgibt
+	// Sprachspezifische Einrückungseinstellungen für den VS Code Editor selbst
+	// Diese sind nützlich, aber Prettier Overrides haben beim Formatieren Vorrang
+	"[astro]": {
+		"editor.tabSize": 4,
+		"editor.insertSpaces": true
+	},
+	"[json]": {
+		"editor.tabSize": 4,
+		"editor.insertSpaces": true
+	}
+	// Weitere Prettier-spezifische VS Code-Einstellungen können hier hinzugefügt werden,
+	// ABER: Die Einstellungen in der .prettierrc Datei haben Vorrang vor diesen.
+	// Beispiel (wenn nicht in .prettierrc gesetzt):
+	// "prettier.singleQuote": false,
+	// "prettier.trailingComma": "es5"
+}

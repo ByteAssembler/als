@@ -11,43 +11,33 @@ const { lang } = Astro.params;
 // const navBarItems: Navbar[] = [];
 
 const navBarItems = await db.navbar.findMany({
-	where: {
-		OR: [{ language: lang ? lang : "en" }, { language: "global" }],
-	},
+    where: {
+        OR: [{ language: lang ? lang : "en" }, { language: "global" }],
+    },
 });
 ---
 
-<header
-	class="fixed left-0 right-0 top-0 z-[500] border-b border-gray-200 bg-white px-6 py-4 shadow-sm"
->
-	<div class="mx-auto flex max-w-6xl items-center justify-between">
-		<a href="/" class="text-2xl font-bold text-gray-900">
-			<!-- CV ALS -->
-			<img src="/logo.png" alt="CV ALS" class="h-8" />
-		</a>
+<header class="fixed left-0 right-0 top-0 z-[500] border-b border-gray-200 bg-white px-6 py-4 shadow-sm">
+    <div class="mx-auto flex max-w-6xl items-center justify-between">
+        <a href="/" class="text-2xl font-bold text-gray-900">
+            <!-- CV ALS -->
+            <img src="/logo.png" alt="CV ALS" class="h-8" />
+        </a>
 
-		<DesktopMenu navBarItems={navBarItems} />
+        <DesktopMenu navBarItems={navBarItems} />
 
-		<button
-			id="open-menu"
-			class="text-gray-700 hover:text-primary-600 lg:hidden"
-			aria-label="Open menu"
-		>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				class="h-6 w-6"
-				fill="none"
-				viewBox="0 0 24 24"
-				stroke="currentColor"
-			>
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M4 6h16M4 12h16m-7 6h7"></path>
-			</svg>
-		</button>
-	</div>
+        <button id="open-menu" class="text-gray-700 hover:text-primary-600 lg:hidden" aria-label="Open menu">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+            >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+            </svg>
+        </button>
+    </div>
 
-	<MobileMenu navBarItems={navBarItems} />
+    <MobileMenu navBarItems={navBarItems} />
 </header>

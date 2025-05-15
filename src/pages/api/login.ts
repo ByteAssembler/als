@@ -16,21 +16,11 @@ export async function POST({ request }: { request: Request }) {
 		});
 	}
 
-	const token = jwt.sign(
-		{ id: admin.id, username: admin.username, role: admin.role },
-		SECRET_KEY,
-		{ expiresIn: "2h" },
-	);
+	const token = jwt.sign({ id: admin.id, username: admin.username, role: admin.role }, SECRET_KEY, { expiresIn: "2h" });
 
-	const response = new Response(
-		JSON.stringify({ message: "Login successful" }),
-		{ status: 200 },
-	);
+	const response = new Response(JSON.stringify({ message: "Login successful" }), { status: 200 });
 
-	response.headers.append(
-		"Set-Cookie",
-		`token=${token}; HttpOnly; Path=/; Max-Age=7200; Secure; SameSite=Strict`,
-	);
+	response.headers.append("Set-Cookie", `token=${token}; HttpOnly; Path=/; Max-Age=7200; Secure; SameSite=Strict`);
 
 	return response;
 }

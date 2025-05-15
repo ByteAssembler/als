@@ -5,9 +5,9 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 
 interface Props {
-	title: string;
+    title: string;
     showTitle?: boolean;
-	defaultPadding?: boolean;
+    defaultPadding?: boolean;
     footer?: boolean;
     header?: boolean;
 }
@@ -17,21 +17,19 @@ const { title, showTitle = true, defaultPadding = true, footer = true, header = 
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="description" content="Fighting together against ALS" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.png" />
-		<title>{title}</title>
-	</head>
-	<body class="flex min-h-screen flex-col">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="description" content="Fighting together against ALS" />
+        <meta name="viewport" content="width=device-width" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.png" />
+        <title>{title}</title>
+    </head>
+    <body class="flex min-h-screen flex-col">
         <WelcomeBanner />
         <CookieBanner />
         {header && <Header />}
         <main class="flex-1 mb-5">
-            {
-                showTitle && <h1 class="pt-20 mb-12 text-center text-4xl font-bold text-gray-900">{title}</h1>
-            }
+            {showTitle && <h1 class="pt-20 mb-12 text-center text-4xl font-bold text-gray-900">{title}</h1>}
             <slot />
         </main>
         {footer && <Footer />}
@@ -39,15 +37,14 @@ const { title, showTitle = true, defaultPadding = true, footer = true, header = 
 </html>
 
 <style is:global>
-	:root {
-		--accent: 136, 58, 234;
-		--accent-light: 224, 204, 250;
-		--accent-dark: 49, 10, 101;
-	}
-	html {
-		font-family: system-ui, sans-serif;
-		background: #fff;
-		scroll-behavior: smooth;
-	}
-
+    :root {
+        --accent: 136, 58, 234;
+        --accent-light: 224, 204, 250;
+        --accent-dark: 49, 10, 101;
+    }
+    html {
+        font-family: system-ui, sans-serif;
+        background: #fff;
+        scroll-behavior: smooth;
+    }
 </style>

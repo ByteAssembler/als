@@ -3,111 +3,103 @@ import Layout from "../../layouts/Layout.astro";
 import db from "../../utils/db";
 
 const posts = await db.post.findMany({
-	select: {
-		id: true,
-		title: true,
-		slug: true,
-		content: true,
-		language: true,
-		publishedAt: true,
-		updatedAt: true,
-	},
+    select: {
+        id: true,
+        title: true,
+        slug: true,
+        content: true,
+        language: true,
+        publishedAt: true,
+        updatedAt: true,
+    },
 });
 ---
 
 <Layout title="Blogs">
-	
-	<section class="px-6 py-16">
-		<div class="mx-auto max-w-6xl">
-			<button
-				onclick="window.location.href='/admin/blog/new'"
-				class="mb-6 rounded-md bg-green-600 px-4 py-2 text-white"
-			>
-				Neuen Blog hinzufügen
-			</button>
-			<div class="grid gap-8 md:grid-cols-2">
-				{
-					posts.map((post) => (
-						<div class="block h-full">
-							<div class="flex h-full flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg">
-								<div class="flex flex-1 flex-col p-6">
-									<h3 class="mb-2 text-xl font-semibold text-gray-900">
-										{post.title}
-									</h3>
-									<p class="text-gray-700">
-										{post.language.toUpperCase()}
-									</p>
-									<p class="text-sm text-gray-500">
-										Veröffentlicht:{" "}
-										{new Date(
-											post.publishedAt,
-										).toLocaleDateString()}
-									</p>
-									<p class="text-sm text-gray-500">
-										{post.updatedAt &&
-											`Aktualisiert: ${new Date(post.updatedAt).toLocaleDateString()}`}
-									</p>
+    <section class="px-6 py-16">
+        <div class="mx-auto max-w-6xl">
+            <button
+                onclick="window.location.href='/admin/blog/new'"
+                class="mb-6 rounded-md bg-green-600 px-4 py-2 text-white"
+            >
+                Neuen Blog hinzufügen
+            </button>
+            <div class="grid gap-8 md:grid-cols-2">
+                {
+                    posts.map((post) => (
+                        <div class="block h-full">
+                            <div class="flex h-full flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg">
+                                <div class="flex flex-1 flex-col p-6">
+                                    <h3 class="mb-2 text-xl font-semibold text-gray-900">{post.title}</h3>
+                                    <p class="text-gray-700">{post.language.toUpperCase()}</p>
+                                    <p class="text-sm text-gray-500">
+                                        Veröffentlicht: {new Date(post.publishedAt).toLocaleDateString()}
+                                    </p>
+                                    <p class="text-sm text-gray-500">
+                                        {post.updatedAt &&
+                                            `Aktualisiert: ${new Date(post.updatedAt).toLocaleDateString()}`}
+                                    </p>
 
-									<a
-										href={`/admin/${post.language}/blog/${post.slug}`}
-										class="mt-2 rounded-md bg-blue-600 px-4 py-2 text-center text-white transition-transform hover:scale-105"
-									>
-										Edit
-									</a>
-									<button
-										onclick="fetch('/admin/blog/'+post.slug+'/delete', { method: 'POST' }).then(() => location.reload())"
-										class="mt-2 rounded-md bg-red-600 px-4 py-2 text-white transition-transform hover:scale-105"
-									>
-										Löschen
-									</button>
-								</div>
-							</div>
-						</div>
-					))
-				}
-			</div>
-		</div>
-	</section>
+                                    <a
+                                        href={`/admin/${post.language}/blog/${post.slug}`}
+                                        class="mt-2 rounded-md bg-blue-600 px-4 py-2 text-center text-white transition-transform hover:scale-105"
+                                    >
+                                        Edit
+                                    </a>
+                                    <button
+                                        onclick="fetch('/admin/blog/'+post.slug+'/delete', { method: 'POST' }).then(() => location.reload())"
+                                        class="mt-2 rounded-md bg-red-600 px-4 py-2 text-white transition-transform hover:scale-105"
+                                    >
+                                        Löschen
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    ))
+                }
+            </div>
+        </div>
+    </section>
 
-	{
-		// post && (
-		// 	<section class="mt-20 px-6 py-16 pt-20">
-		// 		<div class="mx-auto max-w-4xl">
-		// 			<h2 class="mb-8 text-center text-3xl font-bold text-gray-900">
-		// 				Blog bearbeiten
-		// 			</h2>
-		// 			<form
-		// 				action={`/admin/blog/${post.slug}/update`}
-		// 				method="POST"
-		// 				class="space-y-6"
-		// 			>
-		// 				<label class="block">
-		// 					<span class="text-gray-700">Titel</span>
-		// 					<input
-		// 						type="text"
-		// 						name="title"
-		// 						value={post.title}
-		// 						class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-		// 					/>
-		// 				</label>
-		// 				<label class="block">
-		// 					<span class="text-gray-700">Inhalt</span>
-		// 					<textarea
-		// 						name="content"
-		// 						class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-		// 					>
-		// 						{post.content}
-		// 					</textarea>
-		// 				</label>
-		// 				<button
-		// 					type="submit"
-		// 					class="rounded-md bg-blue-600 px-4 py-2 text-white"
-		// 				>
-		// 					Speichern
-		// 				</button>
-		// 			</form>
-		// 		</div>
-		// 	</section>
-		// )
-	}
+    {
+        // post && (
+        // 	<section class="mt-20 px-6 py-16 pt-20">
+        // 		<div class="mx-auto max-w-4xl">
+        // 			<h2 class="mb-8 text-center text-3xl font-bold text-gray-900">
+        // 				Blog bearbeiten
+        // 			</h2>
+        // 			<form
+        // 				action={`/admin/blog/${post.slug}/update`}
+        // 				method="POST"
+        // 				class="space-y-6"
+        // 			>
+        // 				<label class="block">
+        // 					<span class="text-gray-700">Titel</span>
+        // 					<input
+        // 						type="text"
+        // 						name="title"
+        // 						value={post.title}
+        // 						class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+        // 					/>
+        // 				</label>
+        // 				<label class="block">
+        // 					<span class="text-gray-700">Inhalt</span>
+        // 					<textarea
+        // 						name="content"
+        // 						class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+        // 					>
+        // 						{post.content}
+        // 					</textarea>
+        // 				</label>
+        // 				<button
+        // 					type="submit"
+        // 					class="rounded-md bg-blue-600 px-4 py-2 text-white"
+        // 				>
+        // 					Speichern
+        // 				</button>
+        // 			</form>
+        // 		</div>
+        // 	</section>
+        // )
+    }
 </Layout>

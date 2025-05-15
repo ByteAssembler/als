@@ -47,9 +47,7 @@ const MapComponent = () => {
 		markersRef.current.forEach((marker) => mapRef.current?.removeLayer(marker));
 		markersRef.current = [];
 
-		const selectedCategories = category
-			? [data.find((item) => item.name === category)]
-			: data;
+		const selectedCategories = category ? [data.find((item) => item.name === category)] : data;
 		let group: L.Marker[] = [];
 
 		selectedCategories.forEach((category) => {
@@ -70,20 +68,13 @@ const MapComponent = () => {
 			const groupLayer = L.featureGroup(group);
 			mapRef.current.fitBounds(groupLayer.getBounds(), { padding: [50, 50] });
 		} else if (group.length === 1) {
-			mapRef.current.setView([
-				group[0].getLatLng().lat,
-				group[0].getLatLng().lng,
-			], 10);
+			mapRef.current.setView([group[0].getLatLng().lat, group[0].getLatLng().lng], 10);
 		}
 	}, [category]);
 
 	return (
 		<div>
-			<select
-				className="dropdown"
-				value={category}
-				onChange={(e) => setCategory(e.target.value)}
-			>
+			<select className="dropdown" value={category} onChange={(e) => setCategory(e.target.value)}>
 				<option value="">Alle Kategorien</option>
 				{data.map((category) => (
 					<option key={category.name} value={category.name}>
@@ -91,8 +82,7 @@ const MapComponent = () => {
 					</option>
 				))}
 			</select>
-			<div id="map-map" className="h-[500px] w-full rounded-lg shadow-md mt-2">
-			</div>
+			<div id="map-map" className="h-[500px] w-full rounded-lg shadow-md mt-2"></div>
 		</div>
 	);
 };

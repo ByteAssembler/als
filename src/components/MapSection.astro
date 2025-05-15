@@ -8,7 +8,7 @@ const mapPointTypes: MapPointType[] = await db.mapPointType.findMany();
 ---
 
 <Section sectionTitle="Wo Sie Hilfe finden" sectionId="map">
-	<div class="z-0 mx-auto max-w-6xl">
-		<MapComponent client:only="react" data={mapPointsData} types={mapPointTypes}/>
-	</div>
+    <div class="z-0 mx-auto max-w-6xl">
+        <MapComponent client:only="react" data={mapPointsData} types={mapPointTypes} />
+    </div>
 </Section>

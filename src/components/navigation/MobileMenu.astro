@@ -8,73 +8,60 @@ const navBarItems: Navbar[] = Astro.props.navBarItems;
 ---
 
 <div
-	id="mobile-menu"
-	class="z-9999 fixed inset-0 translate-x-full transform bg-white transition-transform duration-300 ease-in-out lg:hidden"
+    id="mobile-menu"
+    class="z-9999 fixed inset-0 translate-x-full transform bg-white transition-transform duration-300 ease-in-out lg:hidden"
 >
-	<div class="p-6">
-		<div class="flex justify-end">
-			<button
-				id="close-menu"
-				class="text-gray-600 hover:text-gray-900"
-				aria-label="Close menu"
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					class="h-6 w-6"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M6 18L18 6M6 6l12 12"></path>
-				</svg>
-			</button>
-		</div>
-		<nav class="mt-8">
-			<div class="flex flex-row">
-				<ul class="space-y-2">
-					{
-						navBarItems.map((item) => (
-							<li>
-								<MenuItem
-									href={item.href}
-									text={item.text}
-									className="text-xl block py-2"
-								/>
-							</li>
-						))
-					}
-				</ul>
-				<div class="m-2 ml-6">
-					<LanguageSelector />
-				</div>
-			</div>
-		</nav>
-	</div>
+    <div class="p-6">
+        <div class="flex justify-end">
+            <button id="close-menu" class="text-gray-600 hover:text-gray-900" aria-label="Close menu">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                >
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"
+                    ></path>
+                </svg>
+            </button>
+        </div>
+        <nav class="mt-8">
+            <div class="flex flex-row">
+                <ul class="space-y-2">
+                    {
+                        navBarItems.map((item) => (
+                            <li>
+                                <MenuItem href={item.href} text={item.text} className="text-xl block py-2" />
+                            </li>
+                        ))
+                    }
+                </ul>
+                <div class="m-2 ml-6">
+                    <LanguageSelector />
+                </div>
+            </div>
+        </nav>
+    </div>
 </div>
 
 <script defer>
-	const mobileMenu = document.getElementById("mobile-menu");
-	const openButton = document.getElementById("open-menu");
-	const closeButton = document.getElementById("close-menu");
+    const mobileMenu = document.getElementById("mobile-menu");
+    const openButton = document.getElementById("open-menu");
+    const closeButton = document.getElementById("close-menu");
 
-	function toggleMenu(show) {
-		if (mobileMenu) {
-			mobileMenu.style.transform = show
-				? "translateX(0)"
-				: "translateX(100%)";
-		}
-	}
+    function toggleMenu(show) {
+        if (mobileMenu) {
+            mobileMenu.style.transform = show ? "translateX(0)" : "translateX(100%)";
+        }
+    }
 
-	openButton?.addEventListener("click", () => toggleMenu(true));
-	closeButton?.addEventListener("click", () => toggleMenu(false));
+    openButton?.addEventListener("click", () => toggleMenu(true));
+    closeButton?.addEventListener("click", () => toggleMenu(false));
 
-	mobileMenu?.addEventListener("click", (event) => {
-		if (event.target.tagName === "A" || event.target.tagName === "BUTTON") {
-			toggleMenu(false);
-		}
-	});
+    mobileMenu?.addEventListener("click", (event) => {
+        if (event.target.tagName === "A" || event.target.tagName === "BUTTON") {
+            toggleMenu(false);
+        }
+    });
 </script>

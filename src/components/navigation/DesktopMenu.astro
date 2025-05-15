@@ -5,7 +5,7 @@ import LanguageSelector from "./LanguageSelector.astro";
 import { type Navbar } from "@prisma/client";
 
 interface Props {
-	navBarItems: Navbar[];
+    navBarItems: Navbar[];
 }
 
 const { lang } = Astro.params;
@@ -14,18 +14,13 @@ const { navBarItems } = Astro.props;
 ---
 
 <nav class="hidden items-center gap-6 lg:flex">
-	{
-		navBarItems.map((item) => (
-			<MenuItem
-				href={
-					Astro.url.origin +
-					(item.onLanguageSlug ? "/" + (lang ? lang : "en") : "") +
-					"/" +
-					item.href
-				}
-				text={item.text}
-			/>
-		))
-	}
-	<LanguageSelector />
+    {
+        navBarItems.map((item) => (
+            <MenuItem
+                href={Astro.url.origin + (item.onLanguageSlug ? "/" + (lang ? lang : "en") : "") + "/" + item.href}
+                text={item.text}
+            />
+        ))
+    }
+    <LanguageSelector />
 </nav>

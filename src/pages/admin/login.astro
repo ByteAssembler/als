@@ -1,114 +1,99 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 
-
 // Der Cookie wird serverseitig gelesen
-const isLoggedIn = Boolean(
-	Astro.request.headers.get("cookie")?.includes("token"),
-);
+const isLoggedIn = Boolean(Astro.request.headers.get("cookie")?.includes("token"));
 ---
 
 <Layout title={isLoggedIn ? "Admin Dashboard" : "Admin Login"}>
-	
-	<div class="container mx-auto p-6">
-		{
-			isLoggedIn ? (
-				<>
-					<div class="mx-auto max-w-md rounded-lg bg-white p-6 shadow-md">
-						<p>Willkommen, Administrator!</p>
-						<p>
-							Hier findest du alle administrativen Informationen.
-						</p>
+    <div class="container mx-auto p-6">
+        {
+            isLoggedIn ? (
+                <>
+                    <div class="mx-auto max-w-md rounded-lg bg-white p-6 shadow-md">
+                        <p>Willkommen, Administrator!</p>
+                        <p>Hier findest du alle administrativen Informationen.</p>
 
-						<button
-							id="logoutButton"
-							class="mt-4 w-full rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700"
-						>
-							Abmelden
-						</button>
-					</div>
-				</>
-			) : (
-				<>
-					<div class="mx-auto max-w-md rounded-lg bg-white p-6 shadow-md">
-						<form id="loginForm">
-							<label class="mb-2 block font-semibold">
-								Benutzername
-							</label>
-							<input
-								type="text"
-								name="username"
-								id="username"
-								class="mb-4 w-full rounded border p-2"
-							/>
+                        <button
+                            id="logoutButton"
+                            class="mt-4 w-full rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700"
+                        >
+                            Abmelden
+                        </button>
+                    </div>
+                </>
+            ) : (
+                <>
+                    <div class="mx-auto max-w-md rounded-lg bg-white p-6 shadow-md">
+                        <form id="loginForm">
+                            <label class="mb-2 block font-semibold">Benutzername</label>
+                            <input type="text" name="username" id="username" class="mb-4 w-full rounded border p-2" />
 
-							<label class="mb-2 block font-semibold">
-								Passwort
-							</label>
-							<input
-								type="password"
-								name="password"
-								id="password"
-								class="mb-4 w-full rounded border p-2"
-							/>
+                            <label class="mb-2 block font-semibold">Passwort</label>
+                            <input
+                                type="password"
+                                name="password"
+                                id="password"
+                                class="mb-4 w-full rounded border p-2"
+                            />
 
-							<button
-								id="loginButton"
-								type="submit"
-								class="w-full rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-							>
-								Login
-							</button>
-						</form>
-					</div>
-				</>
-			)
-		}
-	</div>
+                            <button
+                                id="loginButton"
+                                type="submit"
+                                class="w-full rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                            >
+                                Login
+                            </button>
+                        </form>
+                    </div>
+                </>
+            )
+        }
+    </div>
 </Layout>
 
 <script>
-	document.addEventListener("DOMContentLoaded", () => {
-		const loginForm = document.getElementById("loginForm");
-		const logoutButton = document.getElementById("logoutButton");
+    document.addEventListener("DOMContentLoaded", () => {
+        const loginForm = document.getElementById("loginForm");
+        const logoutButton = document.getElementById("logoutButton");
 
-		if (loginForm) {
-			loginForm.addEventListener("submit", async (e) => {
-				e.preventDefault();
+        if (loginForm) {
+            loginForm.addEventListener("submit", async (e) => {
+                e.preventDefault();
 
-				const formData = new FormData(e.target as HTMLFormElement);
-				const username = formData.get("username");
-				const password = formData.get("password");
+                const formData = new FormData(e.target as HTMLFormElement);
+                const username = formData.get("username");
+                const password = formData.get("password");
 
-				const response = await fetch("/api/login", {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({ username, password }),
-					credentials: "include", // Wichtig, um Cookies zu setzen
-				});
+                const response = await fetch("/api/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, password }),
+                    credentials: "include", // Wichtig, um Cookies zu setzen
+                });
 
-				if (response.ok) {
-					window.location.href = "/admin/dashboard";
-				} else {
-					const { error } = await response.json();
-					alert(error);
-				}
-			});
-		}
+                if (response.ok) {
+                    window.location.href = "/admin/dashboard";
+                } else {
+                    const { error } = await response.json();
+                    alert(error);
+                }
+            });
+        }
 
-		if (logoutButton) {
-			logoutButton.addEventListener("click", async () => {
-				const response = await fetch("/api/logout", {
-					method: "POST",
-					credentials: "include",
-				});
+        if (logoutButton) {
+            logoutButton.addEventListener("click", async () => {
+                const response = await fetch("/api/logout", {
+                    method: "POST",
+                    credentials: "include",
+                });
 
-				if (response.ok) {
-					window.location.href = "/admin/login";
-				} else {
-					alert("Abmeldung fehlgeschlagen");
-				}
-			});
-		}
-	});
+                if (response.ok) {
+                    window.location.href = "/admin/login";
+                } else {
+                    alert("Abmeldung fehlgeschlagen");
+                }
+            });
+        }
+    });
 </script>

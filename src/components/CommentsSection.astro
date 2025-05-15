@@ -7,34 +7,28 @@ const prisma = new PrismaClient();
 const language = Astro.url.searchParams.get("lang") || "en";
 
 const comments = await prisma.comment.findMany({
-	where: { language: lang },
-	orderBy: { createdAt: "desc" },
+    where: { language: lang },
+    orderBy: { createdAt: "desc" },
 });
 ---
 
 <Section sectionTitle="Kommentare" sectionId="comments">
-	<div class="mx-auto max-w-4xl">
-		<div class="space-y-8">
-			{
-				comments.map((comment) => (
-					<div class="rounded-lg bg-gray-50 p-6">
-						<div class="flex items-start gap-4">
-							<img
-								src={comment.avatar}
-								alt={comment.author}
-								class="h-12 w-12 rounded-full"
-							/>
-							<div>
-								<h3 class="font-semibold">{comment.author}</h3>
-								<p class="mb-2 text-sm text-gray-500">
-									{comment.role}
-								</p>
-								<p class="text-gray-600">{comment.comment}</p>
-							</div>
-						</div>
-					</div>
-				))
-			}
-		</div>
-	</div>
-</section>
+    <div class="mx-auto max-w-4xl">
+        <div class="space-y-8">
+            {
+                comments.map((comment) => (
+                    <div class="rounded-lg bg-gray-50 p-6">
+                        <div class="flex items-start gap-4">
+                            <img src={comment.avatar} alt={comment.author} class="h-12 w-12 rounded-full" />
+                            <div>
+                                <h3 class="font-semibold">{comment.author}</h3>
+                                <p class="mb-2 text-sm text-gray-500">{comment.role}</p>
+                                <p class="text-gray-600">{comment.comment}</p>
+                            </div>
+                        </div>
+                    </div>
+                ))
+            }
+        </div>
+    </div>
+</Section>

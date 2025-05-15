@@ -1,6 +1,6 @@
 ---
 interface Props {
-	fileId: string;
+    fileId: string;
     alt?: string;
 }
 
@@ -14,7 +14,6 @@ const fileServerToken = process.env.FILE_SERVER_TOKEN;
 const blobApi = new BlobAPI(fileServerURL, fileServerToken);
 
 const bucketId = "af6642da722af38705457f99"; // Full permissions: 131071
-
 
 const imageUrl = blobApi.downloadFileUrl(bucketId, fileId);
 ---

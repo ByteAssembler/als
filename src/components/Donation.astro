@@ -1,32 +1,24 @@
 ---
 const currentPath = Astro.url.pathname;
-const donationPath = currentPath.endsWith("/")
-	? `${currentPath}donation`
-	: `${currentPath}/donation`;
+const donationPath = currentPath.endsWith("/") ? `${currentPath}donation` : `${currentPath}/donation`;
 
-    import Section from "../layouts/Section.astro";
+import Section from "../layouts/Section.astro";
 ---
 
 <Section sectionTitle="Spende" sectionId="donation" noTitle={true}>
-	<div
-		class="flex justify-center bg-gray-50 px-8 py-20 sm:px-16 lg:px-24 xl:px-32"
-	>
-		<div class="max-w-2xl text-center">
-			<h2 class="mb-4 text-4xl font-bold text-gray-900 sm:text-5xl">
-                Schließe dich dem Kampf an
-			</h2>
-			<p class="mb-8 text-gray-700">
+    <div class="flex justify-center bg-gray-50 px-8 py-20 sm:px-16 lg:px-24 xl:px-32">
+        <div class="max-w-2xl text-center">
+            <h2 class="mb-4 text-4xl font-bold text-gray-900 sm:text-5xl">Schließe dich dem Kampf an</h2>
+            <p class="mb-8 text-gray-700">
                 Unterstütze die ALS-Forschung durch Spenden, Freiwilligenarbeit oder den Besuch unserer Veranstaltungen.
-				<br />
+                <br />
                 Deine Beteiligung macht den Unterschied. Spende jetzt!
-			</p>
-			<a href={donationPath} class="inline-block">
-				<button
-					class="rounded-md bg-gray-700 px-6 py-3 font-medium text-white hover:bg-gray-800"
-				>
+            </p>
+            <a href={donationPath} class="inline-block">
+                <button class="rounded-md bg-gray-700 px-6 py-3 font-medium text-white hover:bg-gray-800">
                     Jetzt spenden
-				</button>
-			</a>
-		</div>
-	</div>
+                </button>
+            </a>
+        </div>
+    </div>
 </Section>

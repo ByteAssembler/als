@@ -4,100 +4,90 @@ import DonationForm from "../../components/DonationForm";
 ---
 
 <Layout title="Spenden" defaultPadding={true}>
-	<main class="min-h-screen bg-gradient-to-b from-white to-gray-50">
-		<div class="container mx-auto px-4 py-12">
-			<div class="mx-auto max-w-3xl text-center">
-				<h1 class="mb-6 text-4xl font-bold text-gray-800 md:text-5xl">
-					Gemeinsam für eine bessere Zukunft
-				</h1>
-				<p class="mb-12 text-xl text-gray-600">
-					Ihre Unterstützung macht den Unterschied. Jede Spende hilft
-					uns, Menschen mit ALS besser zu unterstützen.
-				</p>
+    <main class="min-h-screen bg-gradient-to-b from-white to-gray-50">
+        <div class="container mx-auto px-4 py-12">
+            <div class="mx-auto max-w-3xl text-center">
+                <h1 class="mb-6 text-4xl font-bold text-gray-800 md:text-5xl">Gemeinsam für eine bessere Zukunft</h1>
+                <p class="mb-12 text-xl text-gray-600">
+                    Ihre Unterstützung macht den Unterschied. Jede Spende hilft uns, Menschen mit ALS besser zu
+                    unterstützen.
+                </p>
 
-				<div class="mb-12 rounded-lg bg-white p-8 shadow-xl">
-					<DonationForm />
-				</div>
+                <div class="mb-12 rounded-lg bg-white p-8 shadow-xl">
+                    <DonationForm />
+                </div>
 
-				<div class="mt-12 grid gap-8 md:grid-cols-2">
-					<div class="rounded-lg bg-white p-6 shadow-md">
-						<h2 class="mb-6 text-2xl font-semibold text-gray-800">
-							Banküberweisung
-						</h2>
-						<dl class="grid gap-4 text-left">
-							<div>
-								<dt class="font-medium text-gray-600">IBAN</dt>
-								<dd class="font-mono text-lg">
-									DE12345678901234567890
-								</dd>
-							</div>
-							<div>
-								<dt class="font-medium text-gray-600">BIC</dt>
-								<dd class="font-mono text-lg">GENODEF1S12</dd>
-							</div>
-							<div>
-								<dt class="font-medium text-gray-600">
-									Empfänger
-								</dt>
-								<dd class="text-lg">CV ALS e.V.</dd>
-							</div>
-						</dl>
-					</div>
+                <div class="mt-12 grid gap-8 md:grid-cols-2">
+                    <div class="rounded-lg bg-white p-6 shadow-md">
+                        <h2 class="mb-6 text-2xl font-semibold text-gray-800">Banküberweisung</h2>
+                        <dl class="grid gap-4 text-left">
+                            <div>
+                                <dt class="font-medium text-gray-600">IBAN</dt>
+                                <dd class="font-mono text-lg">DE12345678901234567890</dd>
+                            </div>
+                            <div>
+                                <dt class="font-medium text-gray-600">BIC</dt>
+                                <dd class="font-mono text-lg">GENODEF1S12</dd>
+                            </div>
+                            <div>
+                                <dt class="font-medium text-gray-600">Empfänger</dt>
+                                <dd class="text-lg">CV ALS e.V.</dd>
+                            </div>
+                        </dl>
+                    </div>
 
-					<div class="rounded-lg bg-white p-6 shadow-md">
-						<h2 class="mb-4 text-2xl font-semibold text-gray-800">
-							Ihre Wirkung
-						</h2>
-						<ul class="space-y-4 text-left text-gray-600">
-							<li class="flex items-start">
-								<svg
-									class="mr-2 h-6 w-6 text-green-500"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M5 13l4 4L19 7"></path>
-								</svg>
-								Unterstützung von ALS-Betroffenen
-							</li>
-							<li class="flex items-start">
-								<svg
-									class="mr-2 h-6 w-6 text-green-500"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M5 13l4 4L19 7"></path>
-								</svg>
-								Förderung der Forschung
-							</li>
-							<li class="flex items-start">
-								<svg
-									class="mr-2 h-6 w-6 text-green-500"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M5 13l4 4L19 7"></path>
-								</svg>
-								Öffentlichkeitsarbeit
-							</li>
-						</ul>
-					</div>
-				</div>
-			</div>
-		</div>
-	</main>
+                    <div class="rounded-lg bg-white p-6 shadow-md">
+                        <h2 class="mb-4 text-2xl font-semibold text-gray-800">Ihre Wirkung</h2>
+                        <ul class="space-y-4 text-left text-gray-600">
+                            <li class="flex items-start">
+                                <svg
+                                    class="mr-2 h-6 w-6 text-green-500"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Unterstützung von ALS-Betroffenen
+                            </li>
+                            <li class="flex items-start">
+                                <svg
+                                    class="mr-2 h-6 w-6 text-green-500"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Förderung der Forschung
+                            </li>
+                            <li class="flex items-start">
+                                <svg
+                                    class="mr-2 h-6 w-6 text-green-500"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Öffentlichkeitsarbeit
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 </Layout>

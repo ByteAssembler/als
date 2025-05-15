@@ -6,105 +6,82 @@ import Button from "../../../components/ui/Button.astro";
 
 const { slug, lang } = Astro.params;
 const event = await db.event.findUnique({
-	where: {
-		slug,
-	},
-	include: {
-		speakers: true,
-	},
+    where: {
+        slug,
+    },
+    include: {
+        speakers: true,
+    },
 });
 
 if (!event) {
-	throw new Error("Event not found");
+    throw new Error("Event not found");
 }
 ---
 
 <Layout title={event.title}>
-	
-	<a href="#blogs"><Button>Back to all Blogs</Button></a>
-	<main class="mt-2 min-h-screen bg-gray-50">
-		<div class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
-			<article class="overflow-hidden rounded-lg bg-white shadow-lg">
-				<div class="p-8">
-					<div class="mb-4 flex items-center text-sm text-gray-500">
-						<svg
-							class="mr-2 h-4 w-4"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width={2}
-								d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-							></path>
-						</svg>
-						<FormattedDate date={event.createdAt} />
-						{
-							event.updatedAt &&
-								event.createdAt !== event.updatedAt && (
-									<span class="ml-4 flex items-center">
-										<svg
-											class="mr-2 h-4 w-4"
-											fill="none"
-											stroke="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<path
-												stroke-linecap="round"
-												stroke-linejoin="round"
-												stroke-width={2}
-												d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-											/>
-										</svg>
-										Updated on{" "}
-										<FormattedDate date={event.updatedAt} />
-									</span>
-								)
-						}
-					</div>
+    <a href="#blogs"><Button>Back to all Blogs</Button></a>
+    <main class="mt-2 min-h-screen bg-gray-50">
+        <div class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
+            <article class="overflow-hidden rounded-lg bg-white shadow-lg">
+                <div class="p-8">
+                    <div class="mb-4 flex items-center text-sm text-gray-500">
+                        <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width={2}
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                            ></path>
+                        </svg>
+                        <FormattedDate date={event.createdAt} />
+                        {
+                            event.updatedAt && event.createdAt !== event.updatedAt && (
+                                <span class="ml-4 flex items-center">
+                                    <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width={2}
+                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                                        />
+                                    </svg>
+                                    Updated on <FormattedDate date={event.updatedAt} />
+                                </span>
+                            )
+                        }
+                    </div>
 
-					<h1 class="mb-6 text-4xl font-bold text-gray-900">
-						{event.title}
-					</h1>
+                    <h1 class="mb-6 text-4xl font-bold text-gray-900">
+                        {event.title}
+                    </h1>
 
-					{
-						event.speakers && event.speakers.length > 0 && (
-							<div class="mb-8">
-								<h2 class="mb-4 text-xl font-semibold text-gray-900">
-									Speakers
-								</h2>
-								<div class="flex flex-wrap gap-4">
-									{event.speakers.map((speaker) => (
-										<div class="flex items-center space-x-3">
-											{speaker.image && (
-												<img
-													src={speaker.image}
-													alt=""
-													class="h-10 w-10 rounded-full"
-												/>
-											)}
-											<div>
-												<p class="text-sm font-medium text-gray-900">
-													{speaker.name}
-												</p>
-												<p class="text-sm text-gray-500">
-													{speaker.bio}
-												</p>
-											</div>
-										</div>
-									))}
-								</div>
-							</div>
-						)
-					}
+                    {
+                        event.speakers && event.speakers.length > 0 && (
+                            <div class="mb-8">
+                                <h2 class="mb-4 text-xl font-semibold text-gray-900">Speakers</h2>
+                                <div class="flex flex-wrap gap-4">
+                                    {event.speakers.map((speaker) => (
+                                        <div class="flex items-center space-x-3">
+                                            {speaker.image && (
+                                                <img src={speaker.image} alt="" class="h-10 w-10 rounded-full" />
+                                            )}
+                                            <div>
+                                                <p class="text-sm font-medium text-gray-900">{speaker.name}</p>
+                                                <p class="text-sm text-gray-500">{speaker.bio}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )
+                    }
 
-					<div class="prose prose-lg max-w-none">
-						{event.detailedDescription}
-					</div>
-				</div>
-			</article>
-		</div>
-	</main>
+                    <div class="prose prose-lg max-w-none">
+                        {event.detailedDescription}
+                    </div>
+                </div>
+            </article>
+        </div>
+    </main>
 </Layout>

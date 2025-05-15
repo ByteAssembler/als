@@ -1,68 +1,48 @@
 ---
 import Button from "./ui/Button.astro";
 
-import {
-	FaFacebook,
-	FaInstagram,
-	FaYoutube,
-	FaLinkedin,
-	FaTwitter,
-} from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaYoutube, FaLinkedin, FaTwitter } from "react-icons/fa";
 ---
 
 <footer class="relative bottom-0 bg-gray-900 px-6 py-12 text-white">
-	<div class="mx-auto max-w-6xl">
-		<div class="mb-12 grid gap-12 md:grid-cols-1">
-			<div>
-				<h4 class="mb-4 text-xl">
-                    Abonnieren Sie unseren Newsletter
-                </h4>
-				<div class="flex flex-col gap-4 sm:flex-row max-w-30">
-					<input
-						type="email"
-						placeholder="Email eingeben"
-						class="flex-1 rounded-md border-2 border-gray-700 p-3 text-gray-900 focus:border-primary-500 focus:ring-2 focus:ring-primary-500"
-					/>
-					<Button>Abonnieren</Button>
-				</div>
-			</div>
-		</div>
+    <div class="mx-auto max-w-6xl">
+        <div class="mb-12 grid gap-12 md:grid-cols-1">
+            <div>
+                <h4 class="mb-4 text-xl">Abonnieren Sie unseren Newsletter</h4>
+                <div class="flex flex-col gap-4 sm:flex-row max-w-30">
+                    <input
+                        type="email"
+                        placeholder="Email eingeben"
+                        class="flex-1 rounded-md border-2 border-gray-700 p-3 text-gray-900 focus:border-primary-500 focus:ring-2 focus:ring-primary-500"
+                    />
+                    <Button>Abonnieren</Button>
+                </div>
+            </div>
+        </div>
 
-		<div
-			class="flex flex-col items-center justify-between gap-4 border-t border-gray-800 pt-8 md:flex-row"
-		>
-			<div class="text-sm text-gray-400">
-				© 2025 CV ALS. All rights reserved.
-                
-			</div>
-			<div class="flex gap-4">
-				<a href="facebook.com" class="text-gray-400 hover:text-white">
-					<FaFacebook size={20} />
-				</a>
-				<a href="instagram.com" class="text-gray-400 hover:text-white">
-					<FaInstagram size={20} />
-				</a>
-				<a href="youtube.com" class="text-gray-400 hover:text-white">
-					<FaYoutube size={20} />
-				</a>
-				<a
-					href="www.linkedin.com"
-					class="text-gray-400 hover:text-white"
-				>
-					<FaLinkedin size={20} />
-				</a>
-				<a href="x.com" class="text-gray-400 hover:text-white">
-					<FaTwitter size={20} />
-				</a>
-			</div>
-			<div class="flex gap-4">
-				<a href="/impressum" class="text-gray-400 hover:text-white"
-					>Impressum</a
-				>
-				<a href="privacy" class="text-gray-400 hover:text-white"
-					>Datenschutzerklärung</a
-				>
-			</div>
-		</div>
-	</div>
+        <div class="flex flex-col items-center justify-between gap-4 border-t border-gray-800 pt-8 md:flex-row">
+            <div class="text-sm text-gray-400">© 2025 CV ALS. All rights reserved.</div>
+            <div class="flex gap-4">
+                <a href="facebook.com" class="text-gray-400 hover:text-white">
+                    <FaFacebook size={20} />
+                </a>
+                <a href="instagram.com" class="text-gray-400 hover:text-white">
+                    <FaInstagram size={20} />
+                </a>
+                <a href="youtube.com" class="text-gray-400 hover:text-white">
+                    <FaYoutube size={20} />
+                </a>
+                <a href="www.linkedin.com" class="text-gray-400 hover:text-white">
+                    <FaLinkedin size={20} />
+                </a>
+                <a href="x.com" class="text-gray-400 hover:text-white">
+                    <FaTwitter size={20} />
+                </a>
+            </div>
+            <div class="flex gap-4">
+                <a href="/impressum" class="text-gray-400 hover:text-white">Impressum</a>
+                <a href="privacy" class="text-gray-400 hover:text-white">Datenschutzerklärung</a>
+            </div>
+        </div>
+    </div>
 </footer>
