@@ -1,4 +1,4 @@
-// src/pages/api/sites.ts
+﻿// src/pages/api/sites.ts
 import { PrismaClient } from "@prisma/client";
 import type { APIRoute } from "astro";
 import db from "../../utils/db";

@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+﻿import bcrypt from "bcrypt";
 import db from "../../utils/db";
 
 export async function POST({ request }: { request: Request }) {

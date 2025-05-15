@@ -1,4 +1,4 @@
-export async function POST() {
+﻿export async function POST() {
 	const headers = new Headers();
 	headers.append("Set-Cookie", "token=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0");
 

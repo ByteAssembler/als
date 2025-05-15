@@ -1,4 +1,4 @@
-import type { APIRoute } from "astro";
+﻿import type { APIRoute } from "astro";
 
 // Sign a jwt token thats valid for 3 days
 import { sign } from "jsonwebtoken";

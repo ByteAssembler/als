@@ -1,4 +1,4 @@
-// src/components/Admin.tsx
+﻿// src/components/Admin.tsx
 import { useState } from "react";
 import Sidebars from "./Sidebars";
 import SectionEditor from "./SectionEditor";

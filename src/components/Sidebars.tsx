@@ -1,4 +1,4 @@
-// src/components/Sidebars.tsx
+﻿// src/components/Sidebars.tsx
 import React, { useEffect, useState } from "react";
 
 // Typdefinitionen

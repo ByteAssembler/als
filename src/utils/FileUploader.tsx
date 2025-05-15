@@ -1,4 +1,4 @@
-import React, { type DragEvent, useCallback, useRef, useState } from "react";
+﻿import React, { type DragEvent, useCallback, useRef, useState } from "react";
 import { FileUploader } from "./file-upload-api";
 
 // Typdefinitionen

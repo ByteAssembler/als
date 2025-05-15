@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Permission system for the application
  *
  * This module provides a comprehensive permission system that manages access control

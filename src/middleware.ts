@@ -1,4 +1,4 @@
-import { defineMiddleware } from "astro/middleware";
+﻿import { defineMiddleware } from "astro/middleware";
 import jwt from "jsonwebtoken";
 
 const SECRET_KEY = process.env.JWT_SECRET || "supersecretkey";

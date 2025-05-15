@@ -1,4 +1,4 @@
-import { type MapPointType } from "@prisma/client";
+﻿import { type MapPointType } from "@prisma/client";
 
 interface CategorySelectorProps {
 	types: MapPointType[];

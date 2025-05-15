@@ -1,4 +1,4 @@
-import { DbPermissions } from "@/lib/permission";
+﻿import { DbPermissions } from "@/lib/permission";
 
 /**
  * Represents a unique identifier in the system

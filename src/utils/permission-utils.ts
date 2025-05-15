@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Utility functions for working with permissions
  *
  * This module provides additional helper functions for working with

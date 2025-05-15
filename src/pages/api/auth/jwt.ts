@@ -1,4 +1,4 @@
-import * as jwt from "jsonwebtoken";
+﻿import * as jwt from "jsonwebtoken";
 
 const JWT_SECRET = import.meta.env.JWT_SECRET || `${crypto.randomUUID()}-${crypto.randomUUID()}`;
 

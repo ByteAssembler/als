@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { languages } from "../data/languages";
 
 // Remove the line causing the error as it is not used in the component

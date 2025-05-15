@@ -1,4 +1,4 @@
-import db from "../../utils/db";
+﻿import db from "../../utils/db";
 
 export async function GET() {
 	const navbarItems = await db.navbar.findMany();

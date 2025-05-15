@@ -1,4 +1,4 @@
-export const menuItems = [
+﻿export const menuItems = [
 	{ text: "Home", href: "#hero", withLanguage: true },
 	{ text: "Blogs", href: "#blogs", withLanguage: true },
 	{ text: "Events", href: "#events", withLanguage: true },

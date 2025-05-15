@@ -1,4 +1,4 @@
-// src/pages/api/sections/[sectionId].ts
+﻿// src/pages/api/sections/[sectionId].ts
 import { type Section } from "@prisma/client";
 
 import type { APIRoute } from "astro";
