@@ -26,9 +26,27 @@ const MapComponent = () => {
 	const markersRef = useRef<L.Marker[]>([]);
 	const [category, setCategory] = useState("");
 
+    let url = "/marker.png";
+    switch (category) {
+        case "event":
+            url = "/event.png";
+            break;
+        case "hospital":
+            url = "/hospital_marker.png";
+            break;
+        case "self_help_group":
+            url = "/self_help_group.png";
+            break;
+        case "study":
+            url = "/study.png";
+            break;
+        default:
+            url = "/marker.png";
+    }
+
 	const customIcon = L.icon({
-		iconUrl: "/marker.png", // Stelle sicher, dass marker.png in /public liegt
-		iconSize: [30, 45],
+		iconUrl: url,
+		iconSize: [45, 45],
 		iconAnchor: [15, 45],
 	});
 
@@ -73,7 +91,7 @@ const MapComponent = () => {
 	}, [category]);
 
 	return (
-		<div>
+		<div className="z-0">
 			<select className="dropdown" value={category} onChange={(e) => setCategory(e.target.value)}>
 				<option value="">Alle Kategorien</option>
 				{data.map((category) => (
