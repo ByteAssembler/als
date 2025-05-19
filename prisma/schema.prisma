@@ -85,32 +85,7 @@ model Site {
 //     @@unique([langCode, id])
 // }
 
-model Event {
-    id                  Int       @id @default(autoincrement())
-    title               String
-    date                DateTime
-    location            String
-    description         String
-    detailedDescription String?
-    image               String
-    slug                String    @unique
-    category            String?
-    language            String?   @default("en") // "de", "en" oder "it"
-    schedule            Json? // JSON für Event-Ablauf (optional)
-    ticketsUrl          String?
-    speakers            Speaker[]
-    createdAt           DateTime  @default(now())
-    updatedAt           DateTime  @updatedAt
-}
-
-model Speaker {
-    id      Int    @id @default(autoincrement())
-    name    String
-    bio     String
-    image   String
-    eventId Int
-    event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
-}
+// Event und Speaker Modelle wurden entfernt
 
 model Post {
     id          Int      @id @default(autoincrement())

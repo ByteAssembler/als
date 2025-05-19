@@ -13,10 +13,6 @@ const { lang } = Astro.params;
 const navBarItems = await db.navbar.findMany({
     where: {
         OR: [{ language: lang ? lang : "en" }, { language: "global" }],
-        // Filter out admin link
-        href: {
-            not: "admin/login"
-        }
     },
 });
 ---
