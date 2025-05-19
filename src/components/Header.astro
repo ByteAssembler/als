@@ -1,4 +1,4 @@
-﻿---
+---
 import DesktopMenu from "./navigation/DesktopMenu.astro";
 import MobileMenu from "./navigation/MobileMenu.astro";
 import db from "../utils/db";
@@ -13,6 +13,10 @@ const { lang } = Astro.params;
 const navBarItems = await db.navbar.findMany({
     where: {
         OR: [{ language: lang ? lang : "en" }, { language: "global" }],
+        // Filter out admin link
+        href: {
+            not: "admin/login"
+        }
     },
 });
 ---
