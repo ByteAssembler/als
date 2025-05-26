@@ -1,21 +1,51 @@
 <script>
   import Sidebar from "./sidebar/Sidebar.svelte";
-
-  let activeSection = "dashboard";
   import "./styles.css";
 
-  const navItems = [
-    { id: "dashboard", label: "Dashboard" },
-    { id: "users", label: "Users" },
-    { id: "analytics", label: "Analytics" },
-    { id: "settings", label: "Settings" },
-    { id: "security", label: "Security" },
-  ];
+  let activeItemId = $state("dashboard");
+
+  const sidebarSections = $state([
+    {
+      title: "Main",
+      links: [
+        {
+          id: "dashboard",
+          label: "Dashboard",
+          iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xl:mr-2 lg:mr-0 size-4"><rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="12" rx="1"></rect><rect width="7" height="5" x="3" y="16" rx="1"></rect></svg>`,
+        },
+        {
+          id: "users",
+          label: "Users",
+          iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xl:mr-2 lg:mr-0 size-4"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>`,
+        },
+        {
+          id: "analytics",
+          label: "Analytics",
+          iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xl:mr-2 lg:mr-0 size-4"><path d="M3 3v18h18"></path><path d="m19 9-5 5-4-4-3 3"></path></svg>`,
+        },
+        {
+          id: "settings",
+          label: "Settings",
+          iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xl:mr-2 lg:mr-0 size-4"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>`,
+        },
+        {
+          id: "security",
+          label: "Security",
+          iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xl:mr-2 lg:mr-0 size-4"><shield_def><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"></path></shield_def></svg>`,
+        },
+      ],
+    },
+    // ... other sections like "Discover", "Library" can be added here in the same format
+  ]);
+
+  const currentLabel = $derived(
+    sidebarSections.flatMap((section) => section.links).find((item) => item.id === activeItemId)?.label || "Dashboard"
+  );
 </script>
 
 <div class="min-h-screen bg-background">
   <!-- Sidebar -->
-  <Sidebar />
+  <Sidebar sections={sidebarSections} {activeItemId} on:select={(event) => (activeItemId = event.detail.id)} />
 
   <!-- Main Content -->
   <main class="xl:pl-64 lg:pl-16 md:pl-16 pl-0 min-h-screen transition-all duration-300">
@@ -24,7 +54,7 @@
       <div class="flex items-center justify-between">
         <div class="flex-1 min-w-0">
           <h1 class="text-2xl font-bold leading-7 sm:truncate">
-            {navItems.find((item) => item.id === activeSection)?.label || "Dashboard"}
+            {currentLabel}
           </h1>
           <p class="mt-1 text-sm text-muted-foreground">Manage your application settings and preferences</p>
         </div>
@@ -68,7 +98,7 @@
 
     <!-- Content Area -->
     <div class="px-6 py-8 lg:px-8">
-      {#if activeSection === "dashboard"}
+      {#if activeItemId === "dashboard"}
         <!-- Dashboard Content -->
         <div class="space-y-6">
           <!-- Stats Grid -->
@@ -122,7 +152,7 @@
                 ></path>
               </svg>
               <h3 class="mt-4 text-lg font-medium">
-                {navItems.find((item) => item.id === activeSection)?.label} Settings
+                {currentLabel} Settings
               </h3>
               <p class="mt-2 text-sm text-muted-foreground">
                 This section is currently empty. Settings and options will be implemented here.

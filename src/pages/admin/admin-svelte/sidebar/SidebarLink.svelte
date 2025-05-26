@@ -22,6 +22,7 @@
 
   // Common properties for the component's specific logic and styling
   type ComponentBaseProps = {
+    id: string; // Added id prop
     state?: LinkState;
     children: Snippet;
     class?: string; // For consumers to pass additional classes
@@ -46,8 +47,10 @@
 <script lang="ts">
   import type { Props as ComponentProps } from "./SidebarLink.svelte"; // Import from module
   import { cn } from "../../../../utils/utils";
+  import { createEventDispatcher } from "svelte";
 
   let {
+    id, // Added id prop
     class: className,
     children,
     state = "default",
@@ -57,13 +60,25 @@
     ...restAttributes // Contains other valid HTML attributes for <a> or <button>
   }: ComponentProps = $props();
 
+  const dispatch = createEventDispatcher<{ click: { id: string } }>();
+
   // Determine the button's type attribute, defaulting to "button"
   // This is only relevant if it's not an anchor
   const buttonElementType = href ? undefined : type || "button";
+
+  function handleClick() {
+    dispatch("click", { id: id });
+  }
 </script>
 
 {#if href}
-  <a bind:this={ref} class={cn(sidebarLinkVariants({ state }), className)} {href} {...restAttributes as any}>
+  <a
+    bind:this={ref}
+    class={cn(sidebarLinkVariants({ state }), className)}
+    {href}
+    on:click|preventDefault={handleClick}
+    {...restAttributes as any}
+  >
     {@render children()}
   </a>
 {:else}
@@ -71,6 +86,7 @@
     bind:this={ref}
     class={cn(sidebarLinkVariants({ state }), className)}
     type={buttonElementType}
+    on:click={handleClick}
     {...restAttributes as any}
   >
     {@render children()}
