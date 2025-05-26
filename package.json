@@ -15,15 +15,15 @@
 		"db:push": "prisma db push"
 	},
 	"dependencies": {
-		"@astrojs/netlify": "^6.3.3",
-		"@astrojs/react": "^4.2.7",
+		"@astrojs/netlify": "^6.3.4",
+		"@astrojs/react": "^4.3.0",
 		"@astrojs/tailwind": "^6.0.2",
 		"@dnd-kit/core": "^6.3.1",
 		"@dnd-kit/utilities": "^3.2.2",
 		"@googlemaps/js-api-loader": "^1.16.8",
 		"@jop-software/astro-cookieconsent": "^3.0.1",
 		"@monaco-editor/react": "^4.7.0",
-		"@prisma/client": "^6.8.0",
+		"@prisma/client": "^6.8.2",
 		"@react-google-maps/api": "^2.20.6",
 		"@stripe/stripe-js": "^7.3.0",
 		"@tinymce/tinymce-react": "^6.1.0",
@@ -34,11 +34,11 @@
 		"@tiptap/extension-table-row": "^2.12.0",
 		"@tiptap/react": "^2.12.0",
 		"@tiptap/starter-kit": "^2.12.0",
-		"@types/leaflet": "^1.9.17",
-		"@types/react": "^19.1.4",
+		"@types/leaflet": "^1.9.18",
+		"@types/react": "19.1.5",
 		"@types/react-dom": "^19.1.5",
 		"@types/react-leaflet": "^3.0.0",
-		"astro": "^5.7.13",
+		"astro": "^5.8.0",
 		"bcrypt": "^6.0.0",
 		"googleapis": "^148.0.0",
 		"grapesjs": "^0.22.7",
@@ -60,6 +60,6 @@
 		"prettier": "^3.5.3",
 		"prettier-plugin-astro": "^0.14.1",
 		"prettier-plugin-tailwindcss": "^0.6.11",
-		"prisma": "^6.8.0"
+		"prisma": "^6.8.2"
 	}
 }
