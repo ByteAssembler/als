@@ -1,7 +1,6 @@
 ﻿---
-import { PrismaClient } from "@prisma/client";
 import Layout from "../../layouts/Layout.astro";
-const prisma = new PrismaClient();
+import prisma from "../../utils/db";
 const links = await prisma.link.findMany();
 ---
 

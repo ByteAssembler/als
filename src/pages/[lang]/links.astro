@@ -1,12 +1,11 @@
 ﻿---
-import { PrismaClient } from "@prisma/client";
 import Layout from "../../layouts/Layout.astro";
+import prisma from "../../utils/db";
 
-const prisma = new PrismaClient();
 const links = await prisma.link.findMany();
 ---
 
-<Layout defaultPadding={false}>
+<Layout title="Links" defaultPadding={false}>
     <main class="min-h-screen bg-blue-200 pt-0 pb-16 px-6 sm:px-12">
         <div class="mx-auto max-w-4xl">
             <header class="mb-12 text-center">
@@ -35,9 +34,9 @@ const links = await prisma.link.findMany();
                                     fill="none"
                                     viewBox="0 0 24 24"
                                     stroke="currentColor"
-                                    strokeWidth={4}
+                                    stroke-width={4}
                                 >
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                 </svg>
                                 <span>{link.name}</span>
                             </a>

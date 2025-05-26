@@ -1,7 +1,5 @@
-import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
-
-const prisma = new PrismaClient();
+import prisma from '../../../../utils/db';
 
 export const navbarHandlers = {
 	create: async (input: z.infer<typeof createNavbarSchema>) => {
