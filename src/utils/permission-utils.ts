@@ -5,7 +5,7 @@
  * the permissions system defined in permissions.ts.
  */
 
-import { DB_PERMISSIONS, DbPermissions, Permissions, permissionSets } from "./permission";
+import { DB_PERMISSIONS, type DbPermissions, Permissions, permissionSets } from "./permission";
 
 /**
  * Checks if a user has full permissions for a specific category
