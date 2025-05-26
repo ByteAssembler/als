@@ -31,9 +31,16 @@ model RawTranslation {
     bookContents          Book[]             @relation("BookContent")
 }
 
+enum Language {
+    en
+    de
+    it
+    lld
+}
+
 model Translation {
-    id       Int    @id @default(autoincrement())
-    language String @db.VarChar(10)
+    id       Int      @id @default(autoincrement())
+    language Language
     value    String
 
     rawTranslationId Int
