@@ -1,6 +1,7 @@
 <script lang="ts">
   import SidebarNavSection, { type NavLinkData } from "./SidebarNavSection.svelte";
   import { type ScrollableNavLinkData } from "./SidebarScrollableNavSection.svelte";
+  import "../styles.css";
 
   type Props = {
     class?: string;
@@ -80,9 +81,3 @@
     <SidebarNavSection title="Library" links={libraryLinks} />
   </div>
 </div>
-
-<style is:global>
-  @import "tailwindcss/base";
-  @import "tailwindcss/components";
-  @import "tailwindcss/utilities";
-</style>
