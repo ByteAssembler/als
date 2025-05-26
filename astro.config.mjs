@@ -6,23 +6,23 @@ import netlify from "@astrojs/netlify";
 import svelte from "@astrojs/svelte";
 
 export default defineConfig({
-    site: "https://smx71k4f-4321.euw.devtunnels.ms",
-    integrations: [tailwind(), react(), svelte()],
-    output: "server",
-    adapter: netlify(),
+	site: "https://smx71k4f-4321.euw.devtunnels.ms",
+	integrations: [tailwind(), react(), svelte()],
+	output: "server",
+	adapter: netlify(),
 
-    i18n: {
-        locales: ["de", "it", "en"],
-        defaultLocale: "de",
-    },
-    middleware: "./src/middleware.ts",
-    server: {
-        allowedHosts: [
-            "7.tcp.eu.ngrok.io:18524",
-            "7.tcp.eu.ngrok.io",
-            "smx71k4f-4321.euw.devtunnels.ms"
-        ]
-    }
+	i18n: {
+		locales: ["de", "it", "en"],
+		defaultLocale: "de",
+	},
+	middleware: "./src/middleware.ts",
+	server: {
+		allowedHosts: [
+			"7.tcp.eu.ngrok.io:18524",
+			"7.tcp.eu.ngrok.io",
+			"smx71k4f-4321.euw.devtunnels.ms"
+		]
+	}
 });
 
 // import en from './locales/en.json';
