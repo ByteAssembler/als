@@ -4,7 +4,7 @@ import tailwind from "@astrojs/tailwind";
 import netlify from "@astrojs/netlify";
 
 export default defineConfig({
-	site: "http://7.tcp.eu.ngrok.io:18524",
+	site: "https://smx71k4f-4321.euw.devtunnels.ms",
 	integrations: [tailwind(), react()],
 	output: "server",
 	adapter: netlify(),
@@ -17,7 +17,8 @@ export default defineConfig({
 	server: {
 		allowedHosts: [
 			"7.tcp.eu.ngrok.io:18524",
-			"7.tcp.eu.ngrok.io"
+			"7.tcp.eu.ngrok.io",
+			"smx71k4f-4321.euw.devtunnels.ms"
 		]
 	}
 });

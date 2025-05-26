@@ -26,23 +26,23 @@ const MapComponent = () => {
 	const markersRef = useRef<L.Marker[]>([]);
 	const [category, setCategory] = useState("");
 
-    let url = "/marker.png";
-    switch (category) {
-        case "event":
-            url = "/event.png";
-            break;
-        case "hospital":
-            url = "/hospital_marker.png";
-            break;
-        case "self_help_group":
-            url = "/self_help_group.png";
-            break;
-        case "study":
-            url = "/study.png";
-            break;
-        default:
-            url = "/marker.png";
-    }
+	let url = "/marker.png";
+	switch (category) {
+		case "event":
+			url = "/event.png";
+			break;
+		case "hospital":
+			url = "/hospital_marker.png";
+			break;
+		case "self_help_group":
+			url = "/self_help_group.png";
+			break;
+		case "study":
+			url = "/study.png";
+			break;
+		default:
+			url = "/marker.png";
+	}
 
 	const customIcon = L.icon({
 		iconUrl: url,
@@ -91,16 +91,22 @@ const MapComponent = () => {
 	}, [category]);
 
 	return (
-		<div className="z-0">
-			<select className="dropdown" value={category} onChange={(e) => setCategory(e.target.value)}>
-				<option value="">Alle Kategorien</option>
-				{data.map((category) => (
-					<option key={category.name} value={category.name}>
-						{category.name}
-					</option>
-				))}
-			</select>
-			<div id="map-map" className="h-[500px] w-full rounded-lg shadow-md mt-2"></div>
+		<div className="z-0 relative">
+			<div className="absolute top-4 right-4 z-[9999999]">
+				<select
+					className="bg-white border-2 border-gray-400 rounded-lg px-4 py-2 font-medium text-gray-700 hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-w-[200px]"
+					value={category}
+					onChange={(e) => setCategory(e.target.value)}
+				>
+					<option value="">Alle Kategorien</option>
+					{data.map((category) => (
+						<option key={category.name} value={category.name}>
+							{category.name}
+						</option>
+					))}
+				</select>
+			</div>
+			<div id="map-map" className="h-[500px] w-full rounded-lg shadow-md"></div>
 		</div>
 	);
 };
