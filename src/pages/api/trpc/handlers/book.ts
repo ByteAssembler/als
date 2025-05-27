@@ -1,12 +1,13 @@
 import { z } from 'zod';
 import prisma from '../../../../utils/db';
+import { getTranslation } from '../../../../utils';
 
 export const bookHandlers = {
 	create: async (input: z.infer<typeof createBookSchema>) => {
 		return await prisma.book.create({ data: input });
 	},
-	read: async (id: number) => {
-		return await prisma.book.findUnique({
+	read: async (id: number, language?: string) => {
+		const book = await prisma.book.findUnique({
 			where: { id },
 			include: {
 				title: {
@@ -21,9 +22,22 @@ export const bookHandlers = {
 				},
 			},
 		});
+
+		if (!book) {
+			return null;
+		}
+
+		const title = language ? await getTranslation(book.titleRawTranslationId, language) : book.title.translations[0]?.value;
+		const content = language ? await getTranslation(book.contentRawTranslationId, language) : book.content.translations[0]?.value;
+
+		return {
+			...book,
+			title: title ?? book.title.translations[0]?.value,
+			content: content ?? book.content.translations[0]?.value,
+		};
 	},
 	read_by_language: async (id: number, language: string) => {
-		return await prisma.book.findUnique({
+		const book = await prisma.book.findUnique({
 			where: { id },
 			include: {
 				title: {
@@ -42,6 +56,19 @@ export const bookHandlers = {
 				},
 			},
 		});
+
+		if (!book) {
+			return null;
+		}
+
+		const title = await getTranslation(book.titleRawTranslationId, language);
+		const content = await getTranslation(book.contentRawTranslationId, language);
+
+		return {
+			...book,
+			title: title ?? book.title.translations[0]?.value,
+			content: content ?? book.content.translations[0]?.value,
+		};
 	},
 	update: async (input: z.infer<typeof updateBookSchema>) => {
 		return await prisma.book.update({ where: { id: input.id }, data: input });
@@ -49,8 +76,8 @@ export const bookHandlers = {
 	delete: async (id: number) => {
 		return await prisma.book.delete({ where: { id } });
 	},
-	list: async () => {
-		return await prisma.book.findMany({
+	list: async (language?: string) => {
+		const books = await prisma.book.findMany({
 			include: {
 				title: {
 					include: {
@@ -64,9 +91,54 @@ export const bookHandlers = {
 				},
 			},
 		});
+
+		if (!books || books.length === 0) {
+			return [];
+		}
+
+		const rawTranslationIds: number[] = [];
+		books.forEach((book) => {
+			rawTranslationIds.push(book.titleRawTranslationId);
+			rawTranslationIds.push(book.contentRawTranslationId);
+		});
+
+		let translations: { [key: number]: string | null } = {};
+
+		if (language) {
+			const translationRecords = await prisma.rawTranslation.findMany({
+				where: {
+					id: {
+						in: rawTranslationIds,
+					},
+				},
+				include: {
+					translations: {
+						where: {
+							language: language,
+						},
+					},
+				},
+			});
+
+			translations = translationRecords.reduce((acc: { [key: number]: string | null }, record) => {
+				acc[record.id] = record.translations.length > 0 ? record.translations[0].value : null;
+				return acc;
+			}, {});
+		}
+
+		return books.map((book) => {
+			const title = language ? translations[book.titleRawTranslationId] : book.title.translations[0]?.value;
+			const content = language ? translations[book.contentRawTranslationId] : book.content.translations[0]?.value;
+
+			return {
+				...book,
+				title: title ?? book.title.translations[0]?.value,
+				content: content ?? book.content.translations[0]?.value,
+			};
+		});
 	},
 	list_by_language: async (language: string) => {
-		return await prisma.book.findMany({
+		const books = await prisma.book.findMany({
 			include: {
 				title: {
 					include: {
@@ -83,6 +155,47 @@ export const bookHandlers = {
 					},
 				},
 			},
+		});
+
+		if (!books || books.length === 0) {
+			return [];
+		}
+
+		const rawTranslationIds: number[] = [];
+		books.forEach((book) => {
+			rawTranslationIds.push(book.titleRawTranslationId);
+			rawTranslationIds.push(book.contentRawTranslationId);
+		});
+
+		const translationRecords = await prisma.rawTranslation.findMany({
+			where: {
+				id: {
+					in: rawTranslationIds,
+				},
+			},
+			include: {
+				translations: {
+					where: {
+						language: language,
+					},
+				},
+			},
+		});
+
+		const translations = translationRecords.reduce((acc: { [key: number]: string | null }, record) => {
+			acc[record.id] = record.translations.length > 0 ? record.translations[0].value : null;
+			return acc;
+		}, {});
+
+		return books.map((book) => {
+			const title = translations[book.titleRawTranslationId];
+			const content = translations[book.contentRawTranslationId];
+
+			return {
+				...book,
+				title: title ?? book.title.translations[0]?.value,
+				content: content ?? book.content.translations[0]?.value,
+			};
 		});
 	},
 };
