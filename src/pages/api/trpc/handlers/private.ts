@@ -7,6 +7,7 @@ import { bookHandlers } from "./book";
 import { mapPointCategoryHandlers } from "./mapPointCategory";
 import { mapPointHandlers } from "./mapPoint";
 import { celebrityHandlers } from "./celebrity";
+import { rawTranslationHandlers } from "./rawTranslation";
 
 export const privateHandlers = {
 	// "filemanager.file.upload-url": fileManager.getUploadFileUrlForClient,
@@ -27,6 +28,7 @@ export const privateHandlers = {
 	"blog.list_by_language": blogHandlers.list_by_language,
 
 	// Link
+	"link.findAll": linkHandlers.findAll,
 	"link.create": linkHandlers.create,
 	"link.read": linkHandlers.read,
 	"link.read_by_language": linkHandlers.read_by_language,
@@ -86,4 +88,8 @@ export const privateHandlers = {
 	"celebrity.delete": celebrityHandlers.delete,
 	"celebrity.list": celebrityHandlers.list,
 	"celebrity.list_by_language": celebrityHandlers.list_by_language,
+
+	// RawTranslation
+	"rawTranslation.findUnique": rawTranslationHandlers.findUnique,
+	"rawTranslation.findMany": rawTranslationHandlers.findMany,
 };

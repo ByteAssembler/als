@@ -1,18 +1,11 @@
 ﻿---
 import Layout from "../../../layouts/Layout.astro";
 import FormattedDate from "../../../components/FormattedDate.astro";
-import db from "../../../utils/db";
+import { fetchDataFromServer } from "../../../pages/api/trpc/serverHelpers";
 import Button from "../../../components/ui/Button.astro";
 
 const { slug, lang } = Astro.params;
-const event = await db.event.findUnique({
-    where: {
-        slug,
-    },
-    include: {
-        speakers: true,
-    },
-});
+const event = await fetchDataFromServer("event.read_by_slug", slug);
 
 if (!event) {
     throw new Error("Event not found");

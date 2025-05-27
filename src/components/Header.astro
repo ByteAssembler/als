@@ -1,7 +1,7 @@
 ---
 import DesktopMenu from "./navigation/DesktopMenu.astro";
 import MobileMenu from "./navigation/MobileMenu.astro";
-import prisma from "../utils/db";
+import { fetchDataFromServer } from "../pages/api/trpc/serverHelpers";
 // import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const { lang } = Astro.params;
@@ -9,11 +9,8 @@ const { lang } = Astro.params;
 // ONLY FOR TESTING: TODO
 // const navBarItems: Navbar[] = [];
 
-const navBarItems = await prisma.navbar.findMany({
-    where: {
-        OR: [{ language: lang ? lang : "en" }, { language: "global" }],
-    },
-});
+const language = lang ? lang : "en";
+const navBarItems = await fetchDataFromServer("navbar.list_by_language", language);
 ---
 
 <header class="fixed left-0 right-0 top-0 z-[9999] border-b border-gray-200 bg-white px-6 py-4 shadow-sm">

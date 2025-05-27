@@ -1,18 +1,8 @@
 ﻿---
 import Layout from "../../layouts/Layout.astro";
-import db from "../../utils/db";
+import { fetchDataFromServer } from "../../pages/api/trpc/serverHelpers";
 
-const posts = await db.post.findMany({
-    select: {
-        id: true,
-        title: true,
-        slug: true,
-        content: true,
-        language: true,
-        publishedAt: true,
-        updatedAt: true,
-    },
-});
+const posts = await fetchDataFromServer("blog.list");
 ---
 
 <Layout title="Blogs">

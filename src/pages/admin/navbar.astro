@@ -1,9 +1,9 @@
 ﻿---
 import type { Navbar } from "@prisma/client";
-import db from "../../utils/db";
+import { fetchDataFromServer } from "../../pages/api/trpc/serverHelpers";
 import Layout from "../../layouts/Layout.astro";
 
-const navbarItems = await db.navbar.findMany();
+const navbarItems = await fetchDataFromServer("navbar.list");
 const languages = ["de", "en", "fr", "es"];
 ---
 

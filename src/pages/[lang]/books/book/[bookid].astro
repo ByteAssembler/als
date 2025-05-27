@@ -1,6 +1,6 @@
 ﻿---
 import Layout from "../../../../layouts/Layout.astro";
-import db from "../../../../utils/db";
+import { fetchDataFromServer } from "../../../../pages/api/trpc/serverHelpers";
 const { lang, bookid } = Astro.params;
 
 console.log(bookid);
@@ -9,16 +9,11 @@ if (!bookid || isNaN(parseInt(bookid))) {
 	throw new Error("bookId is required");
 }
 
-const book = await db.book.findFirst({
-	where: {
-		id: parseInt(bookid),
-	},
-	include: { covers: true, links: true },
-});
+const bookId = parseInt(bookid);
+const book = await fetchDataFromServer("book.read", bookId, lang);
 ---
 
 <Layout title={book ? book.title : "Book not found"} defaultPadding={true}>
-	
 	<div class="p-5">
 		{
 			book ? (

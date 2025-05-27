@@ -1,24 +1,10 @@
 ﻿---
 import Layout from "../../layouts/Layout.astro";
-import db from "../../utils/db";
+import { fetchDataFromServer } from "../../pages/api/trpc/serverHelpers";
 
 const { lang, site_slug } = Astro.params;
 
-const site = await db.site.findUnique({
-    where: {
-        slug: site_slug,
-    },
-    include: {
-        sections: {
-            include: {
-                contents: {
-                    where: {
-                        langCode: lang,
-                    },
-                },
-            },
-        },
-    },
+const site = await fetchDataFromServer("site.read_by_slug", site_slug, lang);
 });
 
 if (!site) {

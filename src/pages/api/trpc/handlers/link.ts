@@ -3,6 +3,9 @@ import prisma from '../../../../utils/db';
 import { getTranslation } from '../../../../utils';
 
 export const linkHandlers = {
+	findAll: async () => {
+		return await prisma.link.findMany();
+	},
 	create: async (input: z.infer<typeof createLinkSchema>) => {
 		return await prisma.link.create({ data: input });
 	},

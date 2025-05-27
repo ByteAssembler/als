@@ -1,10 +1,10 @@
 ﻿---
 import MapComponent from "./Map.tsx";
 import Section from "../layouts/Section.astro";
-import db from "../utils/db";
+import { fetchDataFromServer } from "../pages/api/trpc/serverHelpers";
 import type { MapPoint, MapPointType } from "@prisma/client";
-const mapPointsData: MapPoint[] = await db.mapPoint.findMany();
-const mapPointTypes: MapPointType[] = await db.mapPointType.findMany();
+const mapPointsData: MapPoint[] = await fetchDataFromServer("mapPoint.list");
+const mapPointTypes: MapPointType[] = await fetchDataFromServer("mapPointType.list");
 ---
 
 <Section sectionTitle="Wo Sie Hilfe finden" sectionId="map">

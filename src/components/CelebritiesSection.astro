@@ -1,10 +1,11 @@
 ﻿---
 import Section from "../layouts/Section.astro";
-import db from "../utils/db";
+import { fetchDataFromServer } from "../pages/api/trpc/serverHelpers";
 
-const celebrities = await db.celebrity.findMany({
-    orderBy: { alsYear: "asc" },
-});
+const { lang } = Astro.props;
+if (!lang) throw new Error("Language is required");
+
+const celebrities = await fetchDataFromServer("celebrity.list_by_language", lang);
 ---
 
 <Section sectionTitle="Prominente ALS-Kämpfer" sectionId="promis">

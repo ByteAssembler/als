@@ -1,8 +1,8 @@
 ﻿---
 import Layout from "../../layouts/Layout.astro";
-import prisma from "../../utils/db";
+import { fetchDataFromServer } from "../../pages/api/trpc/serverHelpers";
 
-const links = await prisma.link.findMany();
+const links = await fetchDataFromServer("link.findAll");
 ---
 
 <Layout title="Links" defaultPadding={false}>
