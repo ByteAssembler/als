@@ -5,7 +5,7 @@ const SECRET_KEY = process.env.JWT_SECRET || "supersecretkey";
 
 export const onRequest = defineMiddleware((context, next) => {
 	// Middleware nur für Admin-Seiten aktivieren
-	if (!context.url.pathname.startsWith("/admin") || context.url.pathname.startsWith("/admin/login")) {
+	if (!context.url.pathname.startsWith("/admin")) {
 		return next();
 	}
 
