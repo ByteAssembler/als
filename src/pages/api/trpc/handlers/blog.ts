@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import prisma from '../../../../utils/db';
+import { Language } from '@prisma/client';
 
 export const blogHandlers = {
 	create: async (input: z.infer<typeof createBlogSchema>) => {
@@ -22,6 +23,27 @@ export const blogHandlers = {
 			},
 		});
 	},
+	read_by_language: async (id: number, language: Language) => {
+		return await prisma.blog.findUnique({
+			where: { id },
+			include: {
+				title: {
+					include: {
+						translations: {
+							where: { language: language },
+						},
+					},
+				},
+				content: {
+					include: {
+						translations: {
+							where: { language: language },
+						},
+					},
+				},
+			},
+		});
+	},
 	update: async (input: z.infer<typeof updateBlogSchema>) => {
 		return await prisma.blog.update({ where: { id: input.id }, data: input });
 	},
@@ -39,6 +61,26 @@ export const blogHandlers = {
 				content: {
 					include: {
 						translations: true,
+					},
+				},
+			},
+		});
+	},
+	list_by_language: async (language: Language) => {
+		return await prisma.blog.findMany({
+			include: {
+				title: {
+					include: {
+						translations: {
+							where: { language: language },
+						},
+					},
+				},
+				content: {
+					include: {
+						translations: {
+							where: { language: language },
+						},
 					},
 				},
 			},

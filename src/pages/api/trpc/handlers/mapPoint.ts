@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import prisma from '../../../../utils/db';
+import { Language } from '@prisma/client';
 
 export const mapPointHandlers = {
 	create: async (input: z.infer<typeof createMapPointSchema>) => {
@@ -31,6 +32,38 @@ export const mapPointHandlers = {
 			},
 		});
 	},
+	read_by_language: async (id: number, language: Language) => {
+		return await prisma.mapPoint.findUnique({
+			where: { id },
+			include: {
+				name: {
+					include: {
+						translations: {
+							where: { language: language },
+						},
+					},
+				},
+				description: {
+					include: {
+						translations: {
+							where: { language: language },
+						},
+					},
+				},
+				category: {
+					include: {
+						name: {
+							include: {
+								translations: {
+									where: { language: language },
+								},
+							},
+						},
+					},
+				},
+			},
+		});
+	},
 	update: async (input: z.infer<typeof updateMapPointSchema>) => {
 		return await prisma.mapPoint.update({ where: { id: input.id }, data: input });
 	},
@@ -55,6 +88,37 @@ export const mapPointHandlers = {
 						name: {
 							include: {
 								translations: true,
+							},
+						},
+					},
+				},
+			},
+		});
+	},
+	list_by_language: async (language: Language) => {
+		return await prisma.mapPoint.findMany({
+			include: {
+				name: {
+					include: {
+						translations: {
+							where: { language: language },
+						},
+					},
+				},
+				description: {
+					include: {
+						translations: {
+							where: { language: language },
+						},
+					},
+				},
+				category: {
+					include: {
+						name: {
+							include: {
+								translations: {
+									where: { language: language },
+								},
 							},
 						},
 					},

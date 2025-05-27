@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import prisma from '../../../../utils/db';
+import { Language } from '@prisma/client';
 
 export const linkHandlers = {
 	create: async (input: z.infer<typeof createLinkSchema>) => {
@@ -22,6 +23,27 @@ export const linkHandlers = {
 			},
 		});
 	},
+	read_by_language: async (id: number, language: Language) => {
+		return await prisma.link.findUnique({
+			where: { id },
+			include: {
+				name: {
+					include: {
+						translations: {
+							where: { language: language },
+						},
+					},
+				},
+				description: {
+					include: {
+						translations: {
+							where: { language: language },
+						},
+					},
+				},
+			},
+		});
+	},
 	update: async (input: z.infer<typeof updateLinkSchema>) => {
 		return await prisma.link.update({ where: { id: input.id }, data: input });
 	},
@@ -39,6 +61,26 @@ export const linkHandlers = {
 				description: {
 					include: {
 						translations: true,
+					},
+				},
+			},
+		});
+	},
+	list_by_language: async (language: Language) => {
+		return await prisma.link.findMany({
+			include: {
+				name: {
+					include: {
+						translations: {
+							where: { language: language },
+						},
+					},
+				},
+				description: {
+					include: {
+						translations: {
+							where: { language: language },
+						},
 					},
 				},
 			},

@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import prisma from '../../../../utils/db';
+import { Language } from '@prisma/client';
 
 export const navbarHandlers = {
 	create: async (input: z.infer<typeof createNavbarSchema>) => {
@@ -17,6 +18,20 @@ export const navbarHandlers = {
 			},
 		});
 	},
+	read_by_language: async (id: number, language: Language) => {
+		return await prisma.navbar.findUnique({
+			where: { id },
+			include: {
+				text: {
+					include: {
+						translations: {
+							where: { language: language },
+						},
+					},
+				},
+			},
+		});
+	},
 	update: async (input: z.infer<typeof updateNavbarSchema>) => {
 		return await prisma.navbar.update({ where: { id: input.id }, data: input });
 	},
@@ -29,6 +44,19 @@ export const navbarHandlers = {
 				text: {
 					include: {
 						translations: true,
+					},
+				},
+			},
+		});
+	},
+	list_by_language: async (language: Language) => {
+		return await prisma.navbar.findMany({
+			include: {
+				text: {
+					include: {
+						translations: {
+							where: { language: language },
+						},
 					},
 				},
 			},
