@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import prisma from '../../../../utils/db';
-import { Language } from '@prisma/client';
 
 export const celebrityHandlers = {
 	create: async (input: z.infer<typeof createCelebritySchema>) => {
@@ -23,7 +22,7 @@ export const celebrityHandlers = {
 			},
 		});
 	},
-	read_by_language: async (id: number, language: Language) => {
+	read_by_language: async (id: number, language: string) => {
 		return await prisma.celebrity.findUnique({
 			where: { id },
 			include: {
@@ -66,7 +65,7 @@ export const celebrityHandlers = {
 			},
 		});
 	},
-	list_by_language: async (language: Language) => {
+	list_by_language: async (language: string) => {
 		return await prisma.celebrity.findMany({
 			include: {
 				bio: {

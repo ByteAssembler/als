@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import prisma from '../../../../utils/db';
-import { Language } from '@prisma/client';
 
 export const mapPointHandlers = {
 	create: async (input: z.infer<typeof createMapPointSchema>) => {
@@ -32,7 +31,7 @@ export const mapPointHandlers = {
 			},
 		});
 	},
-	read_by_language: async (id: number, language: Language) => {
+	read_by_language: async (id: number, language: string) => {
 		return await prisma.mapPoint.findUnique({
 			where: { id },
 			include: {
@@ -95,7 +94,7 @@ export const mapPointHandlers = {
 			},
 		});
 	},
-	list_by_language: async (language: Language) => {
+	list_by_language: async (language: string) => {
 		return await prisma.mapPoint.findMany({
 			include: {
 				name: {
