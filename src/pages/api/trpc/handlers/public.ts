@@ -4,7 +4,7 @@ export const publicHandlers = {
 	// "filemanager.bucket.list": fileManager.listEntries,
 	// "filemanager.file.download-url": fileManager.getDownloadFileUrlForClient,
 	// "filemanager.file.stat": fileManager.statFile,
-	"public.test": () => {
+	"public.test": async () => {
 		console.log("Public test handler called");
 		return "Public test response";
 	}

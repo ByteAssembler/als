@@ -14,8 +14,8 @@ export const privateHandlers = {
 	// "filemanager.file.delete": fileManager.deleteFile,
 	// "filemanager.folder.create": fileManager.createFolder,
 	// "filemanager.folder.delete": fileManager.deleteFolder,
-	"private.test": () => {
-		console.log("Public test handler called");
+	"private.test": async () => {
+		console.log("Private test handler called");
 	},
 	// Blog
 	"blog.create": blogHandlers.create,
