@@ -7,6 +7,8 @@ import MapSection from "../../components/MapSection.astro";
 import AboutSection from "../../components/AboutSection.astro";
 import Donation from "../../components/Donation.astro";
 import CelebritiesSection from "../../components/CelebritiesSection.astro";
+
+const lang = Astro.params.lang || "en";
 ---
 
 <Layout title="CV ALS - Fighting Together Against ALS" showTitle={false}>
@@ -15,7 +17,7 @@ import CelebritiesSection from "../../components/CelebritiesSection.astro";
         <BlogSection />
         <!-- EventsSection wurde entfernt -->
         <MapSection />
-        <CelebritiesSection />
+        <CelebritiesSection lang={lang} />
         <AboutSection />
         <Donation />
     </main>

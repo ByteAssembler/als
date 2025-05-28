@@ -18,10 +18,7 @@ const links = await fetchDataFromServer("link.findAll");
             <ul class="space-y-8">
                 {
                     links.map((link, index) => (
-                        <li
-                            key={link.id}
-                            class="rounded-xl bg-white p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer"
-                        >
+                        <li class="rounded-xl bg-white p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer">
                             <a
                                 href={link.url}
                                 target="_blank"
@@ -38,7 +35,7 @@ const links = await fetchDataFromServer("link.findAll");
                                 >
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                 </svg>
-                                <span>{link.name}</span>
+                                <span>{link?.name ?? "TODO"}</span>
                             </a>
                             {index === 0 && (
                                 <p class="mt-2 text-blue-700">

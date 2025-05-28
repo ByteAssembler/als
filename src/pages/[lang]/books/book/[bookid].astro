@@ -29,17 +29,17 @@ const book = await fetchDataFromServer("book.read", bookId, lang);
 						{book.links.map((link) => (
 							<li>
 								<a
-									href={link.url}
+									href={link}
 									class="text-blue-500 hover:underline"
 								>
-									{link.url}
+									{link}
 								</a>
 							</li>
 						))}
 					</ul>
 					)}
 
-					{book.covers.length > 0 && (
+					{/*book.covers.length > 0 && (
 						<h2 class="mt-8 text-2xl font-bold">Images</h2>
                         <div class="relative mx-auto mt-6 w-full max-w-md">
 						<div class="slider overflow-hidden">
@@ -63,7 +63,7 @@ const book = await fetchDataFromServer("book.read", bookId, lang);
 							→
 						</button>
 					</div>
-					)}
+					)*/}
 
                     <div class="mt-10">
                         <a href={`/${lang}/books`}

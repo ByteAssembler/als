@@ -3,6 +3,9 @@ import { fetchDataFromServer } from "../../../pages/api/trpc/serverHelpers";
 import Layout from "../../../layouts/Layout.astro";
 
 const { lang } = Astro.params;
+if (!lang) {
+    return new Response("Language parameter is missing", { status: 400 });
+}
 
 const books = await fetchDataFromServer("book.list_by_language", lang);
 ---

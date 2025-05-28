@@ -71,6 +71,40 @@ export const blogHandlers = {
 			content: content ?? blog.content.translations[0]?.value,
 		};
 	},
+	read_by_slug_and_language: async (slug: string, language: string) => {
+		const blog = await prisma.blog.findUnique({
+			where: { slug },
+			include: {
+				title: {
+					include: {
+						translations: {
+							where: { language: language },
+						},
+					},
+				},
+				content: {
+					include: {
+						translations: {
+							where: { language: language },
+						},
+					},
+				},
+			},
+		});
+
+		if (!blog) return null;
+
+		const title = await getTranslation(blog.titleRawTranslationId, language);
+		const content = await getTranslation(blog.contentRawTranslationId, language);
+
+		return {
+			...blog,
+			title: title
+				?? blog.title.translations[0]?.value,
+			content: content
+				?? blog.content.translations[0]?.value,
+		};
+	},
 	update: async (input: z.infer<typeof updateBlogSchema>) => {
 		return await prisma.blog.update({ where: { id: input.id }, data: input });
 	},

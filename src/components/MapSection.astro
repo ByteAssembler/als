@@ -2,13 +2,13 @@
 import MapComponent from "./Map.tsx";
 import Section from "../layouts/Section.astro";
 import { fetchDataFromServer } from "../pages/api/trpc/serverHelpers";
-import type { MapPoint, MapPointType } from "@prisma/client";
-const mapPointsData: MapPoint[] = await fetchDataFromServer("mapPoint.list");
-const mapPointTypes: MapPointType[] = await fetchDataFromServer("mapPointType.list");
+
+const mapPointsData = await fetchDataFromServer("mapPoint.list");
+const mapPointCategory = await fetchDataFromServer("mapPointCategory.list");
 ---
 
 <Section sectionTitle="Wo Sie Hilfe finden" sectionId="map">
     <div class="z-0 mx-auto max-w-6xl">
-        <MapComponent client:only="react" data={mapPointsData} types={mapPointTypes} />
+        <MapComponent client:only="react" points={mapPointsData} categories={mapPointCategory} />
     </div>
 </Section>

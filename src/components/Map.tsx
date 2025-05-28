@@ -1,25 +1,16 @@
 ﻿import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { fetchDataFromServer } from "../pages/api/trpc/serverHelpers";
 
-const data = [
+const MapComponent = (
 	{
-		name: "Hauptsitz",
-		locations: [{ name: "Olang", position: { lat: 46.7419, lng: 12.0196 } }],
-	},
-	{
-		name: "Krankenhäuser",
-		locations: [
-			{ name: "Zentrum ALS Ulm", position: { lat: 48.402, lng: 10.0014 } },
-			{
-				name: "Charité - Universitätsmedizin Berlin",
-				position: { lat: 52.5268, lng: 13.3766 },
-			},
-		],
-	},
-];
-
-const MapComponent = () => {
+		points, categories
+	}: {
+		points: Awaited<ReturnType<typeof fetchDataFromServer<"mapPoint.list">>>;
+		categories: Awaited<ReturnType<typeof fetchDataFromServer<"mapPointCategory.list">>>;
+	}
+) => {
 	const mapRef = useRef<L.Map | null>(null);
 	const markersRef = useRef<L.Marker[]>([]);
 	const [category, setCategory] = useState("");
@@ -63,7 +54,7 @@ const MapComponent = () => {
 		markersRef.current.forEach((marker) => mapRef.current?.removeLayer(marker));
 		markersRef.current = [];
 
-		const selectedCategories = category ? [data.find((item) => item.name === category)] : data;
+		const selectedCategories = category ? [points.find((item) => item.name === category)] : points;
 		let group: L.Marker[] = [];
 
 		selectedCategories.forEach((category) => {
