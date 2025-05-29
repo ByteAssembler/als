@@ -2,6 +2,7 @@
 import MapComponent from "./Map.tsx";
 import Section from "../layouts/Section.astro";
 import { fetchDataFromServer } from "../pages/api/trpc/serverHelpers";
+import { i18n } from "../i18n";
 
 let lang = Astro.locals.lang;
 if (!lang) throw new Error("Language parameter is required");
@@ -12,7 +13,7 @@ const [mapPoints, mapCategories] = await Promise.all([
 ]);
 ---
 
-<Section sectionTitle="Wo Sie Hilfe finden" sectionId="map">
+<Section sectionTitle={i18n.tLang(lang, "pages.homepage.map.title")} sectionId="map">
     <div class="z-0 mx-auto max-w-6xl">
         <MapComponent client:only="react" points={mapPoints} categories={mapCategories} />
     </div>

@@ -4,11 +4,12 @@ import { fetchDataFromServer } from "../pages/api/trpc/serverHelpers";
 
 const lang = Astro.locals.lang;
 if (!lang) throw new Error("Language is required");
+import { i18n } from "../i18n";
 
 const celebrities = await fetchDataFromServer("celebrity.list_by_language", lang);
 ---
 
-<Section sectionTitle="Prominente ALS-Kämpfer" sectionId="promis">
+<Section sectionTitle={i18n.tLang(lang, "pages.homepage.promis.title")} sectionId="promis">
     <div class="container mx-auto px-4 py-8 max-w-4xl">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             {
@@ -34,7 +35,8 @@ const celebrities = await fetchDataFromServer("celebrity.list_by_language", lang
                                     )}
                                 </h3>
                                 <p class="text-gray-600 mt-1">
-                                    Diagnose: {celebrity.alsYear} (Alter{" "}
+                                    {i18n.tLang(lang, "pages.homepage.promis.diagnosis")}: {celebrity.alsYear} (
+                                    {i18n.tLang(lang, "pages.homepage.promis.age")}{" "}
                                     {celebrity.alsYear - new Date(celebrity.born).getFullYear()})
                                 </p>
                                 <p class="text-gray-600">{celebrity.profession}</p>

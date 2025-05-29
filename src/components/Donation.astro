@@ -1,24 +1,37 @@
-﻿<!-- Contact Section -->
+﻿---
+import { i18n } from "../i18n";
+
+let lang = Astro.locals.lang;
+if (!lang) throw new Error("Language parameter is required");
+---
+
+<!-- Contact Section -->
 <section id="contact" class="py-20 bg-gradient-to-br from-gray-900 to-blue-900 text-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
-            <h2 class="text-4xl md:text-5xl font-bold mb-4">Kontakt</h2>
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                {i18n.tLang(lang, "pages.homepage.contact.title")}
+            </h2>
             <div class="w-24 h-1 bg-sky-300 mx-auto mb-8"></div>
             <p class="text-xl text-gray-300 max-w-3xl mx-auto">
-                Wir sind für Sie da. Zögern Sie nicht, uns zu kontaktieren.
+                {i18n.tLang(lang, "pages.homepage.contact.subtitle")}
             </p>
         </div>
 
         <div class="grid md:grid-cols-2 gap-12">
             <!-- Benutzerdefinierte Kontaktinformationen -->
             <div>
-                <h3 class="text-2xl font-semibold mb-8">Nehmen Sie Kontakt auf</h3>
+                <h3 class="text-2xl font-semibold mb-8">
+                    {i18n.tLang(lang, "pages.homepage.contact.title")}
+                </h3>
                 <div class="space-y-6">
                     <!-- Adresse -->
                     <div class="flex items-center">
                         <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mr-4">📍</div>
                         <div>
-                            <p class="font-semibold">Adresse</p>
+                            <p class="font-semibold">
+                                {i18n.tLang(lang, "pages.homepage.contact.aside.address")}
+                            </p>
                             <p class="text-gray-300">
                                 <a
                                     href="https://maps.google.com?q=Rienzstr. 21, 39030 Olang, Südtirol – Italien"
@@ -33,7 +46,9 @@
                     <div class="flex items-center">
                         <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mr-4">✉️</div>
                         <div>
-                            <p class="font-semibold">PEC</p>
+                            <p class="font-semibold">
+                                {i18n.tLang(lang, "pages.homepage.contact.aside.PEC")}
+                            </p>
                             <p class="text-gray-300">
                                 <a href="mailto:cv-als@pec.it" class="text-blue-400 underline">cv-als@pec.it</a>
                             </p>
@@ -44,7 +59,9 @@
                     <div class="flex items-center">
                         <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mr-4">📧</div>
                         <div>
-                            <p class="font-semibold">Alternative E-Mail</p>
+                            <p class="font-semibold">
+                                {i18n.tLang(lang, "pages.homepage.contact.aside.alternativeEmail")}
+                            </p>
                             <p class="text-gray-300">
                                 <a href="mailto:gerdsteger@hotmail.com" class="text-blue-400 underline"
                                     >gerdsteger@hotmail.com</a
@@ -57,7 +74,9 @@
                     <div class="flex items-center">
                         <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mr-4">📱</div>
                         <div>
-                            <p class="font-semibold">Mobil</p>
+                            <p class="font-semibold">
+                                {i18n.tLang(lang, "pages.homepage.contact.aside.mobile")}
+                            </p>
                             <p class="text-gray-300">
                                 <a href="tel:+393284534583" class="text-blue-400 underline">+39 328 45 345 83</a>
                             </p>
@@ -68,7 +87,9 @@
                     <div class="flex items-center">
                         <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mr-4">💳</div>
                         <div>
-                            <p class="font-semibold">IBAN</p>
+                            <p class="font-semibold">
+                                {i18n.tLang(lang, "pages.homepage.contact.aside.iban")}
+                            </p>
                             <p class="text-gray-300">IT59 Z060 4559 0400 0000 5001 502</p>
                         </div>
                     </div>
@@ -77,31 +98,39 @@
                     <div class="flex items-center">
                         <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mr-4">🧾</div>
                         <div>
-                            <p class="font-semibold">Steuernummer</p>
+                            <p class="font-semibold">
+                                {i18n.tLang(lang, "pages.homepage.contact.aside.taxNumber")}
+                            </p>
                             <p class="text-gray-300">92073470210</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Kontaktformular (optional) -->
+            <!-- Kontaktformular -->
             <div class="bg-white/10 p-8 rounded-2xl shadow-lg backdrop-blur">
-                <h3 class="text-2xl font-semibold mb-6 text-center">Kontaktformular</h3>
+                <h3 class="text-2xl font-semibold mb-6 text-center">
+                    {i18n.tLang(lang, "pages.homepage.contact.form.title")}
+                </h3>
                 <form class="space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-white mb-2" for="subject">Anliegen</label>
+                        <label class="block text-sm font-medium text-white mb-2" for="subject">
+                            {i18n.tLang(lang, "pages.homepage.contact.form.concern")}
+                        </label>
                         <input
                             type="text"
-                            placeholder="Ihr Anliegen"
+                            placeholder={i18n.tLang(lang, "pages.homepage.contact.form.concernPlaceholder")}
                             class="text-black w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             id="subject"
                         />
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-white mb-2" for="message">Nachricht</label>
+                        <label class="block text-sm font-medium text-white mb-2" for="message">
+                            {i18n.tLang(lang, "pages.homepage.contact.form.message")}
+                        </label>
                         <textarea
                             rows="6"
-                            placeholder="Ihre Nachricht"
+                            placeholder={i18n.tLang(lang, "pages.homepage.contact.form.messagePlaceholder")}
                             class="text-black w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             id="message"></textarea>
                     </div>
@@ -110,7 +139,7 @@
                         class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-300 text-center block"
                         id="send-email-link"
                     >
-                        Nachricht senden
+                        {i18n.tLang(lang, "pages.homepage.contact.form.submit")}
                     </a>
                 </form>
             </div>

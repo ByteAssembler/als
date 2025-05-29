@@ -1,4 +1,5 @@
 <script>
+  import Links from "./schmea/Links.svelte";
   import Sidebar from "./sidebar/Sidebar.svelte";
   import "./styles.css";
 
@@ -8,6 +9,11 @@
     {
       title: "Main",
       links: [
+        {
+          id: "links",
+          label: "Links",
+          iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xl:mr-2 lg:mr-0 size-4"><path d="M10 13a5 5 0 1 1 7.07-7.07l-1.41 1.41a3 3 0 1 0-4.24 4.24l1.41 1.41A5 5 0 0 1 10 13z"></path><path d="M14.83 14.83a5 5 0 1 1-7.07-7.07l1.41-1.41a3 3 0 1 0-4.24-4.24l-1.41-1.41A5 5 0 0 1 9.17 9.17l1.41-1.41a3 3 0 1 0-4.24-4.24l1.41-1.41A5 5 0 0 1 14.83 14.83z"></path></svg>`,
+        },
         {
           id: "dashboard",
           label: "Dashboard",
@@ -98,7 +104,9 @@
 
     <!-- Content Area -->
     <div class="px-6 py-8 lg:px-8">
-      {#if activeItemId === "dashboard"}
+      {#if activeItemId === "links"}
+        <Links />
+      {:else if activeItemId === "dashboard"}
         <!-- Dashboard Content -->
         <div class="space-y-6">
           <!-- Stats Grid -->

@@ -5,7 +5,7 @@ import Section from "../layouts/Section.astro";
 const lang = Astro.locals.lang;
 ---
 
-<Section sectionTitle="Über uns" sectionId="about">
+<Section sectionTitle={i18n.tLang(lang, "pages.homepage.aboutUs.title")} sectionId="about">
     <div class="mx-auto max-w-6xl">
         <div class="grid gap-12 md:grid-cols-2">
             <p class="mb-6 text-gray-600 text-base leading-relaxed">

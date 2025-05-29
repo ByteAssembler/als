@@ -1,0 +1,425 @@
+<script>
+  const languages = [
+    { code: "de", name: "Deutsch" },
+    { code: "en", name: "English" },
+  ];
+
+  let currentLanguage = $state("de");
+
+  let links = $state([
+    {
+      id: 1,
+      name: { de: "Startseite", en: "Homepage" },
+      description: { de: "Hauptseite der Website", en: "Main homepage link" },
+      url: "https://example.com",
+    },
+    {
+      id: 2,
+      name: { de: "Über uns", en: "About Us" },
+      description: { de: "Informationen über unser Unternehmen", en: "Information about our company" },
+      url: "https://example.com/about",
+    },
+    {
+      id: 3,
+      name: { de: "Kontakt", en: "Contact" },
+      description: { de: "Kontaktinformationen und Formular", en: "Contact information and form" },
+      url: "https://example.com/contact",
+    },
+  ]);
+
+  let showModal = $state(false);
+  let editingLink = $state(null);
+  let modalLanguage = $state("de");
+  let formData = $state({
+    name: {},
+    description: {},
+    url: "",
+  });
+
+  function openCreateModal() {
+    editingLink = null;
+    formData = {
+      name: {},
+      description: {},
+      url: "",
+    };
+    modalLanguage = "de";
+    showModal = true;
+  }
+
+  function openEditModal(link) {
+    editingLink = link;
+    formData = {
+      name: { ...link.name },
+      description: { ...link.description },
+      url: link.url,
+    };
+    modalLanguage = "de";
+    showModal = true;
+  }
+
+  function closeModal() {
+    showModal = false;
+    editingLink = null;
+  }
+
+  function saveLink(e) {
+    e.preventDefault();
+    if (editingLink) {
+      // Update existing link
+      const index = links.findIndex((l) => l.id === editingLink.id);
+      links[index] = { ...formData, id: editingLink.id };
+    } else {
+      // Create new link
+      const newLink = { ...formData, id: Date.now() };
+      links = [...links, newLink];
+    }
+    closeModal();
+  }
+
+  function deleteLink(id) {
+    if (confirm("Sind Sie sicher, dass Sie diesen Link löschen möchten?")) {
+      links = links.filter((l) => l.id !== id);
+    }
+  }
+
+  function getTranslation(translationObj, fallbackLang = "en") {
+    return translationObj?.[currentLanguage] || translationObj?.[fallbackLang] || "-";
+  }
+
+  // Keyboard navigation for modal
+  function handleModalKeydown(e) {
+    if (e.key === "Escape") {
+      closeModal();
+    }
+  }
+
+  // Focus trap for modal
+  function trapFocus(node) {
+    const focusableElements = node.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    function handleKeydown(e) {
+      if (e.key === "Tab") {
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement) {
+            e.preventDefault();
+            lastElement.focus();
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            e.preventDefault();
+            firstElement.focus();
+          }
+        }
+      }
+    }
+
+    node.addEventListener("keydown", handleKeydown);
+    firstElement?.focus();
+
+    return {
+      destroy() {
+        node.removeEventListener("keydown", handleKeydown);
+      },
+    };
+  }
+</script>
+
+<div class="bg-card shadow-sm rounded-lg border" role="region" aria-labelledby="links-heading">
+  <div class="px-6 py-4 border-b border-border">
+    <div class="flex justify-between items-center">
+      <div class="flex items-center space-x-4">
+        <h3 id="links-heading" class="text-lg font-medium">Links Verwaltung</h3>
+        <div class="flex items-center space-x-2">
+          <label for="language-select" class="text-sm text-muted-foreground">Sprache:</label>
+          <select
+            id="language-select"
+            bind:value={currentLanguage}
+            class="text-sm border border-input rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            aria-label="Sprache für die Anzeige der Links auswählen"
+          >
+            {#each languages as lang}
+              <option value={lang.code}>{lang.name}</option>
+            {/each}
+          </select>
+        </div>
+      </div>
+      <button
+        onclick={openCreateModal}
+        class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+        aria-label="Neuen Link hinzufügen"
+      >
+        <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+        </svg>
+        Neuen Link hinzufügen
+      </button>
+    </div>
+  </div>
+
+  <div class="overflow-x-auto" role="region" aria-label="Links Tabelle">
+    <table class="min-w-full divide-y divide-border" aria-label="Übersicht aller Links">
+      <thead class="bg-muted/50">
+        <tr>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"
+            >Name</th
+          >
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"
+            >Beschreibung</th
+          >
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"
+            >URL</th
+          >
+          <th
+            scope="col"
+            class="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">Aktionen</th
+          >
+        </tr>
+      </thead>
+      <tbody class="bg-card divide-y divide-border">
+        {#each links as link (link.id)}
+          <tr class="hover:bg-muted/25 transition-colors">
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium" role="cell">
+              <span aria-label="Link Name: {getTranslation(link.name)}">{getTranslation(link.name)}</span>
+              {#if !link.name[currentLanguage]}
+                <span
+                  class="ml-2 text-xs text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded"
+                  aria-label="Warnung: Übersetzung für {languages.find((l) => l.code === currentLanguage)?.name} fehlt"
+                >
+                  Übersetzung fehlt
+                </span>
+              {/if}
+            </td>
+            <td class="px-6 py-4 text-sm text-muted-foreground max-w-xs truncate" role="cell">
+              <span aria-label="Beschreibung: {getTranslation(link.description)}"
+                >{getTranslation(link.description)}</span
+              >
+              {#if link.description && Object.keys(link.description).length > 0 && !link.description[currentLanguage]}
+                <span
+                  class="ml-2 text-xs text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded"
+                  aria-label="Warnung: Übersetzung für {languages.find((l) => l.code === currentLanguage)?.name} fehlt"
+                >
+                  Übersetzung fehlt
+                </span>
+              {/if}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground" role="cell">
+              <a
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="hover:text-blue-600 transition-colors underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded"
+                aria-label="Link öffnen: {link.url} (öffnet in neuem Tab)"
+              >
+                {link.url}
+              </a>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium" role="cell">
+              <div
+                class="flex justify-end space-x-2"
+                role="group"
+                aria-label="Aktionen für {getTranslation(link.name)}"
+              >
+                <button
+                  onclick={() => openEditModal(link)}
+                  class="text-blue-600 hover:text-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded transition-colors p-1"
+                  aria-label="Link '{getTranslation(link.name)}' bearbeiten"
+                >
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                    ></path>
+                  </svg>
+                </button>
+                <button
+                  onclick={() => deleteLink(link.id)}
+                  class="text-red-600 hover:text-red-900 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 rounded transition-colors p-1"
+                  aria-label="Link '{getTranslation(link.name)}' löschen"
+                >
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        {/each}
+      </tbody>
+    </table>
+  </div>
+
+  {#if links.length === 0}
+    <div class="text-center py-12" role="status" aria-live="polite">
+      <svg
+        class="mx-auto h-12 w-12 text-muted-foreground"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+        ></path>
+      </svg>
+      <h3 class="mt-4 text-lg font-medium">Keine Links vorhanden</h3>
+      <p class="mt-2 text-sm text-muted-foreground">Erstellen Sie Ihren ersten Link, um zu beginnen.</p>
+    </div>
+  {/if}
+</div>
+
+<!-- Modal -->
+{#if showModal}
+  <div
+    class="fixed inset-0 z-50 overflow-y-auto"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-title"
+    tabindex="-1"
+    onkeydown={handleModalKeydown}
+  >
+    <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+      <div
+        class="fixed inset-0 transition-opacity bg-black bg-opacity-50"
+        onclick={closeModal}
+        aria-hidden="true"
+      ></div>
+
+      <div
+        class="inline-block w-full max-w-lg p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-card shadow-xl rounded-lg border bg-white"
+        use:trapFocus
+      >
+        <div class="flex justify-between items-center mb-4">
+          <h3 id="modal-title" class="text-lg font-medium">
+            {editingLink ? "Link bearbeiten" : "Neuen Link erstellen"}
+          </h3>
+          <button
+            onclick={closeModal}
+            class="text-muted-foreground hover:text-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded p-1"
+            aria-label="Dialog schließen"
+          >
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Language Tabs -->
+        <div class="mb-6" role="tablist" aria-label="Sprachen für Link-Übersetzungen">
+          <div class="border-b border-border">
+            <nav class="-mb-px flex space-x-8">
+              {#each languages as lang}
+                <button
+                  type="button"
+                  role="tab"
+                  onclick={() => (modalLanguage = lang.code)}
+                  class="py-2 px-1 border-b-2 font-medium text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded-t {modalLanguage ===
+                  lang.code
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'}"
+                  aria-selected={modalLanguage === lang.code}
+                  aria-controls="form-content"
+                  aria-label="Sprache {lang.name} auswählen"
+                >
+                  {lang.name}
+                  {#if formData.name[lang.code] || formData.description[lang.code]}
+                    <span class="ml-1 w-2 h-2 bg-green-500 rounded-full inline-block" aria-label="Übersetzung vorhanden"
+                    ></span>
+                  {/if}
+                </button>
+              {/each}
+            </nav>
+          </div>
+        </div>
+
+        <div id="form-content" role="tabpanel" aria-labelledby="modal-title">
+          <form onsubmit={saveLink} class="space-y-4">
+            <div>
+              <label for="name" class="block text-sm font-medium mb-1">
+                Name ({languages.find((l) => l.code === modalLanguage)?.name})
+                {#if modalLanguage === "de"}
+                  <span aria-label="Pflichtfeld">*</span>
+                {/if}
+              </label>
+              <input
+                id="name"
+                type="text"
+                bind:value={formData.name[modalLanguage]}
+                required={modalLanguage === "de"}
+                class="w-full px-3 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Link Name"
+                aria-describedby={modalLanguage !== "de" ? "name-help" : undefined}
+              />
+              {#if modalLanguage !== "de"}
+                <p id="name-help" class="mt-1 text-xs text-muted-foreground">
+                  Optional - falls leer, wird die deutsche Version verwendet
+                </p>
+              {/if}
+            </div>
+
+            <div>
+              <label for="description" class="block text-sm font-medium mb-1">
+                Beschreibung ({languages.find((l) => l.code === modalLanguage)?.name})
+              </label>
+              <textarea
+                id="description"
+                bind:value={formData.description[modalLanguage]}
+                rows="3"
+                class="w-full px-3 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                placeholder="Optionale Beschreibung des Links"
+                aria-label="Beschreibung für den Link in {languages.find((l) => l.code === modalLanguage)?.name}"
+              ></textarea>
+            </div>
+
+            <div>
+              <label for="url" class="block text-sm font-medium mb-1">
+                URL <span aria-label="Pflichtfeld">*</span>
+              </label>
+              <input
+                id="url"
+                type="url"
+                bind:value={formData.url}
+                required
+                class="w-full px-3 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="https://example.com"
+                aria-describedby="url-help"
+              />
+              <p id="url-help" class="mt-1 text-xs text-muted-foreground">Vollständige URL inklusive https://</p>
+            </div>
+
+            <div class="flex justify-end space-x-2 pt-4" role="group" aria-label="Dialog Aktionen">
+              <button
+                type="button"
+                onclick={closeModal}
+                class="px-4 py-2 text-sm font-medium border border-input rounded-lg hover:bg-muted focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+              >
+                Abbrechen
+              </button>
+              <button
+                type="submit"
+                class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                aria-describedby="submit-help"
+              >
+                {editingLink ? "Aktualisieren" : "Erstellen"}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{/if}

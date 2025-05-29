@@ -7,7 +7,42 @@ export const linkHandlers = {
 		return await prisma.link.findMany();
 	},
 	create: async (input: z.infer<typeof createLinkSchema>) => {
-		return await prisma.link.create({ data: input });
+		// Create name translation
+		const nameRawTranslation = await prisma.rawTranslation.create({
+			data: {
+				translations: {
+					create: Object.entries(input.name).map(([language, value]) => ({
+						language,
+						value: value as string,
+					})),
+				},
+			},
+		});
+
+		// Create description translation if provided
+		let descriptionRawTranslationId = null;
+		if (input.description && Object.keys(input.description).length > 0) {
+			const descriptionRawTranslation = await prisma.rawTranslation.create({
+				data: {
+					translations: {
+						create: Object.entries(input.description).map(([language, value]) => ({
+							language,
+							value: value as string,
+						})),
+					},
+				},
+			});
+			descriptionRawTranslationId = descriptionRawTranslation.id;
+		}
+
+		// Create the link
+		return await prisma.link.create({
+			data: {
+				nameRawTranslationId: nameRawTranslation.id,
+				descriptionRawTranslationId,
+				url: input.url,
+			},
+		});
 	},
 	read: async (id: number, language?: string) => {
 		const link = await prisma.link.findUnique({
@@ -74,7 +109,95 @@ export const linkHandlers = {
 		};
 	},
 	update: async (input: z.infer<typeof updateLinkSchema>) => {
-		return await prisma.link.update({ where: { id: input.id }, data: input });
+		const existingLink = await prisma.link.findUnique({
+			where: { id: input.id },
+		});
+
+		if (!existingLink) {
+			throw new Error('Link not found');
+		}
+
+		const updateData: any = {};
+
+		// Update name translations if provided
+		if (input.name) {
+			// Update existing translations
+			for (const [language, value] of Object.entries(input.name)) {
+				await prisma.translation.upsert({
+					where: {
+						language_rawTranslationId: {
+							language,
+							rawTranslationId: existingLink.nameRawTranslationId,
+						},
+					},
+					update: { value: value as string },
+					create: {
+						language,
+						value: value as string,
+						rawTranslationId: existingLink.nameRawTranslationId,
+					},
+				});
+			}
+		}
+
+		// Update description translations if provided
+		if (input.description !== undefined) {
+			if (input.description && Object.keys(input.description).length > 0) {
+				if (existingLink.descriptionRawTranslationId) {
+					// Update existing description translations
+					for (const [language, value] of Object.entries(input.description)) {
+						await prisma.translation.upsert({
+							where: {
+								language_rawTranslationId: {
+									language,
+									rawTranslationId: existingLink.descriptionRawTranslationId,
+								},
+							},
+							update: { value: value as string },
+							create: {
+								language,
+								value: value as string,
+								rawTranslationId: existingLink.descriptionRawTranslationId,
+							},
+						});
+					}
+				} else {
+					// Create new description translation
+					const descriptionRawTranslation = await prisma.rawTranslation.create({
+						data: {
+							translations: {
+								create: Object.entries(input.description).map(([language, value]) => ({
+									language,
+									value: value as string,
+								})),
+							},
+						},
+					});
+					updateData.descriptionRawTranslationId = descriptionRawTranslation.id;
+				}
+			} else if (existingLink.descriptionRawTranslationId) {
+				// Remove description if set to null/empty
+				await prisma.rawTranslation.delete({
+					where: { id: existingLink.descriptionRawTranslationId },
+				});
+				updateData.descriptionRawTranslationId = null;
+			}
+		}
+
+		// Update URL if provided
+		if (input.url !== undefined) {
+			updateData.url = input.url;
+		}
+
+		// Update the link if there are changes
+		if (Object.keys(updateData).length > 0) {
+			return await prisma.link.update({
+				where: { id: input.id },
+				data: updateData,
+			});
+		}
+
+		return existingLink;
 	},
 	delete: async (id: number) => {
 		return await prisma.link.delete({ where: { id } });
@@ -212,14 +335,14 @@ export const linkHandlers = {
 };
 
 const createLinkSchema = z.object({
-	nameRawTranslationId: z.number(),
-	descriptionRawTranslationId: z.number().optional(),
-	url: z.string(),
+	name: z.record(z.string(), z.string()),
+	description: z.record(z.string(), z.string()).optional(),
+	url: z.string().url(),
 });
 
 const updateLinkSchema = z.object({
 	id: z.number(),
-	nameRawTranslationId: z.number().optional(),
-	descriptionRawTranslationId: z.number().optional().nullable(),
-	url: z.string().optional(),
+	name: z.record(z.string(), z.string()).optional(),
+	description: z.record(z.string(), z.string()).optional().nullable(),
+	url: z.string().url().optional(),
 });
