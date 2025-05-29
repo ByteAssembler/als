@@ -1,18 +1,8 @@
-import prisma from './db';
-
-export const getTranslation = async (rawTranslationId: number, language: string) => {
-	const translation = await prisma.rawTranslation.findUnique({
-		where: { id: rawTranslationId },
-		include: {
-			translations: {
-				where: { language: language },
-			},
-		},
-	});
-
-	if (translation && translation.translations.length > 0) {
-		return translation.translations[0].value;
+export const getTranslation = (rawTranslation: { translations: { language: string; value: string }[] }, language?: string) => {
+	if (!language) {
+		return rawTranslation.translations[0]?.value || null;
 	}
 
-	return null;
+	const translation = rawTranslation.translations.find(t => t.language === language);
+	return translation?.value || rawTranslation.translations[0]?.value || null;
 };

@@ -56,7 +56,7 @@ model Blog {
     contentRawTranslationId Int
     content                 RawTranslation @relation("BlogContent", fields: [contentRawTranslationId], references: [id], onDelete: Cascade)
 
-    coverImageId String?
+    coverImageId Int?
     coverImage   MediaItem? @relation("BlogCoverImage", fields: [coverImageId], references: [id], onDelete: SetNull)
 
     publishedAt DateTime @default(now())
@@ -113,7 +113,7 @@ model Book {
     title                 RawTranslation @relation("BookTitle", fields: [titleRawTranslationId], references: [id], onDelete: Cascade)
     author                String
 
-    coverImageId String?
+    coverImageId Int?
     coverImage   MediaItem? @relation("BookCoverImage", fields: [coverImageId], references: [id], onDelete: SetNull)
 
     isbn String? @unique
@@ -156,7 +156,7 @@ model MapPoint {
 model Celebrity {
     id Int @id @default(autoincrement())
 
-    imageId String?
+    imageId Int?
     image   MediaItem? @relation("CelebrityImage", fields: [imageId], references: [id], onDelete: SetNull)
 
     name                       String
@@ -172,7 +172,7 @@ model Celebrity {
 }
 
 model MediaItem {
-    id       String @id @default(cuid())
+    id       Int    @id @default(autoincrement())
     filename String
 
     storageKey    String @unique
