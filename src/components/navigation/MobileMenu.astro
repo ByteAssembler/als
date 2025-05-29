@@ -1,10 +1,13 @@
 ﻿---
 import MenuItem from "./MenuItem.astro";
 import LanguageSelector from "./LanguageSelector.astro";
-import { type Navbar } from "@prisma/client";
+import type { NavbarItem } from "./navbar-content";
 
-const { lang } = Astro.params;
-const navBarItems: Navbar[] = Astro.props.navBarItems;
+interface Props {
+    navBarItems: NavbarItem[];
+}
+
+const { navBarItems } = Astro.props;
 ---
 
 <div
@@ -32,7 +35,7 @@ const navBarItems: Navbar[] = Astro.props.navBarItems;
                     {
                         navBarItems.map((item) => (
                             <li>
-                                <MenuItem href={item.href} text={item.text} className="text-xl block py-2" />
+                                <MenuItem {...item} className="text-xl block py-2" />
                             </li>
                         ))
                     }
