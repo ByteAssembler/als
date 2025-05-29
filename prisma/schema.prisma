@@ -29,16 +29,9 @@ model RawTranslation {
     blogContents          Blog[]             @relation("BlogContent")
     bookTitles            Book[]             @relation("BookTitle")
     bookContents          Book[]             @relation("BookContent")
+    mediaItemAltTexts     MediaItem[]        @relation("MediaItemAltText")
+    mediaItemCaptions     MediaItem[]        @relation("MediaItemCaption")
 }
-
-/**
- * enum Language {
- * en
- * de
- * it
- * lld
- * }
- */
 
 model Translation {
     id       Int    @id @default(autoincrement())
@@ -63,7 +56,8 @@ model Blog {
     contentRawTranslationId Int
     content                 RawTranslation @relation("BlogContent", fields: [contentRawTranslationId], references: [id], onDelete: Cascade)
 
-    coverImage String?
+    coverImageId String?
+    coverImage   MediaItem? @relation("BlogCoverImage", fields: [coverImageId], references: [id], onDelete: SetNull)
 
     publishedAt DateTime @default(now())
     updatedAt   DateTime @updatedAt
@@ -100,6 +94,8 @@ model User {
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+
+    uploadedMediaItems MediaItem[]
 }
 
 enum Role {
@@ -116,8 +112,10 @@ model Book {
     title                 RawTranslation @relation("BookTitle", fields: [titleRawTranslationId], references: [id], onDelete: Cascade)
     author                String
 
-    isbn       String? @unique
-    coverImage String?
+    coverImageId String?
+    coverImage   MediaItem? @relation("BookCoverImage", fields: [coverImageId], references: [id], onDelete: SetNull)
+
+    isbn String? @unique
 
     published DateTime
 
@@ -157,7 +155,8 @@ model MapPoint {
 model Celebrity {
     id Int @id @default(autoincrement())
 
-    image String?
+    imageId String?
+    image   MediaItem? @relation("CelebrityImage", fields: [imageId], references: [id], onDelete: SetNull)
 
     name                       String
     bioRawTranslationId        Int
@@ -169,4 +168,33 @@ model Celebrity {
     died DateTime?
 
     alsYear Int
+}
+
+model MediaItem {
+    id       String @id @default(cuid())
+    filename String
+
+    storageKey    String @unique
+    storageBucket String
+    storageRegion String
+    mimeType      String
+
+    size   Int
+    width  Int?
+    height Int?
+
+    altTextRawTranslationId Int?
+    altText                 RawTranslation? @relation("MediaItemAltText", fields: [altTextRawTranslationId], references: [id], onDelete: SetNull)
+
+    captionRawTranslationId Int?
+    caption                 RawTranslation? @relation("MediaItemCaption", fields: [captionRawTranslationId], references: [id], onDelete: SetNull)
+
+    uploadedAt DateTime @default(now())
+
+    uploaderId Int?
+    uploader   User? @relation(fields: [uploaderId], references: [id], onDelete: SetNull)
+
+    blogsAsCover       Blog[]      @relation("BlogCoverImage")
+    booksAsCover       Book[]      @relation("BookCoverImage")
+    celebritiesAsImage Celebrity[] @relation("CelebrityImage")
 }
