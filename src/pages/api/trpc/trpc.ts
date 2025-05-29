@@ -28,7 +28,7 @@ export type inferOutput<RouteKey extends keyof AppRouter> =
 	Awaited<ReturnType<AppRouter[RouteKey]>>;
 
 export type inferAuthInput<RouteKey extends keyof AuthRouter> =
-	Parameters<AuthRouter[RouteKey]>;
+	Parameters<AuthRouter[RouteKey]>; // This will now correctly infer parameters without authToken if it's removed from handlers
 export type inferAuthOutput<RouteKey extends keyof AuthRouter> =
 	Awaited<ReturnType<AuthRouter[RouteKey]>>;
 
@@ -57,14 +57,13 @@ export async function trpcQuery<K extends keyof AppRouter>(
 
 export async function trpcAuthQuery<K extends keyof AuthRouter>(
 	route: K,
-	authToken: string,
 	...input: inferAuthInput<K>
 ): Promise<inferAuthOutput<K>> {
 	const res = await fetch("/api/trpc/auth", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
-			"Authorization": `Bearer ${authToken}`
+			// "Authorization": `Bearer ${authToken}` // Removed Authorization header
 		},
 		body: superjson.stringify({ destination: route, data: input }),
 	});

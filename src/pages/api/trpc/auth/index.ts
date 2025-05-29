@@ -3,11 +3,39 @@ import { authHandlers } from "../handlers";
 import superjson from "superjson";
 import { createSuccessResponse, createErrorResponse } from "../trpc";
 
+import jwt from "jsonwebtoken";
+import { SECRET_KEY } from "@/middleware";
+
 export const prerender = false;
 
 // Simple auth check - replace with your actual authentication logic
 function isAuthenticated(request: Request): boolean {
-	const authHeader = request.headers.get("Authorization");
+	let authHeader = request.headers.get("Authorization");
+	if (!authHeader) {
+		const cookieHeader = request.headers.get("Cookie");
+		if (cookieHeader) {
+			const cookies = Object.fromEntries(cookieHeader.split("; ").map(c => c.split("=")));
+			authHeader = cookies["token"];
+
+			// Decode the token
+			const decodedToken = authHeader?.startsWith("Bearer ")
+				? authHeader.slice(7) // Remove "Bearer " prefix
+				: authHeader;
+
+			if (!decodedToken) {
+				return false; // No token found
+			}
+
+			const decoded = jwt.verify(decodedToken, SECRET_KEY);
+			console.log("Decoded token:", decoded);
+			//! TODO: Implement your actual token validation logic here
+			return true; // Token is valid
+		}
+	}
+	if (!authHeader) {
+		return false; // No auth header or cookie found
+	}
+	console.log("Auth header:", authHeader);
 	// TODO: Implement your actual authentication logic here
 	// For example: JWT validation, session check, API key validation, etc.
 	return authHeader?.startsWith("Bearer ") || false;

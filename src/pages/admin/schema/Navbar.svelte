@@ -8,6 +8,7 @@
   const languages = [
     { code: "de", name: "Deutsch" },
     { code: "en", name: "English" },
+    { code: "it", name: "Italienisch" },
   ];
 
   let currentLanguage = $state("de");

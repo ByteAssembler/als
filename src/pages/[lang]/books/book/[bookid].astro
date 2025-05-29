@@ -1,4 +1,5 @@
 ﻿---
+import { i18n } from "@/i18n";
 import Layout from "../../../../layouts/Layout.astro";
 import { fetchDataFromServer } from "../../../../pages/api/trpc/serverHelpers";
 const { lang, bookid } = Astro.params;
@@ -13,7 +14,7 @@ const bookId = parseInt(bookid);
 const book = await fetchDataFromServer("book.read", bookId, lang);
 ---
 
-<Layout title={book ? book.title : "Book not found"} defaultPadding={true}>
+<Layout title={book ? book.title : i18n.tLang(lang, "pages.books.book.[bookid].bookNotFound")} defaultPadding={true}>
 	<div class="p-5">
 		{
 			book ? (
@@ -23,7 +24,7 @@ const book = await fetchDataFromServer("book.read", bookId, lang);
 					<div class="mt-6" set:html={book.content} />
 
 					{book.links.length > 0 && (
-						<h2 class="mt-8 text-2xl font-bold">Links</h2>
+						<h2 class="mt-8 text-2xl font-bold">{i18n.tLang(lang, "pages.books.book.[bookid].links")}</h2>
 
 					<ul class="ml-5 list-disc">
 						{book.links.map((link) => (
@@ -68,7 +69,7 @@ const book = await fetchDataFromServer("book.read", bookId, lang);
                     <div class="mt-10">
                         <a href={`/${lang}/books`}
                         class="font-medium text-blue-600 hover:text-blue-800 " >
-                        ← Zurück zur Übersicht
+                        {i18n.tLang(lang, "pages.books.book.[bookid].backToOverview")}
                         </a>
 					</div>
 				</>
