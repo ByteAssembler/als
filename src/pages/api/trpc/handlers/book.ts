@@ -100,14 +100,15 @@ export const bookHandlers = {
 			include: {
 				title: {
 					include: {
-						translations: true,
+						translations: language ? { where: { language } } : true,
 					},
 				},
 				content: {
 					include: {
-						translations: true,
+						translations: language ? { where: { language } } : true,
 					},
 				},
+				coverImage: true,
 			},
 		});
 
@@ -115,50 +116,11 @@ export const bookHandlers = {
 			return [];
 		}
 
-		// If no language specified, return with default translations
-		if (!language) {
-			return books.map((book) => ({
-				...book,
-				title: book.title.translations[0]?.value,
-				content: book.content.translations[0]?.value,
-			}));
-		}
-
-		// Get all rawTranslationIds for batch processing
-		const rawTranslationIds: number[] = [];
-		books.forEach((book) => {
-			rawTranslationIds.push(book.titleRawTranslationId);
-			rawTranslationIds.push(book.contentRawTranslationId);
-		});
-
-		// Fetch translations in bulk
-		const translationRecords = await prisma.rawTranslation.findMany({
-			where: {
-				id: { in: rawTranslationIds },
-			},
-			include: {
-				translations: {
-					where: { language },
-				},
-			},
-		});
-
-		// Create a map for efficient lookup
-		const translations = translationRecords.reduce((acc: { [key: number]: string | null }, record) => {
-			acc[record.id] = record.translations.length > 0 ? record.translations[0].value : null;
-			return acc;
-		}, {});
-
-		return books.map((book) => {
-			const title = translations[book.titleRawTranslationId];
-			const content = translations[book.contentRawTranslationId];
-
-			return {
-				...book,
-				title: title ?? book.title.translations[0]?.value,
-				content: content ?? book.content.translations[0]?.value,
-			};
-		});
+		return books.map((book) => ({
+			...book,
+			title: book.title.translations.length > 0 ? book.title.translations[0]?.value : null,
+			content: book.content.translations.length > 0 ? book.content.translations[0]?.value : null,
+		}));
 	},
 
 	list_by_language: async (language: string) => {

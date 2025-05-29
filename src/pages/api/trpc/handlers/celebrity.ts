@@ -1,94 +1,87 @@
 import { z } from 'zod';
 import prisma from '../../../../utils/db';
-import { getTranslation } from '../../../../utils';
+import type { Prisma } from '@prisma/client';
+
+// Helper function to get celebrity with translated fields
+async function getCelebrityWithTranslatedFields(
+	whereClause: Prisma.CelebrityWhereUniqueInput,
+	language?: string
+) {
+	const celebrity = await prisma.celebrity.findUnique({
+		where: whereClause,
+		include: {
+			bio: {
+				include: {
+					translations: language ? { where: { language } } : true,
+				},
+			},
+			profession: {
+				include: {
+					translations: language ? { where: { language } } : true,
+				},
+			},
+			image: true,
+		},
+	});
+
+	if (!celebrity) return null;
+
+	return {
+		...celebrity,
+		bio: celebrity.bio.translations.length > 0 ? celebrity.bio.translations[0]?.value : null,
+		profession: celebrity.profession.translations.length > 0 ? celebrity.profession.translations[0]?.value : null,
+	};
+}
 
 export const celebrityHandlers = {
 	create: async (input: z.infer<typeof createCelebritySchema>) => {
-		return await prisma.celebrity.create({ data: input });
+		const { image, ...celebrityData } = input;
+		return await prisma.celebrity.create({
+			data: {
+				...celebrityData,
+				...(image && {
+					imageId: image // Assuming imageId is the field in the database
+				})
+			}
+		});
 	},
+
 	read: async (id: number, language?: string) => {
-		const celebrity = await prisma.celebrity.findUnique({
-			where: { id },
-			include: {
-				bio: {
-					include: {
-						translations: true,
-					},
-				},
-				profession: {
-					include: {
-						translations: true,
-					},
-				},
-				image: true,
-			},
-		});
-
-		if (!celebrity) {
-			return null;
-		}
-
-		const bio = language ? await getTranslation(celebrity.bioRawTranslationId, language) : celebrity.bio.translations[0]?.value;
-		const profession = language ? await getTranslation(celebrity.professionRawTranslationId, language) : celebrity.profession.translations[0]?.value;
-
-		return {
-			...celebrity,
-			bio: bio ?? celebrity.bio.translations[0]?.value,
-			profession: profession ?? celebrity.profession.translations[0]?.value,
-		};
+		return getCelebrityWithTranslatedFields({ id }, language);
 	},
+
 	read_by_language: async (id: number, language: string) => {
-		const celebrity = await prisma.celebrity.findUnique({
-			where: { id },
-			include: {
-				bio: {
-					include: {
-						translations: {
-							where: { language: language },
-						},
-					},
-				},
-				profession: {
-					include: {
-						translations: {
-							where: { language: language },
-						},
-					},
-				},
-				image: true,
-			},
-		});
-
-		if (!celebrity) {
-			return null;
-		}
-
-		const bio = await getTranslation(celebrity.bioRawTranslationId, language);
-		const profession = await getTranslation(celebrity.professionRawTranslationId, language);
-
-		return {
-			...celebrity,
-			bio: bio ?? celebrity.bio.translations[0]?.value,
-			profession: profession ?? celebrity.profession.translations[0]?.value,
-		};
+		return getCelebrityWithTranslatedFields({ id }, language);
 	},
+
 	update: async (input: z.infer<typeof updateCelebritySchema>) => {
-		return await prisma.celebrity.update({ where: { id: input.id }, data: input });
+		const { id, image, ...updateData } = input;
+		return await prisma.celebrity.update({
+			where: { id },
+			data: {
+				...updateData,
+				...(image !== undefined && {
+					imageId: image // Use imageId directly instead of nested image.connect
+				})
+			}
+		});
 	},
+
 	delete: async (id: number) => {
 		return await prisma.celebrity.delete({ where: { id } });
 	},
+
 	list: async (language?: string) => {
 		const celebrities = await prisma.celebrity.findMany({
 			include: {
 				bio: {
 					include: {
-						translations: true,
+						translations: language ? { where: { language } } : true,
 					},
 				},
 				profession: {
 					include: {
-						translations: true,
+						translations: language ? { where: { language } } : true,
 					},
 				},
 				image: true,
@@ -99,108 +92,15 @@ export const celebrityHandlers = {
 			return [];
 		}
 
-		const rawTranslationIds: number[] = [];
-		celebrities.forEach((celebrity) => {
-			rawTranslationIds.push(celebrity.bioRawTranslationId);
-			rawTranslationIds.push(celebrity.professionRawTranslationId);
-		});
-
-		let translations: { [key: number]: string | null } = {};
-
-		if (language) {
-			const translationRecords = await prisma.rawTranslation.findMany({
-				where: {
-					id: {
-						in: rawTranslationIds,
-					},
-				},
-				include: {
-					translations: {
-						where: {
-							language: language,
-						},
-					},
-				},
-			});
-
-			translations = translationRecords.reduce((acc: { [key: number]: string | null }, record) => {
-				acc[record.id] = record.translations.length > 0 ? record.translations[0].value : null;
-				return acc;
-			}, {});
-		}
-
-		return celebrities.map((celebrity) => {
-			const bio = language ? translations[celebrity.bioRawTranslationId] : celebrity.bio.translations[0]?.value;
-			const profession = language ? translations[celebrity.professionRawTranslationId] : celebrity.profession.translations[0]?.value;
-
-			return {
-				...celebrity,
-				bio: bio ?? celebrity.bio.translations[0]?.value,
-				profession: profession ?? celebrity.profession.translations[0]?.value,
-			};
-		});
+		return celebrities.map((celebrity) => ({
+			...celebrity,
+			bio: celebrity.bio.translations.length > 0 ? celebrity.bio.translations[0]?.value : null,
+			profession: celebrity.profession.translations.length > 0 ? celebrity.profession.translations[0]?.value : null,
+		}));
 	},
+
 	list_by_language: async (language: string) => {
-		const celebrities = await prisma.celebrity.findMany({
-			include: {
-				bio: {
-					include: {
-						translations: {
-							where: { language: language },
-						},
-					},
-				},
-				profession: {
-					include: {
-						translations: {
-							where: { language: language },
-						},
-					},
-				},
-				image: true,
-			},
-		});
-
-		if (!celebrities || celebrities.length === 0) {
-			return [];
-		}
-
-		const rawTranslationIds: number[] = [];
-		celebrities.forEach((celebrity) => {
-			rawTranslationIds.push(celebrity.bioRawTranslationId);
-			rawTranslationIds.push(celebrity.professionRawTranslationId);
-		});
-
-		const translationRecords = await prisma.rawTranslation.findMany({
-			where: {
-				id: {
-					in: rawTranslationIds,
-				},
-			},
-			include: {
-				translations: {
-					where: {
-						language: language,
-					},
-				},
-			},
-		});
-
-		const translations = translationRecords.reduce((acc: { [key: number]: string | null }, record) => {
-			acc[record.id] = record.translations.length > 0 ? record.translations[0].value : null;
-			return acc;
-		}, {});
-
-		return celebrities.map((celebrity) => {
-			const bio = translations[celebrity.bioRawTranslationId];
-			const profession = translations[celebrity.professionRawTranslationId];
-
-			return {
-				...celebrity,
-				bio: bio ?? celebrity.bio.translations[0]?.value,
-				profession: profession ?? celebrity.profession.translations[0]?.value,
-			};
-		});
+		return celebrityHandlers.list(language);
 	},
 };
 
