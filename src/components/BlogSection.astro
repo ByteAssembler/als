@@ -1,5 +1,4 @@
 ﻿---
-import { i18n } from "../i18n";
 import Section from "../layouts/Section.astro";
 import { fetchDataFromServer } from "../pages/api/trpc/serverHelpers";
 
@@ -9,7 +8,7 @@ if (!lang) throw new Error("Language parameter is required");
 const blogs = await fetchDataFromServer("blog.list_by_language", lang);
 ---
 
-<Section sectionTitle={i18n.tLang(lang, "")} sectionId="blogs">
+<Section sectionTitle="Forschung & Austausch" sectionId="blogs">
     <div class="mx-auto max-w-6xl">
         <div class="grid gap-8 md:grid-cols-3">
             {
