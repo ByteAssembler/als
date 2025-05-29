@@ -1,7 +1,7 @@
 ﻿import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { fetchDataFromServer } from "../pages/api/trpc/serverHelpers";
+import type { fetchDataFromServer } from "../pages/api/trpc/serverHelpers";
 
 const MapComponent = (
 	{
@@ -59,11 +59,11 @@ const MapComponent = (
 
 		selectedCategories.forEach((category) => {
 			if (category) {
-				category.locations.forEach((loc) => {
-					const marker = L.marker([loc.position.lat, loc.position.lng], {
+				points.forEach((point) => {
+					const marker = L.marker([point.latitude, point.longitude], {
 						icon: customIcon,
 					})
-						.bindPopup(`<b>${loc.name}</b>`)
+						.bindPopup(`<b>${point.name}</b>`)
 						.addTo(mapRef.current!);
 					markersRef.current.push(marker);
 					group.push(marker);
@@ -88,7 +88,7 @@ const MapComponent = (
 					onChange={(e) => setCategory(e.target.value)}
 				>
 					<option value="">Alle Kategorien</option>
-					{data.map((category) => (
+					{categories.map((category) => (
 						<option key={category.name} value={category.name}>
 							{category.name}
 						</option>

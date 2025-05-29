@@ -20,6 +20,7 @@ export const celebrityHandlers = {
 						translations: true,
 					},
 				},
+				image: true,
 			},
 		});
 
@@ -54,6 +55,7 @@ export const celebrityHandlers = {
 						},
 					},
 				},
+				image: true,
 			},
 		});
 
@@ -89,6 +91,7 @@ export const celebrityHandlers = {
 						translations: true,
 					},
 				},
+				image: true,
 			},
 		});
 
@@ -154,6 +157,7 @@ export const celebrityHandlers = {
 						},
 					},
 				},
+				image: true,
 			},
 		});
 

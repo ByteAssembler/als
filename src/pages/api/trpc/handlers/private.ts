@@ -47,7 +47,7 @@ export const privateHandlers = {
 	"navbar.list_by_language": navbarHandlers.list_by_language,
 
 	// User
-	"user.create": userHandlers.create,
+	"user.create": userHandlers.register,
 	"user.read": userHandlers.read,
 	"user.update": userHandlers.update,
 	"user.delete": userHandlers.delete,

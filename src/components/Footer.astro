@@ -1,7 +1,8 @@
 ﻿---
-import Button from "./ui/Button.astro";
+import { i18n } from "../i18n";
 
 import { FaFacebook, FaInstagram, FaYoutube, FaLinkedin, FaTwitter } from "react-icons/fa";
+const lang = Astro.locals.lang;
 ---
 
 <footer class="relative bottom-0 bg-gray-900 px-6 py-12 text-white">
@@ -24,7 +25,7 @@ import { FaFacebook, FaInstagram, FaYoutube, FaLinkedin, FaTwitter } from "react
         <!-- border-t border-gray-800 pt-8 -->
 
         <div class="flex flex-col items-center justify-between gap-4 md:flex-row">
-            <div class="text-sm text-gray-400">© 2025 CV ALS. All rights reserved.</div>
+            <div class="text-sm text-gray-400">© 2025 CV ALS. {i18n.tLang(lang, "footer.legalNotice")}</div>
             <div class="flex gap-4">
                 <a href="facebook.com" class="text-gray-400 hover:text-white">
                     <FaFacebook size={20} />
@@ -43,8 +44,8 @@ import { FaFacebook, FaInstagram, FaYoutube, FaLinkedin, FaTwitter } from "react
                 </a>
             </div>
             <div class="flex gap-4">
-                <a href="/impressum" class="text-gray-400 hover:text-white">Impressum</a>
-                <a href="privacy" class="text-gray-400 hover:text-white">Datenschutzerklärung</a>
+                <a href="/admin" class="text-gray-400 hover:text-white">{i18n.tLang(lang, "footer.adminPanel")}</a>
+                <a href="/impressum" class="text-gray-400 hover:text-white">{i18n.tLang(lang, "footer.imprint")}</a>
             </div>
         </div>
     </div>

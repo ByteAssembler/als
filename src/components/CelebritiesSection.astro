@@ -2,7 +2,7 @@
 import Section from "../layouts/Section.astro";
 import { fetchDataFromServer } from "../pages/api/trpc/serverHelpers";
 
-const { lang } = Astro.props;
+const lang = Astro.locals.lang;
 if (!lang) throw new Error("Language is required");
 
 const celebrities = await fetchDataFromServer("celebrity.list_by_language", lang);

@@ -55,6 +55,7 @@ export const blogHandlers = {
 						},
 					},
 				},
+				coverImage: true,
 			},
 		});
 
@@ -89,6 +90,7 @@ export const blogHandlers = {
 						},
 					},
 				},
+				coverImage: true,
 			},
 		});
 
@@ -124,6 +126,7 @@ export const blogHandlers = {
 						translations: true,
 					},
 				},
+				coverImage: true,
 			},
 		});
 
@@ -189,6 +192,7 @@ export const blogHandlers = {
 						},
 					},
 				},
+				coverImage: true,
 			},
 		});
 

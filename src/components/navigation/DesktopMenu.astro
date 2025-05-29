@@ -3,7 +3,7 @@ import MenuItem from "./MenuItem.astro";
 import LanguageSelector from "./LanguageSelector.astro";
 import { navbarContent } from "./navbar-content";
 
-const { lang } = Astro.params;
+const { lang } = Astro.locals;
 
 const navbarContentByLang =
     lang && (lang as keyof typeof navbarContent) in navbarContent
@@ -16,7 +16,7 @@ const navbarContentByLang =
         navbarContentByLang.map((item) => (
             <MenuItem
                 {...item}
-                href={Astro.url.origin + (item.onLanguageSlug ? "/" + (lang ? lang : "en") : "") + "/" + item.href}
+                href={Astro.url.origin + (item.withLanguagePrefix ? "/" + (lang ? lang : "en") : "") + "/" + item.href}
                 text={item.text}
             />
         ))

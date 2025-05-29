@@ -1,22 +1,30 @@
 ﻿import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import db from "../../utils/db";
+import { loginUserSchema } from "./trpc/handlers/user";
 
 const SECRET_KEY = process.env.JWT_SECRET || "supersecretkey";
 
 export async function POST({ request }: { request: Request }) {
-	console.log("ROST REQUEST");
-	const { username, password } = await request.json();
-	const admin = await db.admin.findUnique({ where: { username } });
+	const jsonData = await request.json();
 
-	console.log(admin);
-	if (!admin || !(await bcrypt.compare(password, admin.passwordHash))) {
-		return new Response(JSON.stringify({ error: "Invalid credentials" }), {
-			status: 401,
+	const validation = loginUserSchema.safeParse(jsonData);
+	if (!validation.success) {
+		return new Response(JSON.stringify({ error: "Invalid input or credentials" }), {
+			status: 400,
 		});
 	}
 
-	const token = jwt.sign({ id: admin.id, username: admin.username, role: admin.role }, SECRET_KEY, { expiresIn: "2h" });
+	const admin = await db.user.findUnique({ where: { email: validation.data.email } });
+
+	console.log(admin);
+	if (!admin || !(await bcrypt.compare(validation.data.password, admin.passwordHash))) {
+		return new Response(JSON.stringify({ error: "Invalid input or credentials" }), {
+			status: 400,
+		});
+	}
+
+	const token = jwt.sign({ id: admin.id, email: admin.email, role: admin.role }, SECRET_KEY, { expiresIn: "2h" });
 
 	const response = new Response(JSON.stringify({ message: "Login successful" }), { status: 200 });
 

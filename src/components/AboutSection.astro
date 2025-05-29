@@ -1,35 +1,16 @@
 ﻿---
+import { i18n } from "../i18n";
 import Section from "../layouts/Section.astro";
+
+const lang = Astro.locals.lang;
 ---
 
 <Section sectionTitle="Über uns" sectionId="about">
     <div class="mx-auto max-w-6xl">
         <div class="grid gap-12 md:grid-cols-2">
-            <div>
-                <p class="mb-6 text-gray-600">
-                    Das „Collegium vincere ALS“ ist eine Vereinigung, die sich dem Kampf gegen die amyotrophe
-                    Lateralsklerose (ALS), eine chronische degenerative Erkrankung des motorischen Nervensystems. Wir
-                    sehen ALS als eine „Krankheit der tausend Abschiede“ und möchten Betroffenen und ihren Angehörigen
-                    in dieser schweren Zeit zur Seite schweren Zeit zur Seite stehen. Zu unseren Zielen gehören eine
-                    umfassende Betreuung der Betroffenen, eine intensive Öffentlichkeitsarbeit zur Sensibilisierung
-                    Öffentlichkeitsarbeit zur Sensibilisierung für ALS, die Vernetzung relevanter Akteure und die
-                    Förderung der ALS-Forschung. Mit Aktionen wie Thementischen und unserem mobilen ALS-Koffer wollen
-                    wir informieren und und Spenden sammeln, um Forschungsprojekte zu initiieren und damit improve the
-                    quality of life of those affected. Wenn Sie Fragen haben, Hilfe suchen oder unsere Arbeit
-                    unterstützen möchten unsere Arbeit unterstützen möchten - nehmen Sie Kontakt mit uns auf, denn Ihre
-                    Lebensqualität Lebensqualität ist uns wichtig!
-                </p>
-                <h3 class="mb-3 text-xl font-semibold">Innovation</h3>
-                <p class="mb-6 text-gray-600">
-                    Wir investieren in innovative Forschung unter Einsatz modernster Technologie, um unser Ziel, eine
-                    Heilung zu finden, zu Heilung.
-                </p>
-                <h3 class="mb-3 text-xl font-semibold">Patientenorientiert</h3>
-                <p class="mb-6 text-gray-600">
-                    Unser Engagement für die Patientenbetreuung bedeutet, dass wir immer für Sie da sind, um Sie auf
-                    jedem Schritt des Weges zu unterstützen.
-                </p>
-            </div>
+            <p class="mb-6 text-gray-600 text-base leading-relaxed">
+                {i18n.tLang(lang, "pages.homepage.aboutUs.content")}
+            </p>
             <div class="rounded-lg bg-gray-100">
                 <img src="/placeholder.webp" alt="" class="h-full w-full rounded-lg object-cover" />
             </div>

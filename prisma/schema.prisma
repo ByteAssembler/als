@@ -88,6 +88,7 @@ model User {
     id   Int    @id @default(autoincrement())
     name String
 
+    email        String @unique
     passwordHash String
 
     role Role @default(EDITOR)
@@ -193,6 +194,9 @@ model MediaItem {
 
     uploaderId Int?
     uploader   User? @relation(fields: [uploaderId], references: [id], onDelete: SetNull)
+
+    showInMediaGallery Boolean @default(false)
+    mediaType          String?
 
     blogsAsCover       Blog[]      @relation("BlogCoverImage")
     booksAsCover       Book[]      @relation("BookCoverImage")

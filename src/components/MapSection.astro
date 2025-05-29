@@ -3,12 +3,14 @@ import MapComponent from "./Map.tsx";
 import Section from "../layouts/Section.astro";
 import { fetchDataFromServer } from "../pages/api/trpc/serverHelpers";
 
-const mapPointsData = await fetchDataFromServer("mapPoint.list");
-const mapPointCategory = await fetchDataFromServer("mapPointCategory.list");
+const [mapPoints, mapCategories] = await Promise.all([
+    fetchDataFromServer("mapPoint.list"),
+    fetchDataFromServer("mapPointCategory.list"),
+]);
 ---
 
 <Section sectionTitle="Wo Sie Hilfe finden" sectionId="map">
     <div class="z-0 mx-auto max-w-6xl">
-        <MapComponent client:only="react" points={mapPointsData} categories={mapPointCategory} />
+        <MapComponent client:only="react" points={mapPoints} categories={mapCategories} />
     </div>
 </Section>

@@ -1,14 +1,15 @@
 ﻿---
+import { i18n } from "../i18n";
 import Section from "../layouts/Section.astro";
 import { fetchDataFromServer } from "../pages/api/trpc/serverHelpers";
 
-const { lang } = Astro.params;
+const lang = Astro.locals.lang;
 if (!lang) throw new Error("Language parameter is required");
 
 const blogs = await fetchDataFromServer("blog.list_by_language", lang);
 ---
 
-<Section sectionTitle="Forschung & Austausch" sectionId="blogs">
+<Section sectionTitle={i18n.tLang(lang, "")} sectionId="blogs">
     <div class="mx-auto max-w-6xl">
         <div class="grid gap-8 md:grid-cols-3">
             {
@@ -18,7 +19,7 @@ const blogs = await fetchDataFromServer("blog.list_by_language", lang);
                             <img src={blog.coverImage || "/placeholder.webp"} alt="" class="h-48 w-full object-cover" />
                             <div class="flex flex-1 flex-col p-6">
                                 <h3 class="mb-2 text-xl font-semibold text-gray-900">{blog.title}</h3>
-                                <p class="line-clamp-2 flex-1 text-gray-700">{blog.content.slice(0, 100)}...</p>
+                                <p class="line-clamp-2 flex-1 text-gray-700">{blog.content}...</p>
                             </div>
                         </div>
                     </a>

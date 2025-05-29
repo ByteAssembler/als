@@ -15,6 +15,7 @@ export const mapPointCategoryHandlers = {
 						translations: true,
 					},
 				},
+				mapPoints: true,
 			},
 		});
 
@@ -40,6 +41,7 @@ export const mapPointCategoryHandlers = {
 						},
 					},
 				},
+				mapPoints: true,
 			},
 		});
 
@@ -68,6 +70,7 @@ export const mapPointCategoryHandlers = {
 						translations: true,
 					},
 				},
+				mapPoints: true,
 			},
 		});
 
