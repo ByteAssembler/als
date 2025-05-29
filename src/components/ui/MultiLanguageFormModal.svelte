@@ -1,5 +1,35 @@
-<script>
+<script lang="ts">
   import LanguageModal from "./LanguageModal.svelte";
+  import type { Snippet } from "svelte";
+
+  interface Language {
+    code: string;
+    name: string;
+  }
+
+  export interface FormField {
+    id: string;
+    label: string;
+    type?: "text" | "textarea";
+    required?: boolean;
+    multilingual?: boolean;
+    placeholder?: string;
+    helpText?: string;
+    getHelpText?: (currentLanguage: string) => string;
+  }
+
+  interface Props {
+    show: boolean;
+    title: string;
+    languages: Language[];
+    currentLanguage: string;
+    onLanguageChange: (langCode: string) => void;
+    onClose: () => void;
+    onSubmit: (event: SubmitEvent) => void;
+    submitText?: string;
+    formFields?: FormField[];
+    formData: Record<string, any>;
+  }
 
   let {
     show,
@@ -12,72 +42,7 @@
     submitText,
     formFields = [],
     formData,
-  } = $props();
-
-  function renderFormField(field) {
-    const fieldId = `${field.id}-${currentLanguage}`;
-    const isRequired = field.required && currentLanguage === "de";
-    const helpText = field.getHelpText ? field.getHelpText(currentLanguage) : field.helpText;
-
-    if (field.multilingual) {
-      if (!formData[field.id]) formData[field.id] = {};
-
-      if (field.type === "textarea") {
-        return `
-          <div>
-            <label for="${fieldId}" class="block text-sm font-medium mb-1">
-              ${field.label} (${languages.find((l) => l.code === currentLanguage)?.name})
-              ${isRequired ? '<span aria-label="Pflichtfeld">*</span>' : ""}
-            </label>
-            <textarea
-              id="${fieldId}"
-              bind:value={formData[field.id][currentLanguage]}
-              ${isRequired ? "required" : ""}
-              rows="3"
-              class="w-full px-3 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
-              placeholder="${field.placeholder || ""}"
-            ></textarea>
-            ${helpText ? `<p class="mt-1 text-xs text-muted-foreground">${helpText}</p>` : ""}
-          </div>
-        `;
-      } else {
-        return `
-          <div>
-            <label for="${fieldId}" class="block text-sm font-medium mb-1">
-              ${field.label} (${languages.find((l) => l.code === currentLanguage)?.name})
-              ${isRequired ? '<span aria-label="Pflichtfeld">*</span>' : ""}
-            </label>
-            <input
-              id="${fieldId}"
-              type="${field.type || "text"}"
-              bind:value={formData[field.id][currentLanguage]}
-              ${isRequired ? "required" : ""}
-              class="w-full px-3 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="${field.placeholder || ""}"
-            />
-            ${helpText ? `<p class="mt-1 text-xs text-muted-foreground">${helpText}</p>` : ""}
-          </div>
-        `;
-      }
-    } else {
-      return `
-        <div>
-          <label for="${field.id}" class="block text-sm font-medium mb-1">
-            ${field.label} ${field.required ? '<span aria-label="Pflichtfeld">*</span>' : ""}
-          </label>
-          <input
-            id="${field.id}"
-            type="${field.type || "text"}"
-            bind:value={formData[field.id]}
-            ${field.required ? "required" : ""}
-            class="w-full px-3 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            placeholder="${field.placeholder || ""}"
-          />
-          ${helpText ? `<p class="mt-1 text-xs text-muted-foreground">${helpText}</p>` : ""}
-        </div>
-      `;
-    }
-  }
+  }: Props = $props();
 </script>
 
 <LanguageModal {show} {title} {languages} {currentLanguage} {onLanguageChange} {onClose} {onSubmit} {submitText}>

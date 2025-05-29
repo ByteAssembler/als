@@ -2,6 +2,11 @@ import type { AppTranslationSchema } from "./en";
 
 export const deTranslations: AppTranslationSchema = {
 	pages: {
+		blog: {
+			"[slug]": {
+				backToOverview: "← Zurück zur Übersicht",
+			}
+		},
 		homepage: {
 			wellcome: {
 				title: "Wir kämpfen gemeinsam gegen ALS",

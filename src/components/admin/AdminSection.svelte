@@ -1,6 +1,32 @@
-<script>
+<script lang="ts">
   import LanguageSelector from "../ui/LanguageSelector.svelte";
   import DataTable from "../ui/DataTable.svelte";
+  import type { Column, DataItem } from "../ui/DataTable.svelte"; // Assuming types can be imported or redefined
+
+  interface Language {
+    code: string;
+    name: string;
+  }
+
+  type OnLanguageChangeCallback = (langCode: string) => void;
+  type OnCreateCallback = () => void;
+  type OnEditCallback = (item: DataItem) => void;
+  type OnDeleteCallback = (id: string | number) => void;
+
+  interface Props {
+    title: string;
+    languages: Language[];
+    currentLanguage: string;
+    onLanguageChange: OnLanguageChangeCallback;
+    columns: Column[];
+    data: DataItem[];
+    onCreate?: OnCreateCallback;
+    onEdit?: OnEditCallback;
+    onDelete?: OnDeleteCallback;
+    createButtonText?: string;
+    emptyStateTitle?: string;
+    emptyStateDescription?: string;
+  }
 
   let {
     title,
@@ -15,7 +41,7 @@
     createButtonText,
     emptyStateTitle,
     emptyStateDescription,
-  } = $props();
+  }: Props = $props();
 </script>
 
 <div class="space-y-4">

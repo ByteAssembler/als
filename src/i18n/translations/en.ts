@@ -2,6 +2,11 @@ export type AppTranslationSchema = typeof enTranslations;
 
 export const enTranslations = {
 	pages: {
+		blog: {
+			"[slug]": {
+				backToOverview: "Back to overview"
+			}
+		},
 		homepage: {
 			wellcome: {
 				title: "We fight together against ALS",

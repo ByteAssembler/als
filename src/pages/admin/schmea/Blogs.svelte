@@ -120,15 +120,11 @@
       header: "Titel",
       primary: true,
       render: (item) => {
-        // Sicherstellen, dass wir immer einen String zurückgeben
-        if (typeof item.title === "object" && item.title !== null) {
-          const translation = getTranslation(item.title, currentLanguage);
-          const warning = !hasTranslation(item.title, currentLanguage)
-            ? `<span class="ml-2 text-xs text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">Übersetzung fehlt</span>`
-            : "";
-          return `${translation || ""}${warning}`;
-        }
-        return String(item.title || "");
+        const translation = getTranslation(item.title, currentLanguage);
+        const warning = !hasTranslation(item.title, currentLanguage)
+          ? `<span class="ml-2 text-xs text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">Übersetzung fehlt</span>`
+          : "";
+        return `${translation}${warning}`;
       },
     },
     {
@@ -223,6 +219,7 @@
           id: editingBlog.id,
           ...blogData,
         });
+        console.log("Blog updated:", blogData);
       } else {
         await trpcAuthQuery("blog.create", authToken, blogData);
       }

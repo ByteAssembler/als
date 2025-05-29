@@ -1,4 +1,20 @@
-<script>
+<script lang="ts">
+  export interface Column {
+    header: string;
+    key: string;
+    primary?: boolean;
+    render?: (item: DataItem) => string;
+  }
+
+  export interface DataItem {
+    id: string | number;
+    [key: string]: any;
+  }
+
+  type OnEditCallback = (item: DataItem) => void;
+  type OnDeleteCallback = (id: string | number) => void;
+  type OnCreateCallback = () => void;
+
   let {
     title,
     columns,
@@ -9,6 +25,16 @@
     createButtonText = "Neuen Eintrag hinzufügen",
     emptyStateTitle = "Keine Einträge vorhanden",
     emptyStateDescription = "Erstellen Sie Ihren ersten Eintrag, um zu beginnen.",
+  }: {
+    title: string;
+    columns: Column[];
+    data: DataItem[];
+    onEdit?: OnEditCallback;
+    onDelete?: OnDeleteCallback;
+    onCreate?: OnCreateCallback;
+    createButtonText?: string;
+    emptyStateTitle?: string;
+    emptyStateDescription?: string;
   } = $props();
 </script>
 

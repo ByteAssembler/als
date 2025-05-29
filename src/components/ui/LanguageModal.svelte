@@ -1,4 +1,24 @@
-<script>
+<script lang="ts">
+  import type { Snippet } from "svelte";
+
+  interface Language {
+    code: string;
+    name: string;
+  }
+
+  interface Props {
+    show: boolean;
+    title: string;
+    languages: Language[];
+    currentLanguage: string;
+    onLanguageChange: (langCode: string) => void;
+    onClose: () => void;
+    onSubmit: (event: SubmitEvent) => void;
+    children: Snippet;
+    submitText?: string;
+    cancelText?: string;
+  }
+
   let {
     show,
     title,
@@ -10,27 +30,27 @@
     children,
     submitText = "Speichern",
     cancelText = "Abbrechen",
-  } = $props();
+  }: Props = $props();
 
   // Focus trap functionality
-  function trapFocus(node) {
+  function trapFocus(node: HTMLElement) {
     const focusableElements = node.querySelectorAll(
       'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
     );
-    const firstElement = focusableElements[0];
-    const lastElement = focusableElements[focusableElements.length - 1];
+    const firstElement = focusableElements[0] as HTMLElement | undefined;
+    const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement | undefined;
 
-    function handleKeydown(e) {
+    function handleKeydown(e: KeyboardEvent) {
       if (e.key === "Tab") {
         if (e.shiftKey) {
           if (document.activeElement === firstElement) {
             e.preventDefault();
-            lastElement.focus();
+            lastElement?.focus();
           }
         } else {
           if (document.activeElement === lastElement) {
             e.preventDefault();
-            firstElement.focus();
+            firstElement?.focus();
           }
         }
       }
@@ -46,7 +66,7 @@
     };
   }
 
-  function handleModalKeydown(e) {
+  function handleModalKeydown(e: KeyboardEvent) {
     if (e.key === "Escape") {
       onClose();
     }

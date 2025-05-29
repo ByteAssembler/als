@@ -1,6 +1,46 @@
-<script>
+<script lang="ts">
   import AdminSection from "./AdminSection.svelte";
   import MultiLanguageFormModal from "../ui/MultiLanguageFormModal.svelte";
+  import type { Column, DataItem } from "../ui/DataTable.svelte"; // Assuming types can be imported
+  import type { FormField as ModalFormField } from "../ui/MultiLanguageFormModal.svelte"; // Assuming types can be imported
+
+  interface Language {
+    code: string;
+    name: string;
+  }
+
+  interface CrudFunctions {
+    showModal: boolean;
+    editingItem: DataItem | null;
+    modalLanguage: string;
+    formData: Record<string, any>;
+    loading: boolean;
+    openCreateModal: (initialData?: Record<string, any>) => void;
+    openEditModal: (item: DataItem) => void;
+    deleteItem: (id: string | number, confirmMessage?: string) => void;
+    closeModal: () => void;
+    saveItem: () => (event: SubmitEvent) => void;
+  }
+
+  type OnLanguageChangeCallback = (langCode: string) => void;
+  type CustomOnEditCallback = (item: DataItem) => void;
+
+  interface Props {
+    title: string;
+    languages: Language[];
+    currentLanguage: string;
+    onLanguageChange: OnLanguageChangeCallback;
+    columns: Column[];
+    data: DataItem[];
+    crud: CrudFunctions;
+    createButtonText?: string;
+    emptyStateTitle?: string;
+    emptyStateDescription?: string;
+    formFields?: ModalFormField[];
+    deleteConfirmMessage?: string;
+    initialFormData?: Record<string, any>;
+    onEdit?: CustomOnEditCallback; // Custom edit handler
+  }
 
   let {
     title,
@@ -17,13 +57,13 @@
     deleteConfirmMessage,
     initialFormData = {},
     onEdit, // Custom edit handler
-  } = $props();
+  }: Props = $props();
 
   function handleCreate() {
     crud.openCreateModal(initialFormData);
   }
 
-  function handleEdit(item) {
+  function handleEdit(item: DataItem) {
     if (onEdit) {
       onEdit(item);
     } else {
@@ -31,7 +71,7 @@
     }
   }
 
-  function handleDelete(id) {
+  function handleDelete(id: string | number) {
     crud.deleteItem(id, deleteConfirmMessage);
   }
 </script>

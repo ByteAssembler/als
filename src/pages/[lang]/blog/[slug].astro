@@ -2,6 +2,7 @@
 import Layout from "../../../layouts/Layout.astro";
 import FormattedDate from "../../../components/FormattedDate.astro";
 import { fetchDataFromServer } from "../../api/trpc/serverHelpers";
+import { i18n } from "../i18n";
 
 const { slug, lang } = Astro.params;
 if (!slug || !lang) return Astro.redirect("/404");
@@ -52,7 +53,7 @@ if (!post) {
 
             <div class="mt-12 flex items-center justify-between border-t border-gray-300 pt-6">
                 <a href={`/${lang}/#blogs`} class="font-medium text-blue-600 hover:text-blue-800">
-                    ← Zurück zur Übersicht
+                    {i18n.tLang(lang, "pages.blog.")}← Zurück zur Übersicht
                 </a>
             </div>
         </article>

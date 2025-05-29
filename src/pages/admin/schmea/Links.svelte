@@ -32,6 +32,7 @@
     {
       key: "name",
       label: `Name (${currentLanguage.toUpperCase()})`,
+      header: true,
       render: (link) => link.name[currentLanguage] || link.name["de"] || "N/A", // Fallback to German or N/A
     },
     {
@@ -39,7 +40,20 @@
       label: `Beschreibung (${currentLanguage.toUpperCase()})`,
       render: (link) => link.description[currentLanguage] || link.description["de"] || "-", // Fallback to German or '-'
     },
-    { key: "url", label: "URL" },
+    {
+      key: "url",
+      label: "URL",
+
+      render: (link) => link.url || "Keine URL",
+    },
+    {
+      key: "actions",
+      label: "Aktionen",
+      render: (link) => `
+		<button class="btn btn-primary" onclick="openEditModal(${link.id})">Bearbeiten</button>
+		<button class="btn btn-danger" onclick="deleteLink(${link.id})">Löschen</button>
+	  `,
+    },
   ]);
 
   function getAuthToken() {

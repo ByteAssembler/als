@@ -1,4 +1,24 @@
-<script>
+<script lang="ts">
+  interface Language {
+    code: string;
+    name: string;
+  }
+
+  interface Props {
+    id: string;
+    label: string;
+    type?: "text" | "textarea" | "checkbox";
+    value?: string | boolean;
+    onValueChange?: (newValue: string | boolean) => void;
+    required?: boolean;
+    placeholder?: string;
+    rows?: number;
+    currentLanguage: string;
+    languages: Language[];
+    helpText?: string;
+    ariaLabel?: string;
+  }
+
   let {
     id,
     label,
@@ -12,16 +32,16 @@
     languages,
     helpText = "",
     ariaLabel = "",
-  } = $props();
+  }: Props = $props();
 
   const languageName = languages.find((l) => l.code === currentLanguage)?.name;
   const isRequired = required && currentLanguage === "de";
   const fieldId = `${id}-${currentLanguage}`;
   const helpId = helpText ? `${fieldId}-help` : undefined;
 
-  function handleInput(event) {
+  function handleInput(event: Event & { currentTarget: HTMLInputElement | HTMLTextAreaElement }) {
     if (onValueChange) {
-      onValueChange(event.target.value);
+      onValueChange(event.currentTarget.value);
     }
   }
 </script>
@@ -37,7 +57,7 @@
   {#if type === "textarea"}
     <textarea
       id={fieldId}
-      {value}
+      value={value as string}
       oninput={handleInput}
       {rows}
       required={isRequired}
@@ -50,8 +70,9 @@
     <input
       id={fieldId}
       type="checkbox"
-      checked={value}
-      onchange={(e) => onValueChange && onValueChange(e.target.checked)}
+      checked={value as boolean}
+      onchange={(e: Event & { currentTarget: HTMLInputElement }) =>
+        onValueChange && onValueChange(e.currentTarget.checked)}
       class="rounded border-input focus:outline-none focus:ring-2 focus:ring-blue-500"
       aria-label={ariaLabel || `${label} in ${languageName}`}
       aria-describedby={helpId}
@@ -60,7 +81,7 @@
     <input
       id={fieldId}
       {type}
-      {value}
+      value={value as string}
       oninput={handleInput}
       required={isRequired}
       class="w-full px-3 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"

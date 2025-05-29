@@ -1,5 +1,10 @@
 export const itTranslations = {
 	pages: {
+		blog: {
+			"[slug]": {
+				backToOverview: "← Torna alla panoramica",
+			}
+		},
 		homepage: {
 			wellcome: {
 				title: "Combattiamo insieme contro la SLA",
