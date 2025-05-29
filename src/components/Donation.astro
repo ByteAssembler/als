@@ -89,37 +89,48 @@
                 <h3 class="text-2xl font-semibold mb-6 text-center">Kontaktformular</h3>
                 <form class="space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-white mb-2">Name</label>
+                        <label class="block text-sm font-medium text-white mb-2" for="subject">Anliegen</label>
                         <input
                             type="text"
-                            placeholder="Ihr Name"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="Ihr Anliegen"
+                            class="text-black w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            id="subject"
                         />
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-white mb-2">E-Mail</label>
-                        <input
-                            type="email"
-                            placeholder="Ihre E-Mail-Adresse"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        />
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-white mb-2">Nachricht</label>
+                        <label class="block text-sm font-medium text-white mb-2" for="message">Nachricht</label>
                         <textarea
-                            rows="4"
+                            rows="6"
                             placeholder="Ihre Nachricht"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        ></textarea>
+                            class="text-black w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            id="message"></textarea>
                     </div>
-                    <button
-                        type="submit"
-                        class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-300"
+                    <a
+                        href="#"
+                        class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-300 text-center block"
+                        id="send-email-link"
                     >
                         Nachricht senden
-                    </button>
+                    </a>
                 </form>
             </div>
         </div>
     </div>
 </section>
+
+<script is:inline defer>
+    document.addEventListener("DOMContentLoaded", () => {
+        const sendEmailLink = document.getElementById("send-email-link");
+
+        sendEmailLink.addEventListener("click", (event) => {
+            event.preventDefault();
+
+            const subject = document.getElementById("subject").value;
+            const message = document.getElementById("message").value;
+
+            const mailtoLink = `mailto:cv-als@pec.it?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
+
+            window.location.href = mailtoLink;
+        });
+    });
+</script>
