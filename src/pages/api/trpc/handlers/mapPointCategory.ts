@@ -83,12 +83,12 @@ export const mapPointCategoryHandlers = {
 		return await prisma.mapPointCategory.delete({ where: { id } });
 	},
 
-	list: async (language?: string) => {
+	list: async () => {
 		const mapPointCategories = await prisma.mapPointCategory.findMany({
 			include: {
 				name: {
 					include: {
-						translations: language ? { where: { language } } : true,
+						translations: true,
 					},
 				},
 				mapPoints: true,
@@ -101,12 +101,35 @@ export const mapPointCategoryHandlers = {
 
 		return mapPointCategories.map((mapPointCategory) => ({
 			...mapPointCategory,
-			name: mapPointCategory.name.translations.length > 0 ? mapPointCategory.name.translations[0]?.value : null,
+			names: mapPointCategory.name.translations.map(t => ({
+				text: t.value,
+				language: t.language
+			})),
 		}));
 	},
 
 	list_by_language: async (language: string) => {
-		return mapPointCategoryHandlers.list(language);
+		const mapPointCategories = await prisma.mapPointCategory.findMany({
+			include: {
+				name: {
+					include: {
+						translations: {
+							where: { language },
+						},
+					},
+				},
+				mapPoints: true,
+			},
+		});
+
+		if (!mapPointCategories || mapPointCategories.length === 0) {
+			return [];
+		}
+
+		return mapPointCategories.map((mapPointCategory) => ({
+			...mapPointCategory,
+			name: mapPointCategory.name.translations.length > 0 ? mapPointCategory.name.translations[0].value : null,
+		}));
 	},
 };
 

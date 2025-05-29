@@ -47,7 +47,30 @@ export const enTranslations = {
 			}
 		},
 		media: {
-
+			title: "Media",
+			books: {
+				title: "Books",
+				link: "Go to books page"
+			},
+			auios: {
+				title: "Audios",
+				empty: "No audios available."
+			},
+			images: {
+				title: "Images",
+				empty: "No images available."
+			},
+			information: {
+				title: "Information",
+				empty: "No information available."
+			},
+			download: "Download",
+			openInNewTab: "Open in new tab",
+			close: "Close",
+			audioNotSupported: "Your browser does not support the audio tag.",
+			videoNotSupported: "Your browser does not support the video tag.",
+			previewNotAvailable: "Preview not available.",
+			openFile: "Open file here"
 		}
 	},
 	cookieBanner: {

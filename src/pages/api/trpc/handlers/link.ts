@@ -126,17 +126,17 @@ export const linkHandlers = {
 		return await prisma.link.delete({ where: { id } });
 	},
 
-	list: async (language?: string) => {
+	list: async () => {
 		const links = await prisma.link.findMany({
 			include: {
 				name: {
 					include: {
-						translations: language ? { where: { language } } : true,
+						translations: true,
 					},
 				},
 				description: {
 					include: {
-						translations: language ? { where: { language } } : true,
+						translations: true,
 					},
 				},
 			},
@@ -148,15 +148,46 @@ export const linkHandlers = {
 
 		return links.map((link) => ({
 			...link,
-			name: link.name.translations.length > 0 ? link.name.translations[0].value : null,
-			description: link.description?.translations && link.description.translations.length > 0
-				? link.description.translations[0].value
-				: null,
+			names: link.name.translations.map(t => ({
+				text: t.value,
+				language: t.language
+			})),
+			descriptions: link.description?.translations.map(t => ({
+				text: t.value,
+				language: t.language
+			})) || [],
 		}));
 	},
 
 	list_by_language: async (language: string) => {
-		return linkHandlers.list(language);
+		const links = await prisma.link.findMany({
+			include: {
+				name: {
+					include: {
+						translations: {
+							where: { language },
+						},
+					},
+				},
+				description: {
+					include: {
+						translations: {
+							where: { language },
+						},
+					},
+				},
+			},
+		});
+
+		if (!links || links.length === 0) {
+			return [];
+		}
+
+		return links.map((link) => ({
+			...link,
+			name: link.name.translations.length > 0 ? link.name.translations[0]?.value : null,
+			description: link.description ? (link.description.translations?.length > 0 ? link.description.translations[0]?.value : null) : null,
+		}));
 	},
 };
 

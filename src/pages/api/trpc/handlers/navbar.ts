@@ -84,12 +84,12 @@ export const navbarHandlers = {
 		return await prisma.navbar.delete({ where: { id } });
 	},
 
-	list: async (language?: string) => {
+	list: async () => {
 		const navbars = await prisma.navbar.findMany({
 			include: {
 				text: {
 					include: {
-						translations: language ? { where: { language } } : true,
+						translations: true,
 					},
 				},
 			},
@@ -101,12 +101,34 @@ export const navbarHandlers = {
 
 		return navbars.map((navbar) => ({
 			...navbar,
-			text: navbar.text.translations.length > 0 ? navbar.text.translations[0]?.value : null,
+			texts: navbar.text.translations.map(t => ({
+				text: t.value,
+				language: t.language
+			})),
 		}));
 	},
 
 	list_by_language: async (language: string) => {
-		return navbarHandlers.list(language);
+		const navbars = await prisma.navbar.findMany({
+			include: {
+				text: {
+					include: {
+						translations: {
+							where: { language },
+						},
+					},
+				},
+			},
+		});
+
+		if (!navbars || navbars.length === 0) {
+			return [];
+		}
+
+		return navbars.map((navbar) => ({
+			...navbar,
+			text: navbar.text.translations.length > 0 ? navbar.text.translations[0].value : null,
+		}));
 	},
 };
 

@@ -138,19 +138,54 @@ export const mediaHandlers = {
 		return await prisma.mediaItem.delete({ where: { storageKey: id } });
 	},
 
-	list: async (language?: string) => {
+	list: async () => {
 		const mediaItems = await prisma.mediaItem.findMany({
 			include: {
 				altText: {
 					include: {
-						translations: language ? { where: { language } } : true,
+						translations: true,
 					},
 				},
 				caption: {
 					include: {
-						translations: language ? { where: { language } } : true,
+						translations: true,
 					},
 				},
+				uploader: true,
+			},
+		});
+
+		return mediaItems.map((media) => ({
+			...media,
+			altTexts: media.altText?.translations.map(t => ({
+				text: t.value,
+				language: t.language
+			})) || [],
+			captions: media.caption?.translations.map(t => ({
+				text: t.value,
+				language: t.language
+			})) || [],
+		}));
+	},
+
+	list_by_language: async (language: string) => {
+		const mediaItems = await prisma.mediaItem.findMany({
+			include: {
+				altText: {
+					include: {
+						translations: {
+							where: { language },
+						},
+					},
+				},
+				caption: {
+					include: {
+						translations: {
+							where: { language },
+						},
+					},
+				},
+				uploader: true,
 			},
 		});
 

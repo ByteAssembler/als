@@ -119,17 +119,17 @@ export const celebrityHandlers = {
 		return await prisma.celebrity.delete({ where: { id } });
 	},
 
-	list: async (language?: string) => {
+	list: async () => {
 		const celebrities = await prisma.celebrity.findMany({
 			include: {
 				bio: {
 					include: {
-						translations: language ? { where: { language } } : true,
+						translations: true,
 					},
 				},
 				profession: {
 					include: {
-						translations: language ? { where: { language } } : true,
+						translations: true,
 					},
 				},
 				image: true,
@@ -142,13 +142,47 @@ export const celebrityHandlers = {
 
 		return celebrities.map((celebrity) => ({
 			...celebrity,
-			bio: celebrity.bio.translations.length > 0 ? celebrity.bio.translations[0]?.value : null,
-			profession: celebrity.profession.translations.length > 0 ? celebrity.profession.translations[0]?.value : null,
+			bios: celebrity.bio.translations.map(t => ({
+				text: t.value,
+				language: t.language
+			})),
+			professions: celebrity.profession.translations.map(t => ({
+				text: t.value,
+				language: t.language
+			})),
 		}));
 	},
 
 	list_by_language: async (language: string) => {
-		return celebrityHandlers.list(language);
+		const celebrities = await prisma.celebrity.findMany({
+			include: {
+				bio: {
+					include: {
+						translations: {
+							where: { language },
+						},
+					},
+				},
+				profession: {
+					include: {
+						translations: {
+							where: { language },
+						},
+					},
+				},
+				image: true,
+			},
+		});
+
+		if (!celebrities || celebrities.length === 0) {
+			return [];
+		}
+
+		return celebrities.map((celebrity) => ({
+			...celebrity,
+			bio: celebrity.bio.translations.length > 0 ? celebrity.bio.translations[0].value : null,
+			profession: celebrity.profession.translations.length > 0 ? celebrity.profession.translations[0].value : null,
+		}));
 	},
 };
 

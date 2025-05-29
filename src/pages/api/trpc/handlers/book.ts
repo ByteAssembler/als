@@ -95,17 +95,17 @@ export const bookHandlers = {
 		return await prisma.book.delete({ where: { id } });
 	},
 
-	list: async (language?: string) => {
+	list: async () => {
 		const books = await prisma.book.findMany({
 			include: {
 				title: {
 					include: {
-						translations: language ? { where: { language } } : true,
+						translations: true,
 					},
 				},
 				content: {
 					include: {
-						translations: language ? { where: { language } } : true,
+						translations: true,
 					},
 				},
 				coverImage: true,
@@ -118,13 +118,47 @@ export const bookHandlers = {
 
 		return books.map((book) => ({
 			...book,
-			title: book.title.translations.length > 0 ? book.title.translations[0]?.value : null,
-			content: book.content.translations.length > 0 ? book.content.translations[0]?.value : null,
+			titles: book.title.translations.map(t => ({
+				text: t.value,
+				language: t.language
+			})),
+			contents: book.content.translations.map(t => ({
+				text: t.value,
+				language: t.language
+			})),
 		}));
 	},
 
 	list_by_language: async (language: string) => {
-		return bookHandlers.list(language);
+		const books = await prisma.book.findMany({
+			include: {
+				title: {
+					include: {
+						translations: {
+							where: { language },
+						},
+					},
+				},
+				content: {
+					include: {
+						translations: {
+							where: { language },
+						},
+					},
+				},
+				coverImage: true,
+			},
+		});
+
+		if (!books || books.length === 0) {
+			return [];
+		}
+
+		return books.map((book) => ({
+			...book,
+			title: book.title.translations.length > 0 ? book.title.translations[0].value : null,
+			content: book.content.translations.length > 0 ? book.content.translations[0].value : null,
+		}));
 	},
 };
 

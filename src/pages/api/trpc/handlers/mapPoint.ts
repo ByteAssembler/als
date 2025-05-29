@@ -138,24 +138,79 @@ export const mapPointHandlers = {
 		return await prisma.mapPoint.delete({ where: { id } });
 	},
 
-	list: async (language?: string) => {
+	list: async () => {
 		const mapPoints = await prisma.mapPoint.findMany({
 			include: {
 				name: {
 					include: {
-						translations: language ? { where: { language } } : true,
+						translations: true,
 					},
 				},
 				description: {
 					include: {
-						translations: language ? { where: { language } } : true,
+						translations: true,
 					},
 				},
 				category: {
 					include: {
 						name: {
 							include: {
-								translations: language ? { where: { language } } : true,
+								translations: true,
+							},
+						},
+					},
+				},
+			},
+		});
+
+		if (!mapPoints || mapPoints.length === 0) {
+			return [];
+		}
+
+		return mapPoints.map((mapPoint) => ({
+			...mapPoint,
+			names: mapPoint.name.translations.map(t => ({
+				text: t.value,
+				language: t.language
+			})),
+			descriptions: mapPoint.description?.translations.map(t => ({
+				text: t.value,
+				language: t.language
+			})) || [],
+			category: {
+				...mapPoint.category,
+				names: mapPoint.category.name.translations.map(t => ({
+					text: t.value,
+					language: t.language
+				})),
+			},
+		}));
+	},
+
+	list_by_language: async (language: string) => {
+		const mapPoints = await prisma.mapPoint.findMany({
+			include: {
+				name: {
+					include: {
+						translations: {
+							where: { language },
+						},
+					},
+				},
+				description: {
+					include: {
+						translations: {
+							where: { language },
+						},
+					},
+				},
+				category: {
+					include: {
+						name: {
+							include: {
+								translations: {
+									where: { language },
+								},
 							},
 						},
 					},
@@ -170,14 +225,12 @@ export const mapPointHandlers = {
 		return mapPoints.map((mapPoint) => ({
 			...mapPoint,
 			name: mapPoint.name.translations.length > 0 ? mapPoint.name.translations[0]?.value : null,
-			description: mapPoint.description?.translations && mapPoint.description.translations.length > 0
-				? mapPoint.description.translations[0]?.value
-				: null,
+			description: mapPoint.description ? mapPoint.description.translations.length > 0 ? mapPoint.description?.translations[0]?.value : null : null,
+			category: {
+				...mapPoint.category,
+				name: mapPoint.category.name.translations.length > 0 ? mapPoint.category.name.translations[0]?.value : null,
+			},
 		}));
-	},
-
-	list_by_language: async (language: string) => {
-		return mapPointHandlers.list(language);
 	},
 };
 
