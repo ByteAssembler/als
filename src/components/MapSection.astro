@@ -1,14 +1,20 @@
 ﻿---
 import MapComponent from "./Map.tsx";
 import Section from "../layouts/Section.astro";
-import db from "../utils/db";
-import type { MapPoint, MapPointType } from "@prisma/client";
-const mapPointsData: MapPoint[] = await db.mapPoint.findMany();
-const mapPointTypes: MapPointType[] = await db.mapPointType.findMany();
+import { fetchDataFromServer } from "../pages/api/trpc/serverHelpers";
+import { i18n } from "../i18n";
+
+let lang = Astro.locals.lang;
+if (!lang) throw new Error("Language parameter is required");
+
+const [mapPoints, mapCategories] = await Promise.all([
+    fetchDataFromServer("mapPoint.list_by_language", lang),
+    fetchDataFromServer("mapPointCategory.list_by_language", lang),
+]);
 ---
 
-<Section sectionTitle="Wo Sie Hilfe finden" sectionId="map">
+<Section sectionTitle={i18n.tLang(lang, "pages.homepage.map.title")} sectionId="map">
     <div class="z-0 mx-auto max-w-6xl">
-        <MapComponent client:only="react" data={mapPointsData} types={mapPointTypes} />
+        <MapComponent client:only="react" points={mapPoints} categories={mapCategories} />
     </div>
 </Section>

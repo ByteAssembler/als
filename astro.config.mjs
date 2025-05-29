@@ -3,8 +3,11 @@ import react from "@astrojs/react";
 import tailwind from "@astrojs/tailwind";
 import netlify from "@astrojs/netlify";
 
+import svelte from "@astrojs/svelte";
+
 export default defineConfig({
-	integrations: [tailwind(), react()],
+	site: "https://smx71k4f-4321.euw.devtunnels.ms",
+	integrations: [tailwind(), react(), svelte()],
 	output: "server",
 	adapter: netlify(),
 
@@ -13,6 +16,13 @@ export default defineConfig({
 		defaultLocale: "de",
 	},
 	middleware: "./src/middleware.ts",
+	server: {
+		allowedHosts: [
+			"7.tcp.eu.ngrok.io:18524",
+			"7.tcp.eu.ngrok.io",
+			"smx71k4f-4321.euw.devtunnels.ms"
+		]
+	}
 });
 
 // import en from './locales/en.json';

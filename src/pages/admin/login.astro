@@ -1,99 +1,87 @@
-﻿---
+---
+import { hash } from "bcrypt";
 import Layout from "../../layouts/Layout.astro";
+import prisma from "../../utils/db";
 
-// Der Cookie wird serverseitig gelesen
-const isLoggedIn = Boolean(Astro.request.headers.get("cookie")?.includes("token"));
+if ((await prisma.user.count()) === 0) {
+    await prisma.user.create({
+        data: {
+            email: "gerdsteger@hotmail.com",
+            passwordHash: await hash("admin1234", 10),
+            role: "SUPERADMIN",
+            name: "Gerd Steger",
+        },
+    });
+}
 ---
 
-<Layout title={isLoggedIn ? "Admin Dashboard" : "Admin Login"}>
-    <div class="container mx-auto p-6">
-        {
-            isLoggedIn ? (
-                <>
-                    <div class="mx-auto max-w-md rounded-lg bg-white p-6 shadow-md">
-                        <p>Willkommen, Administrator!</p>
-                        <p>Hier findest du alle administrativen Informationen.</p>
+<Layout title="Admin Login">
+    <div class="flex justify-center items-center h-full">
+        <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md h-full">
+            <form method="POST" class="space-y-4">
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-2"> E-Mail </label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="admin@example.com"
+                    />
+                </div>
 
-                        <button
-                            id="logoutButton"
-                            class="mt-4 w-full rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700"
-                        >
-                            Abmelden
-                        </button>
-                    </div>
-                </>
-            ) : (
-                <>
-                    <div class="mx-auto max-w-md rounded-lg bg-white p-6 shadow-md">
-                        <form id="loginForm">
-                            <label class="mb-2 block font-semibold">Benutzername</label>
-                            <input type="text" name="username" id="username" class="mb-4 w-full rounded border p-2" />
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-2"> Passwort </label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="••••••••"
+                    />
+                </div>
 
-                            <label class="mb-2 block font-semibold">Passwort</label>
-                            <input
-                                type="password"
-                                name="password"
-                                id="password"
-                                class="mb-4 w-full rounded border p-2"
-                            />
-
-                            <button
-                                id="loginButton"
-                                type="submit"
-                                class="w-full rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-                            >
-                                Login
-                            </button>
-                        </form>
-                    </div>
-                </>
-            )
-        }
+                <button
+                    type="submit"
+                    class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200"
+                >
+                    Anmelden
+                </button>
+            </form>
+        </div>
     </div>
 </Layout>
 
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const loginForm = document.getElementById("loginForm");
-        const logoutButton = document.getElementById("logoutButton");
+<script is:inline defer>
+    function setupAdminLogin() {
+        const form = document.querySelector("form");
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const email = form.email.value;
+            const password = form.password.value;
 
-        if (loginForm) {
-            loginForm.addEventListener("submit", async (e) => {
-                e.preventDefault();
-
-                const formData = new FormData(e.target as HTMLFormElement);
-                const username = formData.get("username");
-                const password = formData.get("password");
-
+            try {
                 const response = await fetch("/api/login", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ username, password }),
-                    credentials: "include", // Wichtig, um Cookies zu setzen
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ email, password }),
                 });
 
                 if (response.ok) {
-                    window.location.href = "/admin/dashboard";
+                    window.location.href = "/admin";
                 } else {
-                    const { error } = await response.json();
-                    alert(error);
+                    alert("Anmeldung fehlgeschlagen. Bitte überprüfen Sie Ihre Anmeldedaten.");
                 }
-            });
-        }
+            } catch (error) {
+                console.error("Login failed:", error);
+                alert("Anmeldung fehlgeschlagen. Bitte überprüfen Sie Ihre Anmeldedaten.");
+            }
+        });
+    }
 
-        if (logoutButton) {
-            logoutButton.addEventListener("click", async () => {
-                const response = await fetch("/api/logout", {
-                    method: "POST",
-                    credentials: "include",
-                });
-
-                if (response.ok) {
-                    window.location.href = "/admin/login";
-                } else {
-                    alert("Abmeldung fehlgeschlagen");
-                }
-            });
-        }
-    });
+    setupAdminLogin();
 </script>

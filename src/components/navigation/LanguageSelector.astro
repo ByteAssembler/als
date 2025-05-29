@@ -1,12 +1,11 @@
 ﻿---
-import { languages } from "../../data/languages";
+import { languages } from "../../i18n/languages";
 
-const { lang } = Astro.params;
-const currentUrl = Astro.url.pathname;
+const { lang } = Astro.locals;
 
 const getUpdatedUrl = (newLang: string) => {
-    if (!lang) return `/${newLang}${currentUrl}`;
-    return currentUrl.replace(`/${lang}`, `/${newLang}`);
+    if (!lang) return `/${newLang}${Astro.url.pathname}`;
+    return Astro.url.pathname.replace(`/${lang}`, `/${newLang}`);
 };
 
 const currentLang = languages.find((l) => l.code === lang);

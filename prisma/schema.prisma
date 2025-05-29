@@ -13,194 +13,192 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Section {
-    id    Int    @id @default(autoincrement())
-    title String
+model RawTranslation {
+    id           Int           @id @default(autoincrement())
+    translations Translation[]
 
-    html String
-    css  String
-    js   String
-
-    siteId Int
-    site   Site @relation(fields: [siteId], references: [id])
-
-    // keys     String[]
-    contents SectionContent[]
+    linkNames             Link[]             @relation("LinkName")
+    linkDescriptions      Link[]             @relation("LinkDescription")
+    navbarTexts           Navbar[]           @relation("NavbarText")
+    mapPointCategoryNames MapPointCategory[] @relation("MapPointCategoryName")
+    mapPointNames         MapPoint[]         @relation("MapPointName")
+    mapPointDescriptions  MapPoint[]         @relation("MapPointDescription")
+    celebrityBios         Celebrity[]        @relation("CelebrityBio")
+    celebrityProfessions  Celebrity[]        @relation("CelebrityProfession")
+    blogTitles            Blog[]             @relation("BlogTitle")
+    blogContents          Blog[]             @relation("BlogContent")
+    bookTitles            Book[]             @relation("BookTitle")
+    bookContents          Book[]             @relation("BookContent")
+    mediaItemAltTexts     MediaItem[]        @relation("MediaItemAltText")
+    mediaItemCaptions     MediaItem[]        @relation("MediaItemCaption")
 }
 
-model SectionContent {
+model Translation {
     id       Int    @id @default(autoincrement())
-    langCode String
-    content  Json
+    language String @default("en") @db.VarChar(5)
+    value    String
 
-    sectionId Int
-    section   Section @relation(fields: [sectionId], references: [id])
+    rawTranslationId Int
+    rawTranslation   RawTranslation @relation(fields: [rawTranslationId], references: [id], onDelete: Cascade)
 
-    @@unique([sectionId, langCode])
+    @@unique([language, rawTranslationId])
 }
 
-model Site {
+model Blog {
     id Int @id @default(autoincrement())
 
-    slug String @unique
+    titleRawTranslationId Int
+    title                 RawTranslation @relation("BlogTitle", fields: [titleRawTranslationId], references: [id], onDelete: Cascade)
+    slug                  String         @unique
 
-    title       String
-    description String
-    keywords    String
+    authors String[]
 
-    sections Section[]
+    contentRawTranslationId Int
+    content                 RawTranslation @relation("BlogContent", fields: [contentRawTranslationId], references: [id], onDelete: Cascade)
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-}
+    coverImageId String?
+    coverImage   MediaItem? @relation("BlogCoverImage", fields: [coverImageId], references: [id], onDelete: SetNull)
 
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-
-// model InfoEntry {
-//     id   Int    @id @default(autoincrement())
-//     slug String @unique
-
-//     contents InfoEntryLanguageRelatedContent[]
-
-//     kind String
-
-//     createdAt DateTime @default(now())
-//     updatedAt DateTime @updatedAt
-// }
-
-// model InfoEntryLanguageRelatedContent {
-//     id Int @id @default(autoincrement())
-
-//     langCode String @unique
-
-//     title    String
-//     subtitle String
-//     author   String
-//     content  String
-
-//     infoEntry   InfoEntry? @relation(fields: [infoEntryId], references: [id])
-//     infoEntryId Int
-
-//     @@unique([langCode, id])
-// }
-
-// Event und Speaker Modelle wurden entfernt
-
-model Post {
-    id          Int      @id @default(autoincrement())
-    title       String
-    slug        String   @unique
-    content     String
-    language    String
     publishedAt DateTime @default(now())
     updatedAt   DateTime @updatedAt
-    coverImage  String? // Optionales Cover-Bild
-    authorId    Int
-    author      User     @relation(fields: [authorId], references: [id])
-}
-
-model User {
-    id     Int     @id @default(autoincrement())
-    name   String
-    avatar String?
-    posts  Post[]
-}
-
-model Comment {
-    id        Int      @id @default(autoincrement())
-    author    String
-    role      String?
-    comment   String
-    avatar    String   @default("/placeholder.webp")
-    language  String   @default("en") // "de", "en", "it"
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
 }
 
 model Link {
-    id   Int    @id @default(autoincrement())
-    name String
-    url  String
+    id Int @id @default(autoincrement())
+
+    nameRawTranslationId        Int
+    name                        RawTranslation  @relation("LinkName", fields: [nameRawTranslationId], references: [id], onDelete: Cascade)
+    descriptionRawTranslationId Int?
+    description                 RawTranslation? @relation("LinkDescription", fields: [descriptionRawTranslationId], references: [id], onDelete: SetNull)
+
+    url String
 }
 
 model Navbar {
-    id             Int     @id @default(autoincrement())
-    language       String  @db.VarChar(10)
-    text           String
-    href           String
-    onLanguageSlug Boolean
+    id Int @id @default(autoincrement())
+
+    textRawTranslationId Int
+    text                 RawTranslation @relation("NavbarText", fields: [textRawTranslationId], references: [id], onDelete: Cascade)
+    href                 String
+
+    withLanguagePrefix Boolean
 }
 
-model Admin {
-    id                   Int      @id @default(autoincrement())
-    username             String   @unique
-    passwordHash         String
-    role                 Role     @default(EDITOR)
-    createdAt            DateTime @default(now())
-    updatedAt            DateTime @updatedAt
-    acceptedBySuperAdmin Boolean  @default(false)
+model User {
+    id   Int    @id @default(autoincrement())
+    name String
+
+    email        String @unique
+    passwordHash String
+
+    role Role @default(EDITOR)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    uploadedMediaItems MediaItem[]
 }
 
 enum Role {
     SUPERADMIN
+    ADMIN
+    MODERATOR
     EDITOR
 }
 
 model Book {
-    id        Int         @id @default(autoincrement())
-    title     String
-    author    String
+    id Int @id @default(autoincrement())
+
+    titleRawTranslationId Int
+    title                 RawTranslation @relation("BookTitle", fields: [titleRawTranslationId], references: [id], onDelete: Cascade)
+    author                String
+
+    coverImageId String?
+    coverImage   MediaItem? @relation("BookCoverImage", fields: [coverImageId], references: [id], onDelete: SetNull)
+
+    isbn String? @unique
+
     published DateTime
-    content   String // Der eigentliche Text als HTML
-    language  String
-    createdAt DateTime    @default(now())
-    updatedAt DateTime    @updatedAt
-    covers    BookCover[] // Mehrere Coverbilder
-    links     BookLink[] // Mehrere Links
+
+    contentRawTranslationId Int
+    content                 RawTranslation @relation("BookContent", fields: [contentRawTranslationId], references: [id], onDelete: Cascade)
+
+    links String[]
 }
 
-model BookCover {
-    id     Int    @id @default(autoincrement())
-    path   String
-    bookId Int
-    book   Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
-}
+model MapPointCategory {
+    id Int @id @default(autoincrement())
 
-model BookLink {
-    id     Int    @id @default(autoincrement())
-    url    String
-    bookId Int
-    book   Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
-}
+    nameRawTranslationId Int
+    name                 RawTranslation @relation("MapPointCategoryName", fields: [nameRawTranslationId], references: [id], onDelete: Cascade)
 
-model MapPointType {
-    id          Int        @id @default(autoincrement())
-    name        String     @unique
-    description String?
-    mapPoints   MapPoint[]
+    mapPoints MapPoint[]
 }
 
 model MapPoint {
-    id          Int          @id @default(autoincrement())
-    name        String
-    description String?
-    typeId      Int
-    type        MapPointType @relation(fields: [typeId], references: [id])
-    // Optional coordinates
-    latitude    Float
-    longitude   Float
-    createdAt   DateTime     @default(now())
-    updatedAt   DateTime     @updatedAt
+    id Int @id @default(autoincrement())
+
+    nameRawTranslationId        Int
+    name                        RawTranslation  @relation("MapPointName", fields: [nameRawTranslationId], references: [id], onDelete: Cascade)
+    descriptionRawTranslationId Int?
+    description                 RawTranslation? @relation("MapPointDescription", fields: [descriptionRawTranslationId], references: [id], onDelete: SetNull)
+
+    categoryId Int
+    category   MapPointCategory @relation(fields: [categoryId], references: [id])
+
+    latitude  Float
+    longitude Float
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
 
 model Celebrity {
-    id         Int       @id @default(autoincrement())
-    name       String
-    profession String
-    born       DateTime
-    died       DateTime?
-    alsYear    Int // Jahr der ALS-Diagnose
-    bio        String // Kurzbiografie
-    image      String? // URL zum Bild
+    id Int @id @default(autoincrement())
+
+    imageId String?
+    image   MediaItem? @relation("CelebrityImage", fields: [imageId], references: [id], onDelete: SetNull)
+
+    name                       String
+    bioRawTranslationId        Int
+    bio                        RawTranslation @relation("CelebrityBio", fields: [bioRawTranslationId], references: [id], onDelete: Cascade)
+    professionRawTranslationId Int
+    profession                 RawTranslation @relation("CelebrityProfession", fields: [professionRawTranslationId], references: [id], onDelete: Cascade)
+
+    born DateTime
+    died DateTime?
+
+    alsYear Int
+}
+
+model MediaItem {
+    id       String @id @default(cuid())
+    filename String
+
+    storageKey    String @unique
+    storageBucket String
+    storageRegion String
+    mimeType      String
+
+    size   Int
+    width  Int?
+    height Int?
+
+    altTextRawTranslationId Int?
+    altText                 RawTranslation? @relation("MediaItemAltText", fields: [altTextRawTranslationId], references: [id], onDelete: SetNull)
+
+    captionRawTranslationId Int?
+    caption                 RawTranslation? @relation("MediaItemCaption", fields: [captionRawTranslationId], references: [id], onDelete: SetNull)
+
+    uploadedAt DateTime @default(now())
+
+    uploaderId Int?
+    uploader   User? @relation(fields: [uploaderId], references: [id], onDelete: SetNull)
+
+    showInMediaGallery Boolean @default(false)
+    mediaType          String?
+
+    blogsAsCover       Blog[]      @relation("BlogCoverImage")
+    booksAsCover       Book[]      @relation("BookCoverImage")
+    celebritiesAsImage Celebrity[] @relation("CelebrityImage")
 }

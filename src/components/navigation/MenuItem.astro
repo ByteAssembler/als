@@ -1,13 +1,20 @@
 ﻿---
-interface Props {
-    href: string;
-    text: string;
+import { cn } from "../../utils/utils";
+import type { NavbarItem } from "./navbar-content";
+
+type Props = NavbarItem & {
     className?: string;
-}
+};
 
 const { href, text, className = "" } = Astro.props;
 ---
 
-<a href={href} class={`text-gray-700 hover:text-primary-600 font-medium transition-colors duration-200 ${className}`}>
+<a
+    href={href}
+    class={cn(
+        `text-gray-700 hover:text-primary-600 font-medium transition-colors duration-200 flex items-center justify-center`,
+        className
+    )}
+>
     {text}
 </a>

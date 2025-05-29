@@ -1,8 +1,5 @@
-﻿---
-import Layout from "../../layouts/Layout.astro";
-import AdminComponent from "../../components/Admin.tsx";
+---
+import AdminPanel from "./AdminPanel.svelte";
 ---
 
-<Layout title="Admin Panel" defaultPadding={false}>
-    <AdminComponent client:only="react" />
-</Layout>
+<AdminPanel client:load />

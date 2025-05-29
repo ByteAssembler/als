@@ -1,20 +1,13 @@
 ﻿---
-import db from "../../../utils/db";
+import { fetchDataFromServer } from "../../../pages/api/trpc/serverHelpers";
 import Layout from "../../../layouts/Layout.astro";
 
 const { lang } = Astro.params;
+if (!lang) {
+    return new Response("Language parameter is missing", { status: 400 });
+}
 
-const books = await db.book.findMany({
-    where: { language: lang },
-    select: {
-        id: true,
-        author: true,
-        title: true,
-        covers: {
-            take: 1,
-        },
-    },
-});
+const books = await fetchDataFromServer("book.list_by_language", lang);
 ---
 
 <Layout title="Bücher" defaultPadding={true}>
@@ -27,7 +20,7 @@ const books = await db.book.findMany({
                         class="block rounded-lg bg-white p-4 shadow hover:shadow-lg"
                     >
                         <img
-                            src={"/media/books/" + (book.covers[0]?.path || "/book-cover-placeholder.png")}
+                            src={book.coverImage || "/book-cover-placeholder.png"}
                             class="h-48 w-full rounded object-cover"
                         />
                         <h2 class="mt-4 text-xl font-semibold">{book.title}</h2>

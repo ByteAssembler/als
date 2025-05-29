@@ -1,6 +1,8 @@
 ﻿---
-import db from "../utils/db";
+import { i18n } from "../i18n";
 import Section from "../layouts/Section.astro";
+
+const lang = Astro.locals.lang;
 ---
 
 <Section sectionTitle="Hero" sectionId="hero" noMargin={true} noTitle={true}>
@@ -15,10 +17,10 @@ import Section from "../layouts/Section.astro";
         <div class="relative z-10 max-w-5xl text-white">
             <h1 class="text-5xl font-extrabold leading-tight sm:text-6xl md:text-7xl lg:text-8xl">
                 <!-- Fighting Together Against ALS -->
-                Wir kämpfen gemeinsam gegen ALS
+                {i18n.tLang(lang, "pages.homepage.wellcome.title")}
             </h1>
             <p class="mt-4 text-lg font-light sm:text-xl md:text-2xl lg:text-4xl">
-                Begleite uns in diesem starken Kampf
+                {i18n.tLang(lang, "pages.homepage.wellcome.subtitle")}
             </p>
 
             <!-- Button -->
@@ -27,7 +29,7 @@ import Section from "../layouts/Section.astro";
                 class="mt-6 inline-block rounded-full bg-gradient-to-r from-blue-500 to-blue-700 px-6 py-3 text-lg font-bold shadow-2xl transition-all duration-300 hover:scale-110 hover:shadow-blue-500/50 sm:px-10 sm:py-4 sm:text-xl md:px-12 md:py-5 md:text-2xl"
             >
                 <!-- Learn More -->
-                Mehr erfahren
+                {i18n.tLang(lang, "pages.homepage.wellcome.learnMore")}
             </a>
         </div>
     </div>

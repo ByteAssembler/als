@@ -2,12 +2,12 @@
 import Layout from "../../../layouts/Layout.astro";
 import FormattedDate from "../../../components/FormattedDate.astro";
 import db from "../../../utils/db";
+import { fetchDataFromServer } from "../../api/trpc/serverHelpers";
 
 const { slug, lang } = Astro.params;
-const post = await db.post.findUnique({
-    where: { slug },
-    include: { author: true },
-});
+if (!slug || !lang) return Astro.redirect("/404");
+
+const post = await fetchDataFromServer("blog.read_by_slug_and_language", slug, lang);
 
 if (!post) {
     return Astro.redirect("/404");
@@ -23,8 +23,8 @@ if (!post) {
                 </h1>
 
                 <div class="flex items-center space-x-4 text-sm text-gray-600">
-                    <img src={post.author.avatar} alt={post.author.name} class="h-12 w-12 rounded-full shadow-md" />
-                    <span class="font-medium">{post.author.name}</span>
+                    <!-- <img src={post.authors} alt={post.author.name} class="h-12 w-12 rounded-full shadow-md" /> -->
+                    <span class="font-medium">{post.authors.join(", ")}</span>
                     <span>•</span>
                     <FormattedDate date={post.publishedAt} />
                     {

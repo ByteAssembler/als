@@ -1,7 +1,5 @@
 ﻿import { useEffect, useState } from "react";
-import { languages } from "../data/languages";
-
-// Remove the line causing the error as it is not used in the component
+import { languages } from "../i18n/languages";
 
 const LanguageSwitcher = () => {
 	const [currentUrl, setCurrentUrl] = useState<string>("");

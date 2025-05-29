@@ -1,108 +1,103 @@
 ﻿import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import type { MapPoint, MapPointType } from "@prisma/client";
-import CategorySelector from "./CategorySelector";
+import type { fetchDataFromServer } from "../pages/api/trpc/serverHelpers";
 
-const data = [
-	{
-		name: "Hauptsitz",
-		locations: [{ name: "Olang", position: { lat: 46.7419, lng: 12.0196 } }],
-	},
-	{
-		name: "Krankenhäuser",
-		locations: [
-			{ name: "Zentrum ALS Ulm", position: { lat: 48.402, lng: 10.0014 } },
-			{
-				name: "Charité - Universitätsmedizin Berlin",
-				position: { lat: 52.5268, lng: 13.3766 },
-			},
-		],
-	},
-];
+const MapComponent = (
+  {
+    points, categories
+  }: {
+    points: Awaited<ReturnType<typeof fetchDataFromServer<"mapPoint.list_by_language">>>;
+    categories: Awaited<ReturnType<typeof fetchDataFromServer<"mapPointCategory.list_by_language">>>;
+  }
+) => {
+  const mapRef = useRef<L.Map | null>(null);
+  const markersRef = useRef<L.Marker[]>([]);
+  const [category, setCategory] = useState("");
 
-const MapComponent = () => {
-	const mapRef = useRef<L.Map | null>(null);
-	const markersRef = useRef<L.Marker[]>([]);
-	const [category, setCategory] = useState("");
+  let url = "/marker.png";
+  switch (category) {
+    case "event":
+      url = "/event.png";
+      break;
+    case "hospital":
+      url = "/hospital_marker.png";
+      break;
+    case "self_help_group":
+      url = "/self_help_group.png";
+      break;
+    case "study":
+      url = "/study.png";
+      break;
+    default:
+      url = "/marker.png";
+  }
 
-    let url = "/marker.png";
-    switch (category) {
-        case "event":
-            url = "/event.png";
-            break;
-        case "hospital":
-            url = "/hospital_marker.png";
-            break;
-        case "self_help_group":
-            url = "/self_help_group.png";
-            break;
-        case "study":
-            url = "/study.png";
-            break;
-        default:
-            url = "/marker.png";
+  const customIcon = L.icon({
+    iconUrl: url,
+    iconSize: [45, 45],
+    iconAnchor: [15, 45],
+  });
+
+  useEffect(() => {
+    if (!mapRef.current) {
+      mapRef.current = L.map("map-map").setView([46.7419, 12.0196], 6);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "&copy; OpenStreetMap contributors",
+      }).addTo(mapRef.current);
     }
+  }, []);
 
-	const customIcon = L.icon({
-		iconUrl: url,
-		iconSize: [45, 45],
-		iconAnchor: [15, 45],
-	});
+  useEffect(() => {
+    if (!mapRef.current) return;
 
-	useEffect(() => {
-		if (!mapRef.current) {
-			mapRef.current = L.map("map-map").setView([46.7419, 12.0196], 6);
-			L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-				attribution: "&copy; OpenStreetMap contributors",
-			}).addTo(mapRef.current);
-		}
-	}, []);
+    markersRef.current.forEach((marker) => mapRef.current?.removeLayer(marker));
+    markersRef.current = [];
 
-	useEffect(() => {
-		if (!mapRef.current) return;
+    const selectedCategories = category ? [points.find((item) => item.name === category)] : points;
+    let group: L.Marker[] = [];
 
-		markersRef.current.forEach((marker) => mapRef.current?.removeLayer(marker));
-		markersRef.current = [];
+    selectedCategories.forEach((category) => {
+      if (category) {
+        points.forEach((point) => {
+          const marker = L.marker([point.latitude, point.longitude], {
+            icon: customIcon,
+          })
+            .bindPopup(`<b>${point.name}</b><p>${point.description}</p>`)
+            .addTo(mapRef.current!);
+          markersRef.current.push(marker);
+          group.push(marker);
+        });
+      }
+    });
 
-		const selectedCategories = category ? [data.find((item) => item.name === category)] : data;
-		let group: L.Marker[] = [];
+    if (group.length > 1) {
+      const groupLayer = L.featureGroup(group);
+      mapRef.current.fitBounds(groupLayer.getBounds(), { padding: [50, 50] });
+    } else if (group.length === 1) {
+      mapRef.current.setView([group[0].getLatLng().lat, group[0].getLatLng().lng], 10);
+    }
+  }, [category]);
 
-		selectedCategories.forEach((category) => {
-			if (category) {
-				category.locations.forEach((loc) => {
-					const marker = L.marker([loc.position.lat, loc.position.lng], {
-						icon: customIcon,
-					})
-						.bindPopup(`<b>${loc.name}</b>`)
-						.addTo(mapRef.current!);
-					markersRef.current.push(marker);
-					group.push(marker);
-				});
-			}
-		});
-
-		if (group.length > 1) {
-			const groupLayer = L.featureGroup(group);
-			mapRef.current.fitBounds(groupLayer.getBounds(), { padding: [50, 50] });
-		} else if (group.length === 1) {
-			mapRef.current.setView([group[0].getLatLng().lat, group[0].getLatLng().lng], 10);
-		}
-	}, [category]);
-
-	return (
-		<div className="z-0">
-			<select className="dropdown" value={category} onChange={(e) => setCategory(e.target.value)}>
-				<option value="">Alle Kategorien</option>
-				{data.map((category) => (
-					<option key={category.name} value={category.name}>
-						{category.name}
-					</option>
-				))}
-			</select>
-			<div id="map-map" className="h-[500px] w-full rounded-lg shadow-md mt-2"></div>
-		</div>
-	);
+  return (
+    <div className="z-0 relative">
+      <div className="absolute top-4 right-4 z-[9999999]">
+        <select
+          className="bg-white border-2 border-gray-400 rounded-lg px-4 py-2 font-medium text-gray-700 hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-w-[200px]"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+        >
+          <option value="">Alle Kategorien</option>
+          {categories.map((category) => (
+            <option key={category.name} value={category.name}>
+              {category.name}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div id="map-map" className="h-[500px] w-full rounded-lg shadow-md"></div>
+    </div>
+  );
 };
 
 export default MapComponent;

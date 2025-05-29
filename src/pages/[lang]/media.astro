@@ -1,119 +1,294 @@
 ﻿---
-import fs from "fs/promises";
 import Layout from "../../layouts/Layout.astro";
-import  BlobAPI  from "../../utils/api";
+import BlobAPI from "../../utils/api";
 
 const fileServerURL = process.env.FILE_SERVER_URL;
 const fileServerToken = process.env.FILE_SERVER_TOKEN;
 
 const blobApi = new BlobAPI(fileServerURL, fileServerToken);
+const bucketId = "af6642da722af38705457f99";
 
-const bucketId = "af6642da722af38705457f99"; // Full permissions: 131071
-
-
-const mediaFiles = await blobApi.listFilesInBucket(bucketId);// mediaDirExists ? await fs.readdir(mediaDir) : [];
+const mediaFiles = await blobApi.listFilesInBucket(bucketId);
 
 const audioExtensions = [".mp3", ".wav", ".ogg"];
 const videoExtensions = [".mp4", ".mkv", ".webm"];
 const imageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp"];
-const infomationFilesExtensions = [".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".odt", ".ods", ".odp", ".txt", ".rtf", ".csv", ".xml", ".json"];
-// Helper to remove file extension
+const infoExtensions = [
+    ".pdf",
+    ".doc",
+    ".docx",
+    ".xls",
+    ".xlsx",
+    ".ppt",
+    ".pptx",
+    ".odt",
+    ".ods",
+    ".odp",
+    ".txt",
+    ".rtf",
+    ".csv",
+    ".xml",
+    ".json",
+];
+
 function removeExtension(filename: string) {
-	return filename.replace(/\.[^/.]+$/, "");
+    return filename.replace(/\.[^/.]+$/, "");
 }
 
-// Sort files into categories
-const audios = mediaFiles.filter((file) =>
-	audioExtensions.some((ext) => file.name.toLowerCase().endsWith(ext)),
-);
+const audios = mediaFiles.filter((file) => audioExtensions.some((ext) => file.name.toLowerCase().endsWith(ext)));
 
-const videos = mediaFiles.filter((file) =>
-	videoExtensions.some((ext) => file.name.toLowerCase().endsWith(ext)),
-);
+const videos = mediaFiles.filter((file) => videoExtensions.some((ext) => file.name.toLowerCase().endsWith(ext)));
 
-const images = mediaFiles.filter((file) =>
-	imageExtensions.some((ext) => file.name.toLowerCase().endsWith(ext)),
-);
+const images = mediaFiles.filter((file) => imageExtensions.some((ext) => file.name.toLowerCase().endsWith(ext)));
 
 const informationFiles = mediaFiles.filter((file) =>
-    infomationFilesExtensions.some((ext) => file.name.toLowerCase().endsWith(ext)),
+    infoExtensions.some((ext) => file.name.toLowerCase().endsWith(ext))
 );
-
-const { lang } = Astro.params;
 ---
 
 <Layout title="Medien" defaultPadding={true} showTitle={true}>
-	<div
-		class="mx-auto mt-10 max-w-4xl rounded-lg bg-white p-6 pt-10 shadow-md"
-	>
-		<h1 class="mb-4 text-2xl font-bold">Medien</h1>
+    <div class="max-w-3xl mx-auto p-6 flex flex-col gap-6">
+        <!-- Bücher Kachel -->
+        <button
+            type="button"
+            class="bg-blue-200 p-6 rounded-xl text-xl font-semibold hover:bg-blue-300 transition"
+            onclick="toggleSection('books')"
+        >
+            📚 Bücher
+        </button>
+        <div id="books" class="hidden pl-6">
+            <!-- Beispiel-Link zur Bücher-Seite -->
+            <a
+                href="/books"
+                class="text-blue-600 hover:underline"
+                onclick="return showMedia(event, 'books', 'book-page', '/books')"
+            >
+                Zur Bücher-Seite
+            </a>
+            <div id="viewer-books" class="mt-2"></div>
+        </div>
 
-		<ul class="space-y-2">
-			<li class="border-b pb-2">
-				<a
-					class="text-blue-900 hover:underline"
-					href={"/" + (lang ? lang : "/en") + "/books"}
-				>
-					Bücher
-				</a>
-			</li>
-		</ul>
+        <!-- Audios Kachel -->
+        <button
+            type="button"
+            class="bg-blue-200 p-6 rounded-xl text-xl font-semibold hover:bg-blue-300 transition"
+            onclick="toggleSection('audios')"
+        >
+            🎧 Audios
+        </button>
+        <div id="audios" class="hidden pl-6">
+            {
+                audios.length > 0 ? (
+                    <ul class="space-y-2">
+                        {audios.map((file) => (
+                            <li key={file.id}>
+                                <a
+                                    href={`${fileServerURL}/files/${bucketId}/${file.id}`}
+                                    class="text-blue-600 hover:underline"
+                                    onclick=`return showMedia(event, 'audios', '${file.id}', '${file.name}', '${fileServerURL}/files/${bucketId}/${file.id}')`
+                                >
+                                    {removeExtension(file.name)}
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p class="text-gray-500">Keine Audios vorhanden.</p>
+                )
+            }
+            <div id="viewer-audios" class="mt-2"></div>
+        </div>
 
-        {audios.length > 0 &&
-		<h2 class="mt-6 text-xl font-semibold">Audios</h2>
-		<ul class="space-y-2">
-			{
-				audios.map((file) => (
-					<li class="border-b pb-2">
-						<a href={`${fileServerURL}/files/${bucketId}/${file.id}`} target="_blank" class="text-blue-600 hover:underline">
-							{removeExtension(file.name)}
-						</a>
-					</li>
-				))
-			}
-		</ul>}
-        {videos.length > 0 &&
-		<h2 class="mt-6 text-xl font-semibold">Videos</h2>
-		<ul class="space-y-2">
-			{
-				videos.map((file) => (
-					<li class="border-b pb-2">
-						<a href={`${fileServerURL}/files/${bucketId}/${file.id}`} target="_blank" class="text-blue-600 hover:underline">
-							{removeExtension(file.name)}
-						</a>
-					</li>
-				))
-			}
-		</ul>
+        <!-- Bilder Kachel -->
+<button
+  type="button"
+  class="bg-blue-200 p-6 rounded-xl text-xl font-semibold hover:bg-blue-300 transition"
+  onclick="toggleSection('images')"
+>
+  🖼️ Bilder
+</button>
+<div id="images" class="hidden pl-6">
+  {
+    images.length > 0 ? (
+      <ul class="space-y-2">
+        {images.map((file) => (
+          <li key={file.id}>
+            <a
+              href={`${fileServerURL}/files/${bucketId}/${file.id}`}
+              class="text-blue-600 hover:underline"
+              onclick={`event.preventDefault(); showImageModal('${file.name}', '${fileServerURL}/files/${bucketId}/${file.id}');`}
+            >
+              {removeExtension(file.name)}
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="text-gray-500">Keine Bilder vorhanden.</p>
+    )
+  }
+</div>
+
+<!-- Modal für Bildanzeige -->
+<div id="image-modal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-xl shadow-xl max-w-4xl w-full h-[90%] relative flex">
+    <!-- Bildanzeige -->
+    <div class="flex-1 overflow-auto p-4 flex items-center justify-center">
+      <img id="modal-image" src="" alt="" class="max-w-full max-h-full rounded-lg" />
+    </div>
+    <!-- Menü rechts -->
+    <div class="w-48 bg-gray-100 border-l border-gray-300 p-4 flex flex-col justify-between">
+      <div class="space-y-2">
+        <a id="modal-download" class="text-blue-600 hover:underline block" href="#" download>⬇️ Herunterladen</a>
+        <a id="modal-open" class="text-blue-600 hover:underline block" href="#" target="_blank">🌐 In neuem Tab</a>
+      </div>
+      <button onclick="closeImageModal()" class="mt-4 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded">
+        Schließen
+      </button>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  // Kategorie umschalten
+  function toggleSection(id) {
+    const sections = ["books", "audios", "images", "information"];
+    sections.forEach((sectionId) => {
+      const el = document.getElementById(sectionId);
+      if (!el) return;
+      if (sectionId === id) {
+        el.classList.toggle("hidden");
+      } else {
+        el.classList.add("hidden");
+        const viewer = document.getElementById("viewer-" + sectionId);
+        if (viewer) {
+          viewer.innerHTML = "";
         }
-        {images.length > 0 &&
-		<h2 class="mt-6 text-xl font-semibold">Bilder</h2>
-		<ul class="space-y-2">
-			{
-				images.map((file) => (
-					<li class="border-b pb-2">
-						<a href={`${fileServerURL}/files/${bucketId}/${file.id}`} target="_blank" class="text-blue-600 hover:underline">
-							{removeExtension(file.name)}
-						</a>
-					</li>
-				))
-			}
-		</ul>
-        }
-        {informationFiles.length > 0 &&
-        <h2 class="mt-6 text-xl font-semibold">Informationen</h2>
-            
-            <ul class="space-y-2">
-                {
-                    informationFiles.map((file) => (
-                        <li class="border-b pb-2">
-                            <a href={`${fileServerURL}/files/${bucketId}/${file.id}`} target="_blank" class="text-blue-600 hover:underline">
-                                {removeExtension(file.name)}
-                            </a>
-                        </li>
-                    ))
+      }
+    });
+  }
+
+  // Modal für Bilder anzeigen
+  function showImageModal(filename, url) {
+    const modal = document.getElementById("image-modal");
+    const modalImage = document.getElementById("modal-image");
+    const modalDownload = document.getElementById("modal-download");
+    const modalOpen = document.getElementById("modal-open");
+
+    modalImage.src = url;
+    modalImage.alt = filename;
+    modalDownload.href = url;
+    modalDownload.download = filename;
+    modalOpen.href = url;
+
+    modal.classList.remove("hidden");
+  }
+
+  function closeImageModal() {
+    document.getElementById("image-modal").classList.add("hidden");
+  }
+</script>
+
+
+        <!-- Informationen Kachel -->
+        <button
+            type="button"
+            class="bg-blue-200 p-6 rounded-xl text-xl font-semibold hover:bg-blue-300 transition"
+            onclick="toggleSection('information')"
+        >
+            📄 Informationen
+        </button>
+        <div id="information" class="hidden pl-6">
+            {
+                informationFiles.length > 0 ? (
+                    <ul class="space-y-2">
+                        {informationFiles.map((file) => (
+                            <li key={file.id}>
+                                <a
+                                    href={`${fileServerURL}/files/${bucketId}/${file.id}`}
+                                    class="text-blue-600 hover:underline"
+                                    onclick={`return showMedia(event, 'information', '${file.id}', '${file.name}', '${fileServerURL}/files/${bucketId}/${file.id}')`}
+                                >
+                                    {removeExtension(file.name)}
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p class="text-gray-500">Keine Informationen vorhanden.</p>
+                )
+            }
+            <div id="viewer-information" class="mt-2"></div>
+        </div>
+
+
+    <script is:inline>
+        // Umschalten der Kategorien
+        function toggleSection(id) {
+            const sections = ["books", "audios", "images", "information"];
+            sections.forEach((sectionId) => {
+                const el = document.getElementById(sectionId);
+                if (!el) return;
+                if (sectionId === id) {
+                    el.classList.toggle("hidden");
+                } else {
+                    el.classList.add("hidden");
+                    // Viewer leeren, wenn andere Kategorie geöffnet wird
+                    const viewer = document.getElementById("viewer-" + sectionId);
+                    if (viewer) {
+                        viewer.innerHTML = "";
+                    }
                 }
-            </ul>
+            });
         }
-	</div>
+
+        // Media anzeigen: Vorschau unter dem jeweiligen Bereich
+        function showMedia(event, category, id, filename, url) {
+            event.preventDefault();
+
+			console.log(category, id, filename, url);
+
+            const viewerId = "viewer-" + category;
+            const viewer = document.getElementById(viewerId);
+            if (!viewer) return;
+
+            // Toggle Logik: Wenn derselbe Link erneut geklickt wird, Vorschau ausblenden
+            if (viewer.dataset.currentId === id && viewer.style.display === "block") {
+                viewer.innerHTML = "";
+                viewer.style.display = "none";
+                viewer.dataset.currentId = "";
+                return false;
+            }
+
+            viewer.dataset.currentId = id;
+
+            const ext = filename.split(".").pop().toLowerCase();
+            let html = "";
+
+            if (["mp3", "wav", "ogg"].includes(ext)) {
+                html = `<audio controls autoplay style="width: 100%;">
+                  <source src="${url}" type="audio/${ext === "mp3" ? "mpeg" : ext}">
+                  Dein Browser unterstützt den Audio-Tag nicht.
+                </audio>`;
+            } else if (["mp4", "mkv", "webm"].includes(ext)) {
+                html = `<video controls autoplay style="width: 100%; max-height: 400px;">
+                  <source src="${url}" type="video/${ext}">
+                  Dein Browser unterstützt den Video-Tag nicht.
+                </video>`;
+            } else if (["jpg", "jpeg", "png", "gif", "webp"].includes(ext)) {
+                html = `<img src="${url}" alt="${filename}" style="max-width: 100%; border-radius: 8px;" />`;
+            } else if (ext === "pdf") {
+                html = `<iframe src="${url}" style="width: 100%; height: 600px;" frameborder="0"></iframe>`;
+            } else {
+                // Für andere Dateitypen einfach Link zum Öffnen in neuem Tab
+                html = `<p>Vorschau nicht verfügbar. <a href="${url}" target="_blank" rel="noopener noreferrer" class="text-blue-700 underline">Datei hier öffnen</a></p>`;
+            }
+
+            viewer.innerHTML = html;
+            viewer.style.display = "block";
+            viewer.scrollIntoView({ behavior: "smooth", block: "center" });
+
+            return false;
+        }
+    </script>
 </Layout>

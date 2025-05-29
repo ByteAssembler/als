@@ -5,7 +5,7 @@ interface Props {
 
 const { date } = Astro.props;
 
-const lang = Astro.url.pathname.split("/")[1] || "en";
+const lang = Astro.locals.lang || "en";
 ---
 
 <time datetime={date.toISOString()}>

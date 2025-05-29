@@ -1,6 +1,6 @@
 ﻿---
 import Layout from "../../../../layouts/Layout.astro";
-import db from "../../../../utils/db";
+import { fetchDataFromServer } from "../../../../pages/api/trpc/serverHelpers";
 const { lang, bookid } = Astro.params;
 
 console.log(bookid);
@@ -9,16 +9,11 @@ if (!bookid || isNaN(parseInt(bookid))) {
 	throw new Error("bookId is required");
 }
 
-const book = await db.book.findFirst({
-	where: {
-		id: parseInt(bookid),
-	},
-	include: { covers: true, links: true },
-});
+const bookId = parseInt(bookid);
+const book = await fetchDataFromServer("book.read", bookId, lang);
 ---
 
 <Layout title={book ? book.title : "Book not found"} defaultPadding={true}>
-	
 	<div class="p-5">
 		{
 			book ? (
@@ -34,17 +29,17 @@ const book = await db.book.findFirst({
 						{book.links.map((link) => (
 							<li>
 								<a
-									href={link.url}
+									href={link}
 									class="text-blue-500 hover:underline"
 								>
-									{link.url}
+									{link}
 								</a>
 							</li>
 						))}
 					</ul>
 					)}
 
-					{book.covers.length > 0 && (
+					{/*book.covers.length > 0 && (
 						<h2 class="mt-8 text-2xl font-bold">Images</h2>
                         <div class="relative mx-auto mt-6 w-full max-w-md">
 						<div class="slider overflow-hidden">
@@ -68,7 +63,7 @@ const book = await db.book.findFirst({
 							→
 						</button>
 					</div>
-					)}
+					)*/}
 
                     <div class="mt-10">
                         <a href={`/${lang}/books`}
