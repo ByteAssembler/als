@@ -118,7 +118,7 @@ model Book {
 
     isbn String? @unique
 
-    published DateTime
+    published DateTime?
 
     contentRawTranslationId Int
     content                 RawTranslation @relation("BookContent", fields: [contentRawTranslationId], references: [id], onDelete: Cascade)

@@ -95,12 +95,6 @@ export const navbarContent = {
       text: "Home",
     },
     {
-      id: 59,
-      href: "#events",
-      withLanguagePrefix: true,
-      text: "Eventi",
-    },
-    {
       id: 60,
       href: "#map",
       withLanguagePrefix: true,

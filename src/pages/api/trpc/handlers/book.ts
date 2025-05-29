@@ -1,81 +1,100 @@
 import { z } from 'zod';
 import prisma from '../../../../utils/db';
-import { getTranslation } from '../../../../utils';
+import type { Prisma } from '@prisma/client';
+
+// Helper function to get book with translated fields
+async function getBookWithTranslatedFields(
+	whereClause: Prisma.BookWhereUniqueInput,
+	language?: string
+) {
+	const book = await prisma.book.findUnique({
+		where: whereClause,
+		include: {
+			title: {
+				include: {
+					translations: language ? { where: { language } } : true,
+				},
+			},
+			content: {
+				include: {
+					translations: language ? { where: { language } } : true,
+				},
+			},
+		},
+	});
+
+	if (!book) return null;
+
+	const title = language && book.title.translations.length > 0
+		? book.title.translations[0].value
+		: book.title.translations[0]?.value;
+	const content = language && book.content.translations.length > 0
+		? book.content.translations[0].value
+		: book.content.translations[0]?.value;
+
+	return {
+		...book,
+		title: title ?? null,
+		content: content ?? null,
+	};
+}
 
 export const bookHandlers = {
 	create: async (input: z.infer<typeof createBookSchema>) => {
-		return await prisma.book.create({ data: input });
+		const { titles, contents, authors, ...restInput } = input;
+		return await prisma.book.create({
+			data: {
+				...restInput,
+				title: {
+					create: {
+						translations: {
+							create: Object.entries(titles ?? {}).map(([language, value]) => ({
+								language,
+								value: value as string,
+							})),
+						},
+					},
+				},
+				content: {
+					create: {
+						translations: {
+							create: Object.entries(contents ?? {}).map(([language, value]) => ({
+								language,
+								value: value as string,
+							})),
+						},
+					},
+				},
+				coverImage: input.coverImage ? { connect: { storageKey: input.coverImage } } : undefined,
+				author: authors,
+			}
+		});
 	},
+
 	read: async (id: number, language?: string) => {
-		const book = await prisma.book.findUnique({
-			where: { id },
-			include: {
-				title: {
-					include: {
-						translations: true,
-					},
-				},
-				content: {
-					include: {
-						translations: true,
-					},
-				},
-			},
-		});
-
-		if (!book) {
-			return null;
-		}
-
-		const title = language ? await getTranslation(book.titleRawTranslationId, language) : book.title.translations[0]?.value;
-		const content = language ? await getTranslation(book.contentRawTranslationId, language) : book.content.translations[0]?.value;
-
-		return {
-			...book,
-			title: title ?? book.title.translations[0]?.value,
-			content: content ?? book.content.translations[0]?.value,
-		};
+		return getBookWithTranslatedFields({ id }, language);
 	},
+
 	read_by_language: async (id: number, language: string) => {
-		const book = await prisma.book.findUnique({
-			where: { id },
-			include: {
-				title: {
-					include: {
-						translations: {
-							where: { language: language },
-						},
-					},
-				},
-				content: {
-					include: {
-						translations: {
-							where: { language: language },
-						},
-					},
-				},
-			},
-		});
-
-		if (!book) {
-			return null;
-		}
-
-		const title = await getTranslation(book.titleRawTranslationId, language);
-		const content = await getTranslation(book.contentRawTranslationId, language);
-
-		return {
-			...book,
-			title: title ?? book.title.translations[0]?.value,
-			content: content ?? book.content.translations[0]?.value,
-		};
+		return getBookWithTranslatedFields({ id }, language);
 	},
+
 	update: async (input: z.infer<typeof updateBookSchema>) => {
-		return await prisma.book.update({ where: { id: input.id }, data: input });
+		const { id, coverImage, ...otherUpdateData } = input;
+		// Special handling for coverImage to create the proper connect structure
+		return await prisma.book.update({
+			where: { id },
+			data: {
+				...otherUpdateData,
+				coverImage: coverImage ? { connect: { storageKey: coverImage } } : undefined,
+			}
+		});
 	},
+
 	delete: async (id: number) => {
 		return await prisma.book.delete({ where: { id } });
 	},
+
 	list: async (language?: string) => {
 		const books = await prisma.book.findMany({
 			include: {
@@ -96,92 +115,35 @@ export const bookHandlers = {
 			return [];
 		}
 
-		const rawTranslationIds: number[] = [];
-		books.forEach((book) => {
-			rawTranslationIds.push(book.titleRawTranslationId);
-			rawTranslationIds.push(book.contentRawTranslationId);
-		});
-
-		let translations: { [key: number]: string | null } = {};
-
-		if (language) {
-			const translationRecords = await prisma.rawTranslation.findMany({
-				where: {
-					id: {
-						in: rawTranslationIds,
-					},
-				},
-				include: {
-					translations: {
-						where: {
-							language: language,
-						},
-					},
-				},
-			});
-
-			translations = translationRecords.reduce((acc: { [key: number]: string | null }, record) => {
-				acc[record.id] = record.translations.length > 0 ? record.translations[0].value : null;
-				return acc;
-			}, {});
-		}
-
-		return books.map((book) => {
-			const title = language ? translations[book.titleRawTranslationId] : book.title.translations[0]?.value;
-			const content = language ? translations[book.contentRawTranslationId] : book.content.translations[0]?.value;
-
-			return {
+		// If no language specified, return with default translations
+		if (!language) {
+			return books.map((book) => ({
 				...book,
-				title: title ?? book.title.translations[0]?.value,
-				content: content ?? book.content.translations[0]?.value,
-			};
-		});
-	},
-	list_by_language: async (language: string) => {
-		const books = await prisma.book.findMany({
-			include: {
-				title: {
-					include: {
-						translations: {
-							where: { language: language },
-						},
-					},
-				},
-				content: {
-					include: {
-						translations: {
-							where: { language: language },
-						},
-					},
-				},
-			},
-		});
-
-		if (!books || books.length === 0) {
-			return [];
+				title: book.title.translations[0]?.value,
+				content: book.content.translations[0]?.value,
+			}));
 		}
 
+		// Get all rawTranslationIds for batch processing
 		const rawTranslationIds: number[] = [];
 		books.forEach((book) => {
 			rawTranslationIds.push(book.titleRawTranslationId);
 			rawTranslationIds.push(book.contentRawTranslationId);
 		});
 
+		// Fetch translations in bulk
 		const translationRecords = await prisma.rawTranslation.findMany({
 			where: {
-				id: {
-					in: rawTranslationIds,
-				},
+				id: { in: rawTranslationIds },
 			},
 			include: {
 				translations: {
-					where: {
-						language: language,
-					},
+					where: { language },
 				},
 			},
 		});
 
+		// Create a map for efficient lookup
 		const translations = translationRecords.reduce((acc: { [key: number]: string | null }, record) => {
 			acc[record.id] = record.translations.length > 0 ? record.translations[0].value : null;
 			return acc;
@@ -198,25 +160,25 @@ export const bookHandlers = {
 			};
 		});
 	},
+
+	list_by_language: async (language: string) => {
+		return bookHandlers.list(language);
+	},
 };
 
 const createBookSchema = z.object({
-	titleRawTranslationId: z.number(),
-	author: z.string(),
-	isbn: z.string().optional(),
-	coverImage: z.string().optional(),
-	published: z.string().datetime(), // Or z.date() if you handle conversion
-	contentRawTranslationId: z.number(),
-	links: z.array(z.string()),
+	titles: z.record(z.string(), z.string()).optional(),
+	slug: z.string(),
+	authors: z.string(),
+	contents: z.record(z.string(), z.string()).optional(),
+	coverImage: z.string().optional(), // ID is a string
 });
 
 const updateBookSchema = z.object({
 	id: z.number(),
-	titleRawTranslationId: z.number().optional(),
-	author: z.string().optional(),
-	isbn: z.string().optional().nullable(),
-	coverImage: z.string().optional().nullable(),
-	published: z.string().datetime().optional(), // Or z.date()
-	contentRawTranslationId: z.number().optional(),
-	links: z.array(z.string()).optional(),
+	title: z.record(z.string(), z.string()).optional(),
+	slug: z.string().optional(),
+	authors: z.array(z.string()).optional(),
+	content: z.record(z.string(), z.string()).optional(),
+	coverImage: z.string().optional(), // ID is a string
 });

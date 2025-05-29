@@ -63,7 +63,7 @@ export const blogHandlers = {
 				},
 				...(coverImage !== undefined && coverImage !== null && { // Check for undefined or null
 					coverImage: {
-						connect: { id: coverImage, storageKey: coverImage }
+						connect: { storageKey: coverImage }
 					}
 				})
 			}
@@ -131,7 +131,7 @@ export const blogHandlers = {
 				}),
 				...(coverImage !== undefined && {
 					coverImage: coverImage ? {
-						connect: { id: coverImage, storageKey: coverImage }
+						connect: { storageKey: coverImage }
 					} : {
 						disconnect: true
 					}

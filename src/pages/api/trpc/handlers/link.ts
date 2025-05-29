@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import prisma from '../../../../utils/db';
-import { getTranslation } from '../../../../utils';
 
 export const linkHandlers = {
 	findAll: async () => {
