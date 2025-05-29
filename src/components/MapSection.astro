@@ -3,9 +3,12 @@ import MapComponent from "./Map.tsx";
 import Section from "../layouts/Section.astro";
 import { fetchDataFromServer } from "../pages/api/trpc/serverHelpers";
 
+let lang = Astro.locals.lang;
+if (!lang) throw new Error("Language parameter is required");
+
 const [mapPoints, mapCategories] = await Promise.all([
-    fetchDataFromServer("mapPoint.list"),
-    fetchDataFromServer("mapPointCategory.list"),
+    fetchDataFromServer("mapPoint.list_by_language", lang),
+    fetchDataFromServer("mapPointCategory.list_by_language", lang),
 ]);
 ---
 

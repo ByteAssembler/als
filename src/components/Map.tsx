@@ -7,8 +7,8 @@ const MapComponent = (
 	{
 		points, categories
 	}: {
-		points: Awaited<ReturnType<typeof fetchDataFromServer<"mapPoint.list">>>;
-		categories: Awaited<ReturnType<typeof fetchDataFromServer<"mapPointCategory.list">>>;
+		points: Awaited<ReturnType<typeof fetchDataFromServer<"mapPoint.list_by_language">>>;
+		categories: Awaited<ReturnType<typeof fetchDataFromServer<"mapPointCategory.list_by_language">>>;
 	}
 ) => {
 	const mapRef = useRef<L.Map | null>(null);
