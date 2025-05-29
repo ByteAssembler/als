@@ -1,6 +1,9 @@
 ﻿---
+import { i18n } from "@/i18n";
 import Layout from "../../layouts/Layout.astro";
 import BlobAPI from "../../utils/api";
+const lang = Astro.locals.lang;
+
 
 const fileServerURL = process.env.FILE_SERVER_URL;
 const fileServerToken = process.env.FILE_SERVER_TOKEN;
@@ -46,13 +49,13 @@ const informationFiles = mediaFiles.filter((file) =>
 );
 ---
 
-<Layout title="Medien" defaultPadding={true} showTitle={true}>
+<Layout title={i18n.tLang(lang, "pages.media.Bücher.title")} defaultPadding={true} showTitle={true}>
     <div class="max-w-3xl mx-auto p-6 flex flex-col gap-6">
         <!-- Bücher Kachel -->
         <button
             type="button"
-            class="bg-blue-400 p-6 rounded-xl text-xl font-semibold hover:bg-blue-400 transition text-white"
-            onclick="toggleSection('books')"
+            class="bg-blue-400 p-6 rounded-xl text-xl font-semibold hover:bg-blue-400 transition text-black"
+            onclick="toggleSection('books')" 
         >
             📚 Bücher
         </button>

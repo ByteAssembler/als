@@ -1,119 +1,161 @@
 import { z } from 'zod';
 import prisma from '../../../../utils/db';
-import { getTranslation } from '../../../../utils';
+import type { Prisma } from '@prisma/client';
+
+// Helper function to map translations for Prisma
+const mapTranslationsForPrisma = (translations: Record<string, string> | undefined) => {
+	if (!translations) return [];
+	return Object.entries(translations).map(([language, value]) => ({
+		language,
+		value,
+	}));
+};
+
+// Helper function to get mapPoint with translated fields
+async function getMapPointWithTranslatedFields(
+	whereClause: Prisma.MapPointWhereUniqueInput,
+	language?: string
+) {
+	const mapPoint = await prisma.mapPoint.findUnique({
+		where: whereClause,
+		include: {
+			name: {
+				include: {
+					translations: language ? { where: { language } } : true,
+				},
+			},
+			description: {
+				include: {
+					translations: language ? { where: { language } } : true,
+				},
+			},
+			category: {
+				include: {
+					name: {
+						include: {
+							translations: language ? { where: { language } } : true,
+						},
+					},
+				},
+			},
+		},
+	});
+
+	if (!mapPoint) return null;
+
+	return {
+		...mapPoint,
+		name: mapPoint.name.translations.length > 0 ? mapPoint.name.translations[0]?.value : null,
+		description: mapPoint.description?.translations && mapPoint.description.translations.length > 0
+			? mapPoint.description.translations[0]?.value
+			: null,
+	};
+}
 
 export const mapPointHandlers = {
 	create: async (input: z.infer<typeof createMapPointSchema>) => {
-		return await prisma.mapPoint.create({ data: input });
-	},
-	read: async (id: number, language?: string) => {
-		const mapPoint = await prisma.mapPoint.findUnique({
-			where: { id },
-			include: {
+		const { names, descriptions, categoryId, ...rest } = input;
+		return await prisma.mapPoint.create({
+			data: {
+				...rest,
 				name: {
-					include: {
-						translations: true,
+					create: {
+						translations: {
+							create: mapTranslationsForPrisma(names),
+						},
 					},
 				},
-				description: {
-					include: {
-						translations: true,
-					},
-				},
-				category: {
-					include: {
-						name: {
-							include: {
-								translations: true,
+				...(descriptions && Object.keys(descriptions).length > 0 && {
+					description: {
+						create: {
+							translations: {
+								create: mapTranslationsForPrisma(descriptions),
 							},
 						},
 					},
-				},
+				}),
+				category: {
+					connect: { id: categoryId }
+				}
 			},
 		});
-
-		if (!mapPoint) {
-			return null;
-		}
-
-		const name = language ? await getTranslation(mapPoint.nameRawTranslationId, language) : mapPoint.name.translations[0]?.value;
-		const description = mapPoint.descriptionRawTranslationId ? (language ? await getTranslation(mapPoint.descriptionRawTranslationId, language) : mapPoint.description?.translations[0]?.value) : null;
-
-		return {
-			...mapPoint,
-			name: name ?? mapPoint.name.translations[0]?.value,
-			description: description ?? mapPoint.description?.translations[0]?.value ?? null,
-		};
 	},
+
+	read: async (id: number, language?: string) => {
+		return getMapPointWithTranslatedFields({ id }, language);
+	},
+
 	read_by_language: async (id: number, language: string) => {
-		const mapPoint = await prisma.mapPoint.findUnique({
+		return getMapPointWithTranslatedFields({ id }, language);
+	},
+
+	update: async (input: z.infer<typeof updateMapPointSchema>) => {
+		const { id, names, descriptions, categoryId, ...rest } = input;
+
+		return await prisma.mapPoint.update({
 			where: { id },
-			include: {
-				name: {
-					include: {
-						translations: {
-							where: { language: language },
+			data: {
+				...rest,
+				...(names && {
+					name: {
+						update: {
+							translations: {
+								deleteMany: {},
+								create: mapTranslationsForPrisma(names),
+							},
 						},
 					},
-				},
-				description: {
-					include: {
-						translations: {
-							where: { language: language },
-						},
-					},
-				},
-				category: {
-					include: {
-						name: {
-							include: {
+				}),
+				...(descriptions !== undefined && {
+					description: descriptions ? {
+						upsert: {
+							create: {
 								translations: {
-									where: { language: language },
+									create: mapTranslationsForPrisma(descriptions),
+								},
+							},
+							update: {
+								translations: {
+									deleteMany: {},
+									create: mapTranslationsForPrisma(descriptions),
 								},
 							},
 						},
+					} : {
+						disconnect: true,
 					},
-				},
+				}),
+				...(categoryId !== undefined && {
+					category: {
+						connect: { id: categoryId }
+					}
+				})
 			},
 		});
-
-		if (!mapPoint) {
-			return null;
-		}
-
-		const name = await getTranslation(mapPoint.nameRawTranslationId, language);
-		const description = mapPoint.descriptionRawTranslationId ? await getTranslation(mapPoint.descriptionRawTranslationId, language) : null;
-
-		return {
-			...mapPoint,
-			name: name ?? mapPoint.name.translations[0]?.value,
-			description: description ?? mapPoint.description?.translations[0]?.value ?? null,
-		};
 	},
-	update: async (input: z.infer<typeof updateMapPointSchema>) => {
-		return await prisma.mapPoint.update({ where: { id: input.id }, data: input });
-	},
+
 	delete: async (id: number) => {
 		return await prisma.mapPoint.delete({ where: { id } });
 	},
+
 	list: async (language?: string) => {
 		const mapPoints = await prisma.mapPoint.findMany({
 			include: {
 				name: {
 					include: {
-						translations: true,
+						translations: language ? { where: { language } } : true,
 					},
 				},
 				description: {
 					include: {
-						translations: true,
+						translations: language ? { where: { language } } : true,
 					},
 				},
 				category: {
 					include: {
 						name: {
 							include: {
-								translations: true,
+								translations: language ? { where: { language } } : true,
 							},
 						},
 					},
@@ -125,132 +167,23 @@ export const mapPointHandlers = {
 			return [];
 		}
 
-		const rawTranslationIds: number[] = [];
-		mapPoints.forEach((mapPoint) => {
-			rawTranslationIds.push(mapPoint.nameRawTranslationId);
-			if (mapPoint.descriptionRawTranslationId) {
-				rawTranslationIds.push(mapPoint.descriptionRawTranslationId);
-			}
-		});
-
-		let translations: { [key: number]: string | null } = {};
-
-		if (language) {
-			const translationRecords = await prisma.rawTranslation.findMany({
-				where: {
-					id: {
-						in: rawTranslationIds,
-					},
-				},
-				include: {
-					translations: {
-						where: {
-							language: language,
-						},
-					},
-				},
-			});
-
-			translations = translationRecords.reduce((acc: { [key: number]: string | null }, record) => {
-				acc[record.id] = record.translations.length > 0 ? record.translations[0].value : null;
-				return acc;
-			}, {});
-		}
-
-		return mapPoints.map((mapPoint) => {
-			const name = language ? translations[mapPoint.nameRawTranslationId] : mapPoint.name.translations[0]?.value;
-			const description = mapPoint.descriptionRawTranslationId
-				? language
-					? translations[mapPoint.descriptionRawTranslationId]
-					: mapPoint.description?.translations[0]?.value
-				: null;
-
-			return {
-				...mapPoint,
-				name: name ?? mapPoint.name.translations[0]?.value,
-				description: description ?? mapPoint.description?.translations[0]?.value ?? null,
-			};
-		});
+		return mapPoints.map((mapPoint) => ({
+			...mapPoint,
+			name: mapPoint.name.translations.length > 0 ? mapPoint.name.translations[0]?.value : null,
+			description: mapPoint.description?.translations && mapPoint.description.translations.length > 0
+				? mapPoint.description.translations[0]?.value
+				: null,
+		}));
 	},
+
 	list_by_language: async (language: string) => {
-		const mapPoints = await prisma.mapPoint.findMany({
-			include: {
-				name: {
-					include: {
-						translations: {
-							where: { language: language },
-						},
-					},
-				},
-				description: {
-					include: {
-						translations: {
-							where: { language: language },
-						},
-					},
-				},
-				category: {
-					include: {
-						name: {
-							include: {
-								translations: {
-									where: { language: language },
-								},
-							},
-						},
-					},
-				},
-			},
-		});
-
-		if (!mapPoints || mapPoints.length === 0) {
-			return [];
-		}
-
-		const rawTranslationIds: number[] = [];
-		mapPoints.forEach((mapPoint) => {
-			rawTranslationIds.push(mapPoint.nameRawTranslationId);
-			if (mapPoint.descriptionRawTranslationId) {
-				rawTranslationIds.push(mapPoint.descriptionRawTranslationId);
-			}
-		});
-
-		const translationRecords = await prisma.rawTranslation.findMany({
-			where: {
-				id: {
-					in: rawTranslationIds,
-				},
-			},
-			include: {
-				translations: {
-					where: {
-						language: language,
-					},
-				},
-			},
-		});
-
-		const translations = translationRecords.reduce((acc: { [key: number]: string | null }, record) => {
-			acc[record.id] = record.translations.length > 0 ? record.translations[0].value : null;
-			return acc;
-		}, {});
-
-		return mapPoints.map((mapPoint) => {
-			const name = translations[mapPoint.nameRawTranslationId];
-			const description = mapPoint.descriptionRawTranslationId ? translations[mapPoint.descriptionRawTranslationId] : null;
-
-			return {
-				...mapPoint,
-				name: name ?? mapPoint.name.translations[0]?.value,
-				description: description ?? mapPoint.description?.translations[0]?.value ?? null,
-			};
-		});
+		return mapPointHandlers.list(language);
 	},
 };
 
 const createMapPointSchema = z.object({
-	nameRawTranslationId: z.number(),
-	descriptionRawTranslationId: z.number().optional(),
+	names: z.record(z.string(), z.string()),
+	descriptions: z.record(z.string(), z.string()).optional(),
 	categoryId: z.number(),
 	latitude: z.number(),
 	longitude: z.number(),
@@ -258,8 +191,8 @@ const createMapPointSchema = z.object({
 
 const updateMapPointSchema = z.object({
 	id: z.number(),
-	nameRawTranslationId: z.number().optional(),
-	descriptionRawTranslationId: z.number().optional().nullable(),
+	names: z.record(z.string(), z.string()).optional(),
+	descriptions: z.record(z.string(), z.string()).optional().nullable(),
 	categoryId: z.number().optional(),
 	latitude: z.number().optional(),
 	longitude: z.number().optional(),

@@ -1,73 +1,94 @@
 import { z } from 'zod';
 import prisma from '../../../../utils/db';
-import { getTranslation } from '../../../../utils';
+import type { Prisma } from '@prisma/client';
+
+const mapTranslationsForPrisma = (translations: Record<string, string> | undefined) => {
+	if (!translations) return [];
+	return Object.entries(translations).map(([language, value]) => ({
+		language,
+		value,
+	}));
+};
+
+// Helper function to get mapPointCategory with translated fields
+async function getMapPointCategoryWithTranslatedFields(
+	whereClause: Prisma.MapPointCategoryWhereUniqueInput,
+	language?: string
+) {
+	const mapPointCategory = await prisma.mapPointCategory.findUnique({
+		where: whereClause,
+		include: {
+			name: {
+				include: {
+					translations: language ? { where: { language } } : true,
+				},
+			},
+			mapPoints: true,
+		},
+	});
+
+	if (!mapPointCategory) return null;
+
+	return {
+		...mapPointCategory,
+		name: mapPointCategory.name.translations.length > 0 ? mapPointCategory.name.translations[0]?.value : null,
+	};
+}
 
 export const mapPointCategoryHandlers = {
 	create: async (input: z.infer<typeof createMapPointCategorySchema>) => {
-		return await prisma.mapPointCategory.create({ data: input });
-	},
-	read: async (id: number, language?: string) => {
-		const mapPointCategory = await prisma.mapPointCategory.findUnique({
-			where: { id },
-			include: {
+		const { names } = input;
+		return await prisma.mapPointCategory.create({
+			data: {
 				name: {
-					include: {
-						translations: true,
-					},
-				},
-				mapPoints: true,
-			},
-		});
-
-		if (!mapPointCategory) {
-			return null;
-		}
-
-		const name = language ? await getTranslation(mapPointCategory.nameRawTranslationId, language) : mapPointCategory.name.translations[0]?.value;
-
-		return {
-			...mapPointCategory,
-			name: name ?? mapPointCategory.name.translations[0]?.value,
-		};
-	},
-	read_by_language: async (id: number, language: string) => {
-		const mapPointCategory = await prisma.mapPointCategory.findUnique({
-			where: { id },
-			include: {
-				name: {
-					include: {
+					create: {
 						translations: {
-							where: { language: language },
+							create: mapTranslationsForPrisma(names),
 						},
 					},
 				},
-				mapPoints: true,
 			},
 		});
-
-		if (!mapPointCategory) {
-			return null;
-		}
-
-		const name = await getTranslation(mapPointCategory.nameRawTranslationId, language);
-
-		return {
-			...mapPointCategory,
-			name: name ?? mapPointCategory.name.translations[0]?.value,
-		};
 	},
+
+	read: async (id: number, language?: string) => {
+		return getMapPointCategoryWithTranslatedFields({ id }, language);
+	},
+
+	read_by_language: async (id: number, language: string) => {
+		return getMapPointCategoryWithTranslatedFields({ id }, language);
+	},
+
 	update: async (input: z.infer<typeof updateMapPointCategorySchema>) => {
-		return await prisma.mapPointCategory.update({ where: { id: input.id }, data: input });
+		const { id, names } = input;
+
+		return await prisma.mapPointCategory.update({
+			where: { id },
+			data: {
+				...(names && {
+					name: {
+						update: {
+							translations: {
+								deleteMany: {},
+								create: mapTranslationsForPrisma(names),
+							},
+						},
+					},
+				}),
+			},
+		});
 	},
+
 	delete: async (id: number) => {
 		return await prisma.mapPointCategory.delete({ where: { id } });
 	},
+
 	list: async (language?: string) => {
 		const mapPointCategories = await prisma.mapPointCategory.findMany({
 			include: {
 				name: {
 					include: {
-						translations: true,
+						translations: language ? { where: { language } } : true,
 					},
 				},
 				mapPoints: true,
@@ -78,94 +99,22 @@ export const mapPointCategoryHandlers = {
 			return [];
 		}
 
-		const rawTranslationIds = mapPointCategories.map((mapPointCategory) => mapPointCategory.nameRawTranslationId);
-
-		let translations: { [key: number]: string | null } = {};
-
-		if (language) {
-			const translationRecords = await prisma.rawTranslation.findMany({
-				where: {
-					id: {
-						in: rawTranslationIds,
-					},
-				},
-				include: {
-					translations: {
-						where: {
-							language: language,
-						},
-					},
-				},
-			});
-
-			translations = translationRecords.reduce((acc: { [key: number]: string | null }, record) => {
-				acc[record.id] = record.translations.length > 0 ? record.translations[0].value : null;
-				return acc;
-			}, {});
-		}
-
-		return mapPointCategories.map((mapPointCategory) => {
-			const name = language ? translations[mapPointCategory.nameRawTranslationId] : mapPointCategory.name.translations[0]?.value;
-			return {
-				...mapPointCategory,
-				name: name ?? mapPointCategory.name.translations[0]?.value,
-			};
-		});
+		return mapPointCategories.map((mapPointCategory) => ({
+			...mapPointCategory,
+			name: mapPointCategory.name.translations.length > 0 ? mapPointCategory.name.translations[0]?.value : null,
+		}));
 	},
+
 	list_by_language: async (language: string) => {
-		const mapPointCategories = await prisma.mapPointCategory.findMany({
-			include: {
-				name: {
-					include: {
-						translations: {
-							where: { language: language },
-						},
-					},
-				},
-			},
-		});
-
-		if (!mapPointCategories || mapPointCategories.length === 0) {
-			return [];
-		}
-
-		const rawTranslationIds = mapPointCategories.map((mapPointCategory) => mapPointCategory.nameRawTranslationId);
-
-		const translationRecords = await prisma.rawTranslation.findMany({
-			where: {
-				id: {
-					in: rawTranslationIds,
-				},
-			},
-			include: {
-				translations: {
-					where: {
-						language: language,
-					},
-				},
-			},
-		});
-
-		const translations = translationRecords.reduce((acc: { [key: number]: string | null }, record) => {
-			acc[record.id] = record.translations.length > 0 ? record.translations[0].value : null;
-			return acc;
-		}, {});
-
-		return mapPointCategories.map((mapPointCategory) => {
-			const name = translations[mapPointCategory.nameRawTranslationId];
-			return {
-				...mapPointCategory,
-				name: name ?? mapPointCategory.name.translations[0]?.value,
-			};
-		});
+		return mapPointCategoryHandlers.list(language);
 	},
 };
 
 const createMapPointCategorySchema = z.object({
-	nameRawTranslationId: z.number(),
+	names: z.record(z.string(), z.string()),
 });
 
 const updateMapPointCategorySchema = z.object({
 	id: z.number(),
-	nameRawTranslationId: z.number().optional(),
+	names: z.record(z.string(), z.string()).optional(),
 });

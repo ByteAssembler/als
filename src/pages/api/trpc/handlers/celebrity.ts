@@ -2,6 +2,14 @@ import { z } from 'zod';
 import prisma from '../../../../utils/db';
 import type { Prisma } from '@prisma/client';
 
+const mapTranslationsForPrisma = (translations: Record<string, string> | undefined) => {
+	if (!translations) return [];
+	return Object.entries(translations).map(([language, value]) => ({
+		language,
+		value,
+	}));
+};
+
 // Helper function to get celebrity with translated fields
 async function getCelebrityWithTranslatedFields(
 	whereClause: Prisma.CelebrityWhereUniqueInput,
@@ -35,12 +43,28 @@ async function getCelebrityWithTranslatedFields(
 
 export const celebrityHandlers = {
 	create: async (input: z.infer<typeof createCelebritySchema>) => {
-		const { image, ...celebrityData } = input;
+		const { image, bios, professions, ...rest } = input;
 		return await prisma.celebrity.create({
 			data: {
-				...celebrityData,
+				...rest,
+				bio: {
+					create: {
+						translations: {
+							create: mapTranslationsForPrisma(bios),
+						},
+					},
+				},
+				profession: {
+					create: {
+						translations: {
+							create: mapTranslationsForPrisma(professions),
+						},
+					},
+				},
 				...(image && {
-					imageId: image // Assuming imageId is the field in the database
+					image: {
+						connect: { storageKey: image }
+					}
 				})
 			}
 		});
@@ -55,13 +79,37 @@ export const celebrityHandlers = {
 	},
 
 	update: async (input: z.infer<typeof updateCelebritySchema>) => {
-		const { id, image, ...updateData } = input;
+		const { id, image, bios, professions, ...rest } = input;
 		return await prisma.celebrity.update({
 			where: { id },
 			data: {
-				...updateData,
+				...rest,
+				...(bios && {
+					bio: {
+						update: {
+							translations: {
+								deleteMany: {},
+								create: mapTranslationsForPrisma(bios),
+							},
+						},
+					},
+				}),
+				...(professions && {
+					profession: {
+						update: {
+							translations: {
+								deleteMany: {},
+								create: mapTranslationsForPrisma(professions),
+							},
+						},
+					},
+				}),
 				...(image !== undefined && {
-					imageId: image // Use imageId directly instead of nested image.connect
+					image: image ? {
+						connect: { storageKey: image }
+					} : {
+						disconnect: true
+					}
 				})
 			}
 		});
@@ -107,8 +155,8 @@ export const celebrityHandlers = {
 const createCelebritySchema = z.object({
 	image: z.string().optional(),
 	name: z.string(),
-	bioRawTranslationId: z.number(),
-	professionRawTranslationId: z.number(),
+	bios: z.record(z.string(), z.string()),
+	professions: z.record(z.string(), z.string()),
 	born: z.string().datetime(), // Or z.date()
 	died: z.string().datetime().optional().nullable(), // Or z.date()
 	alsYear: z.number(),
@@ -118,8 +166,8 @@ const updateCelebritySchema = z.object({
 	id: z.number(),
 	image: z.string().optional().nullable(),
 	name: z.string().optional(),
-	bioRawTranslationId: z.number().optional(),
-	professionRawTranslationId: z.number().optional(),
+	bios: z.record(z.string(), z.string()).optional(),
+	professions: z.record(z.string(), z.string()).optional(),
 	born: z.string().datetime().optional(), // Or z.date()
 	died: z.string().datetime().optional().nullable(), // Or z.date()
 	alsYear: z.number().optional(),
