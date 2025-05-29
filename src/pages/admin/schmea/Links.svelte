@@ -2,7 +2,7 @@
   import LanguageSelector from "../../../components/ui/LanguageSelector.svelte";
   import DataTable from "../../../components/ui/DataTable.svelte";
   import LanguageModal from "../../../components/ui/LanguageModal.svelte";
-  import { getTranslation, hasTranslation, createTranslationWarning } from "../../../lib/utils/translation.js";
+  import { getTranslation, hasTranslation } from "../../../lib/utils/translation.js";
   import { trpcAuthQuery } from "../../api/trpc/trpc.js";
 
   const languages = [
@@ -25,14 +25,10 @@
     url: "",
   });
 
-  // Get auth token (replace with your auth system)
   function getAuthToken() {
-    // For development, you might want to set a mock token
-    // In production, get this from your auth system
     return localStorage.getItem("auth_token") || "mock-token";
   }
 
-  // Load links from API
   async function loadLinks() {
     try {
       loading = true;
@@ -41,36 +37,13 @@
       const authToken = getAuthToken();
       const apiLinks = await trpcAuthQuery("link.list_by_language", authToken, currentLanguage);
 
-      // Transform API data to frontend format with multi-language support
-      const allLinksPromises = apiLinks.map(async (link) => {
-        const linkData = {
-          id: link.id,
-          url: link.url,
-          nameRawTranslationId: link.nameRawTranslationId,
-          descriptionRawTranslationId: link.descriptionRawTranslationId,
-          name: {},
-          description: {},
-        };
-
-        // Load all language versions for each link
-        for (const lang of languages) {
-          try {
-            const linkInLang = await trpcAuthQuery("link.read_by_language", authToken, link.id, lang.code);
-            if (linkInLang) {
-              linkData.name[lang.code] = linkInLang.name;
-              if (linkInLang.description) {
-                linkData.description[lang.code] = linkInLang.description;
-              }
-            }
-          } catch (err) {
-            console.warn(`Failed to load ${lang.code} version of link ${link.id}:`, err);
-          }
-        }
-
-        return linkData;
-      });
-
-      links = await Promise.all(allLinksPromises);
+      // For now, use simple transformation until the modular system is fully working
+      links = apiLinks.map((link) => ({
+        id: link.id,
+        name: { [currentLanguage]: link.name },
+        description: { [currentLanguage]: link.description },
+        url: link.url,
+      }));
     } catch (err) {
       console.error("Failed to load links:", err);
       error = err.message;
@@ -167,7 +140,7 @@
 
       const authToken = getAuthToken();
 
-      // Clean up empty strings from form data
+      // Clean up form data
       const cleanedName = {};
       const cleanedDescription = {};
 
@@ -190,17 +163,14 @@
       };
 
       if (editingLink) {
-        // Update existing link
         await trpcAuthQuery("link.update", authToken, {
           id: editingLink.id,
           ...linkData,
         });
       } else {
-        // Create new link
         await trpcAuthQuery("link.create", authToken, linkData);
       }
 
-      // Reload the links to show updated data
       await loadLinks();
       closeModal();
     } catch (err) {
@@ -220,7 +190,6 @@
         const authToken = getAuthToken();
         await trpcAuthQuery("link.delete", authToken, id);
 
-        // Reload the links to show updated data
         await loadLinks();
       } catch (err) {
         console.error("Failed to delete link:", err);

@@ -100,95 +100,94 @@ const informationFiles = mediaFiles.filter((file) =>
         </div>
 
         <!-- Bilder Kachel -->
-<button
-  type="button"
-  class="bg-blue-200 p-6 rounded-xl text-xl font-semibold hover:bg-blue-300 transition"
-  onclick="toggleSection('images')"
->
-  🖼️ Bilder
-</button>
-<div id="images" class="hidden pl-6">
-  {
-    images.length > 0 ? (
-      <ul class="space-y-2">
-        {images.map((file) => (
-          <li key={file.id}>
-            <a
-              href={`${fileServerURL}/files/${bucketId}/${file.id}`}
-              class="text-blue-600 hover:underline"
-              onclick={`event.preventDefault(); showImageModal('${file.name}', '${fileServerURL}/files/${bucketId}/${file.id}');`}
-            >
-              {removeExtension(file.name)}
-            </a>
-          </li>
-        ))}
-      </ul>
-    ) : (
-      <p class="text-gray-500">Keine Bilder vorhanden.</p>
-    )
-  }
-</div>
-
-<!-- Modal für Bildanzeige -->
-<div id="image-modal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden">
-  <div class="bg-white rounded-xl shadow-xl max-w-4xl w-full h-[90%] relative flex">
-    <!-- Bildanzeige -->
-    <div class="flex-1 overflow-auto p-4 flex items-center justify-center">
-      <img id="modal-image" src="" alt="" class="max-w-full max-h-full rounded-lg" />
-    </div>
-    <!-- Menü rechts -->
-    <div class="w-48 bg-gray-100 border-l border-gray-300 p-4 flex flex-col justify-between">
-      <div class="space-y-2">
-        <a id="modal-download" class="text-blue-600 hover:underline block" href="#" download>⬇️ Herunterladen</a>
-        <a id="modal-open" class="text-blue-600 hover:underline block" href="#" target="_blank">🌐 In neuem Tab</a>
-      </div>
-      <button onclick="closeImageModal()" class="mt-4 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded">
-        Schließen
+      <button
+        type="button"
+        class="bg-blue-200 p-6 rounded-xl text-xl font-semibold hover:bg-blue-300 transition"
+        onclick="toggleSection('images')"
+      >
+        🖼️ Bilder
       </button>
-    </div>
-  </div>
-</div>
-
-<script is:inline>
-  // Kategorie umschalten
-  function toggleSection(id) {
-    const sections = ["books", "audios", "images", "information"];
-    sections.forEach((sectionId) => {
-      const el = document.getElementById(sectionId);
-      if (!el) return;
-      if (sectionId === id) {
-        el.classList.toggle("hidden");
-      } else {
-        el.classList.add("hidden");
-        const viewer = document.getElementById("viewer-" + sectionId);
-        if (viewer) {
-          viewer.innerHTML = "";
+      <div id="images" class="hidden pl-6">
+        {
+          images.length > 0 ? (
+            <ul class="space-y-2">
+              {images.map((file) => (
+                <li key={file.id}>
+                  <a
+                    href={`${fileServerURL}/files/${bucketId}/${file.id}`}
+                    class="text-blue-600 hover:underline"
+                    onclick={`event.preventDefault(); showImageModal('${file.name}', '${fileServerURL}/files/${bucketId}/${file.id}');`}
+                  >
+                    {removeExtension(file.name)}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p class="text-gray-500">Keine Bilder vorhanden.</p>
+          )
         }
-      }
-    });
-  }
+      </div>
 
-  // Modal für Bilder anzeigen
-  function showImageModal(filename, url) {
-    const modal = document.getElementById("image-modal");
-    const modalImage = document.getElementById("modal-image");
-    const modalDownload = document.getElementById("modal-download");
-    const modalOpen = document.getElementById("modal-open");
+      <!-- Modal für Bildanzeige -->
+      <div id="image-modal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-xl max-w-4xl w-full h-[70%] relative flex">
+          <!-- Bildanzeige -->
+          <div class="flex-1 overflow-auto p-4 flex items-center justify-center">
+            <img id="modal-image" src="" alt="" class="max-w-full max-h-full rounded-lg" />
+          </div>
+          <!-- Menü rechts -->
+          <div class="w-48 bg-gray-100 border-l border-gray-300 p-4 flex flex-col justify-between">
+            <div class="space-y-2">
+              <a id="modal-download" class="text-blue-600 hover:underline block" href="#" download>⬇ Herunterladen</a>
+              <a id="modal-open" class="text-blue-600 hover:underline block" href="#" target="_blank rel="noopener noreferrer">🌐 In neuem Tab</a>
+            </div>
+            <button onclick="closeImageModal()" class="mt-4 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded">
+              Schließen
+            </button>
+          </div>
+        </div>
+      </div>
 
-    modalImage.src = url;
-    modalImage.alt = filename;
-    modalDownload.href = url;
-    modalDownload.download = filename;
-    modalOpen.href = url;
+      <script is:inline>
+        // Kategorie umschalten
+        function toggleSection(id) {
+          const sections = ["books", "audios", "images", "information"];
+          sections.forEach((sectionId) => {
+            const el = document.getElementById(sectionId);
+            if (!el) return;
+            if (sectionId === id) {
+              el.classList.toggle("hidden");
+            } else {
+              el.classList.add("hidden");
+              const viewer = document.getElementById("viewer-" + sectionId);
+              if (viewer) {
+                viewer.innerHTML = "";
+              }
+            }
+          });
+        }
 
-    modal.classList.remove("hidden");
-  }
+        // Modal für Bilder anzeigen
+        function showImageModal(filename, url) {
+          const modal = document.getElementById("image-modal");
+          const modalImage = document.getElementById("modal-image");
+          const modalDownload = document.getElementById("modal-download");
+          const modalOpen = document.getElementById("modal-open");
 
-  function closeImageModal() {
-    document.getElementById("image-modal").classList.add("hidden");
-  }
-</script>
+          modalImage.src = url;
+          modalImage.alt = filename;
+          modalDownload.href = url;
+          modalDownload.download = filename;
+          modalOpen.href = url;
 
+          modal.classList.remove("hidden");
+        }
+
+        function closeImageModal() {
+          document.getElementById("image-modal").classList.add("hidden");
+        }
+      </script>
 
         <!-- Informationen Kachel -->
         <button

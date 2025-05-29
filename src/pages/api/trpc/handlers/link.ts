@@ -50,12 +50,16 @@ export const linkHandlers = {
 			include: {
 				name: {
 					include: {
-						translations: true,
+						translations: {
+							where: { language: language },
+						},
 					},
 				},
 				description: {
 					include: {
-						translations: true,
+						translations: {
+							where: { language: language },
+						},
 					},
 				},
 			},
@@ -65,13 +69,15 @@ export const linkHandlers = {
 			return null;
 		}
 
-		const name = language ? await getTranslation(link.nameRawTranslationId, language) : link.name.translations[0]?.value;
-		const description = link.descriptionRawTranslationId ? (language ? await getTranslation(link.descriptionRawTranslationId, language) : link.description?.translations[0]?.value) : null;
+		const name = link.name.translations.length > 0 ? link.name.translations[0].value : null;
+		const description = link.description?.translations && link.description.translations.length > 0
+			? link.description.translations[0].value
+			: null;
 
 		return {
 			...link,
-			name: name ?? link.name.translations[0]?.value,
-			description: description ?? link.description?.translations[0]?.value ?? null,
+			name: name,
+			description: description,
 		};
 	},
 	read_by_language: async (id: number, language: string) => {
@@ -99,21 +105,24 @@ export const linkHandlers = {
 			return null;
 		}
 
-		const name = await getTranslation(link.nameRawTranslationId, language);
-		const description = link.descriptionRawTranslationId ? await getTranslation(link.descriptionRawTranslationId, language) : null;
+		const name = link.name.translations.length > 0 ? link.name.translations[0].value : null;
+		const description = link.description?.translations && link.description.translations.length > 0
+			? link.description.translations[0].value
+			: null;
 
 		return {
 			...link,
-			name: name ?? link.name.translations[0]?.value,
-			description: description ?? link.description?.translations[0]?.value ?? null,
+			name: name,
+			description: description,
 		};
 	},
 	update: async (input: z.infer<typeof updateLinkSchema>) => {
-		const existingLink = await prisma.link.findUnique({
+		// Find the link to update
+		const link = await prisma.link.findUnique({
 			where: { id: input.id },
 		});
 
-		if (!existingLink) {
+		if (!link) {
 			throw new Error('Link not found');
 		}
 
@@ -121,20 +130,19 @@ export const linkHandlers = {
 
 		// Update name translations if provided
 		if (input.name) {
-			// Update existing translations
 			for (const [language, value] of Object.entries(input.name)) {
 				await prisma.translation.upsert({
 					where: {
 						language_rawTranslationId: {
 							language,
-							rawTranslationId: existingLink.nameRawTranslationId,
+							rawTranslationId: link.nameRawTranslationId,
 						},
 					},
 					update: { value: value as string },
 					create: {
 						language,
 						value: value as string,
-						rawTranslationId: existingLink.nameRawTranslationId,
+						rawTranslationId: link.nameRawTranslationId,
 					},
 				});
 			}
@@ -143,21 +151,21 @@ export const linkHandlers = {
 		// Update description translations if provided
 		if (input.description !== undefined) {
 			if (input.description && Object.keys(input.description).length > 0) {
-				if (existingLink.descriptionRawTranslationId) {
+				if (link.descriptionRawTranslationId) {
 					// Update existing description translations
 					for (const [language, value] of Object.entries(input.description)) {
 						await prisma.translation.upsert({
 							where: {
 								language_rawTranslationId: {
 									language,
-									rawTranslationId: existingLink.descriptionRawTranslationId,
+									rawTranslationId: link.descriptionRawTranslationId,
 								},
 							},
 							update: { value: value as string },
 							create: {
 								language,
 								value: value as string,
-								rawTranslationId: existingLink.descriptionRawTranslationId,
+								rawTranslationId: link.descriptionRawTranslationId,
 							},
 						});
 					}
@@ -175,10 +183,10 @@ export const linkHandlers = {
 					});
 					updateData.descriptionRawTranslationId = descriptionRawTranslation.id;
 				}
-			} else if (existingLink.descriptionRawTranslationId) {
+			} else if (link.descriptionRawTranslationId) {
 				// Remove description if set to null/empty
 				await prisma.rawTranslation.delete({
-					where: { id: existingLink.descriptionRawTranslationId },
+					where: { id: link.descriptionRawTranslationId },
 				});
 				updateData.descriptionRawTranslationId = null;
 			}
@@ -197,9 +205,10 @@ export const linkHandlers = {
 			});
 		}
 
-		return existingLink;
+		return link;
 	},
 	delete: async (id: number) => {
+		// The translations will be deleted automatically due to onDelete: Cascade
 		return await prisma.link.delete({ where: { id } });
 	},
 	list: async (language?: string) => {
@@ -207,12 +216,16 @@ export const linkHandlers = {
 			include: {
 				name: {
 					include: {
-						translations: true,
+						translations: {
+							where: { language: language },
+						},
 					},
 				},
 				description: {
 					include: {
-						translations: true,
+						translations: {
+							where: { language: language },
+						},
 					},
 				},
 			},
@@ -230,37 +243,29 @@ export const linkHandlers = {
 			}
 		});
 
-		let translations: { [key: number]: string | null } = {};
-
-		if (language) {
-			const translationRecords = await prisma.rawTranslation.findMany({
-				where: {
-					id: {
-						in: rawTranslationIds,
+		const translationRecords = await prisma.rawTranslation.findMany({
+			where: {
+				id: {
+					in: rawTranslationIds,
+				},
+			},
+			include: {
+				translations: {
+					where: {
+						language: language,
 					},
 				},
-				include: {
-					translations: {
-						where: {
-							language: language,
-						},
-					},
-				},
-			});
+			},
+		});
 
-			translations = translationRecords.reduce((acc: { [key: number]: string | null }, record) => {
-				acc[record.id] = record.translations.length > 0 ? record.translations[0].value : null;
-				return acc;
-			}, {});
-		}
+		const translations = translationRecords.reduce((acc: { [key: number]: string | null }, record) => {
+			acc[record.id] = record.translations.length > 0 ? record.translations[0].value : null;
+			return acc;
+		}, {});
 
 		return links.map((link) => {
-			const name = language ? translations[link.nameRawTranslationId] : link.name.translations[0]?.value;
-			const description = link.descriptionRawTranslationId
-				? language
-					? translations[link.descriptionRawTranslationId]
-					: link.description?.translations[0]?.value
-				: null;
+			const name = translations[link.nameRawTranslationId];
+			const description = link.descriptionRawTranslationId ? translations[link.descriptionRawTranslationId] : null;
 
 			return {
 				...link,
