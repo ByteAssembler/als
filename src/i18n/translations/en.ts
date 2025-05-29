@@ -50,6 +50,13 @@ export const enTranslations = {
 
 		}
 	},
+	cookieBanner: {
+		message: "This website uses cookies. More info in our ",
+		privacyLinkText: "privacy policy",
+		dontShowAgain: "Do not show this banner again",
+		acceptAll: "Accept all",
+		acceptEssential: "Accept essential only",
+	},
 	footer: {
 		legalNotice: "All rights reserved",
 		imprint: "Imprint",

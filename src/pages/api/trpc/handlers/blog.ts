@@ -1,5 +1,45 @@
 import { z } from 'zod';
 import prisma from '../../../../utils/db';
+import type { Prisma } from '@prisma/client';
+
+const mapTranslationsForPrisma = (translations: Record<string, string> | undefined) => {
+	if (!translations) return [];
+	return Object.entries(translations).map(([language, value]) => ({
+		language,
+		value,
+	}));
+};
+
+async function getBlogWithTranslatedFields(
+	whereClause: Prisma.BlogWhereUniqueInput, // Use Prisma's specific type
+	language: string
+) {
+	const blog = await prisma.blog.findUnique({
+		where: whereClause,
+		include: {
+			title: {
+				include: {
+					translations: { where: { language } },
+				},
+			},
+			content: {
+				include: {
+					translations: { where: { language } },
+				},
+			},
+			coverImage: true,
+		},
+	});
+
+	if (!blog) return null;
+
+	return {
+		...blog,
+		title: blog.title.translations.length > 0 ? blog.title.translations[0].value : null,
+		content: blog.content.translations.length > 0 ? blog.content.translations[0].value : null,
+		// coverImage is already included and will be MediaItem | null
+	};
+}
 
 export const blogHandlers = {
 	create: async (input: z.infer<typeof createBlogSchema>) => {
@@ -10,32 +50,26 @@ export const blogHandlers = {
 				title: {
 					create: {
 						translations: {
-							create: Object.entries(input.title || {}).map(([language, value]) => ({
-								language,
-								value: value as string,
-							})),
+							create: mapTranslationsForPrisma(input.title),
 						},
 					},
 				},
 				content: {
 					create: {
 						translations: {
-							create: Object.entries(input.content || {}).map(([language, value]) => ({
-								language,
-								value: value as string,
-							})),
+							create: mapTranslationsForPrisma(input.content),
 						},
 					},
 				},
-				...(coverImage && {
+				...(coverImage !== undefined && coverImage !== null && { // Check for undefined or null
 					coverImage: {
-						connect: { id: coverImage }
+						connect: { id: coverImage, storageKey: coverImage }
 					}
 				})
 			}
 		});
 	},
-	read: async (id: number, language?: string) => {
+	read: async (id: number) => {
 		const blog = await prisma.blog.findUnique({
 			where: { id },
 			include: {
@@ -63,72 +97,10 @@ export const blogHandlers = {
 		};
 	},
 	read_by_language: async (id: number, language: string) => {
-		const blog = await prisma.blog.findUnique({
-			where: { id },
-			include: {
-				title: {
-					include: {
-						translations: {
-							where: { language: language },
-						},
-					},
-				},
-				content: {
-					include: {
-						translations: {
-							where: { language: language },
-						},
-					},
-				},
-				coverImage: true,
-			},
-		});
-
-		if (!blog) return null;
-
-		return {
-			...blog,
-			title: blog.title.translations.length > 0 ?
-				blog.title.translations[0].value
-				: null,
-			content: blog.content.translations.length > 0 ?
-				blog.content.translations[0].value
-				: null,
-		};
+		return getBlogWithTranslatedFields({ id }, language);
 	},
 	read_by_slug_and_language: async (slug: string, language: string) => {
-		const blog = await prisma.blog.findUnique({
-			where: { slug },
-			include: {
-				title: {
-					include: {
-						translations: {
-							where: { language: language },
-						},
-					},
-				},
-				content: {
-					include: {
-						translations: {
-							where: { language: language },
-						},
-					},
-				},
-				coverImage: true,
-			},
-		});
-
-		if (!blog) return null;
-
-		return {
-			...blog,
-			title: blog.title.translations.length > 0 ?
-				blog.title.translations[0].value
-				: null,
-			content: blog.content.translations.length > 0 ?
-				blog.content.translations[0].value
-				: null,
-		};
+		return getBlogWithTranslatedFields({ slug }, language);
 	},
 	update: async (input: z.infer<typeof updateBlogSchema>) => {
 		const { id, coverImage, title, content, ...blogData } = input;
@@ -142,10 +114,7 @@ export const blogHandlers = {
 						update: {
 							translations: {
 								deleteMany: {},
-								create: Object.entries(title).map(([language, value]) => ({
-									language,
-									value: value as string,
-								})),
+								create: mapTranslationsForPrisma(title),
 							},
 						},
 					},
@@ -155,17 +124,14 @@ export const blogHandlers = {
 						update: {
 							translations: {
 								deleteMany: {},
-								create: Object.entries(content).map(([language, value]) => ({
-									language,
-									value: value as string,
-								})),
+								create: mapTranslationsForPrisma(content),
 							},
 						},
 					},
 				}),
 				...(coverImage !== undefined && {
 					coverImage: coverImage ? {
-						connect: { id: coverImage }
+						connect: { id: coverImage, storageKey: coverImage }
 					} : {
 						disconnect: true
 					}
@@ -176,7 +142,7 @@ export const blogHandlers = {
 	delete: async (id: number) => {
 		return await prisma.blog.delete({ where: { id } });
 	},
-	list: async (language?: string) => {
+	list: async () => { // Removed unused language parameter
 		const blogs = await prisma.blog.findMany({
 			include: {
 				title: {
@@ -239,7 +205,7 @@ export const blogHandlers = {
 				content: blog.content.translations.length > 0 ?
 					blog.content.translations[0].value
 					: null,
-				coverImage: blog.coverImage ? blog.coverImage : null,
+				coverImage: blog.coverImage || null, // Simplified
 			};
 		});
 	},
@@ -250,7 +216,7 @@ const createBlogSchema = z.object({
 	slug: z.string(),
 	authors: z.array(z.string()),
 	content: z.record(z.string(), z.string()).optional(),
-	coverImage: z.string().optional(),
+	coverImage: z.string().optional(), // ID is a string
 });
 
 const updateBlogSchema = z.object({
@@ -259,5 +225,5 @@ const updateBlogSchema = z.object({
 	slug: z.string().optional(),
 	authors: z.array(z.string()).optional(),
 	content: z.record(z.string(), z.string()).optional(),
-	coverImage: z.string().optional().nullable(),
+	coverImage: z.string().optional().nullable(), // ID is a string
 });
