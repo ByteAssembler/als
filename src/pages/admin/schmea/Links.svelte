@@ -2,8 +2,8 @@
   import LanguageSelector from "../../../components/ui/LanguageSelector.svelte";
   import DataTable from "../../../components/ui/DataTable.svelte";
   import LanguageModal from "../../../components/ui/LanguageModal.svelte";
-  import { getTranslation, hasTranslation } from "../../../lib/utils/translation.js";
   import { trpcAuthQuery } from "../../api/trpc/trpc.js";
+  import { onMount } from "svelte";
 
   const languages = [
     { code: "de", name: "Deutsch" },
@@ -17,13 +17,30 @@
   let loading = $state(false);
   let error = $state(null);
 
-  let links = $state([]);
+  let links = $state(loadLinks());
+  onMount(() => loadLinks());
 
   let formData = $state({
     name: {},
     description: {},
     url: "",
   });
+
+  // Define columns for the DataTable
+  // This needs to be reactive to currentLanguage for Name and Description
+  const columns = $derived([
+    {
+      key: "name",
+      label: `Name (${currentLanguage.toUpperCase()})`,
+      render: (link) => link.name[currentLanguage] || link.name["de"] || "N/A", // Fallback to German or N/A
+    },
+    {
+      key: "description",
+      label: `Beschreibung (${currentLanguage.toUpperCase()})`,
+      render: (link) => link.description[currentLanguage] || link.description["de"] || "-", // Fallback to German or '-'
+    },
+    { key: "url", label: "URL" },
+  ]);
 
   function getAuthToken() {
     return localStorage.getItem("auth_token") || "mock-token";
@@ -35,15 +52,29 @@
       error = null;
 
       const authToken = getAuthToken();
-      const apiLinks = await trpcAuthQuery("link.list_by_language", authToken, currentLanguage);
+      const apiLinks = await trpcAuthQuery("link.list", authToken);
+      console.log("Loaded links:", apiLinks);
 
-      // For now, use simple transformation until the modular system is fully working
-      links = apiLinks.map((link) => ({
-        id: link.id,
-        name: { [currentLanguage]: link.name },
-        description: { [currentLanguage]: link.description },
-        url: link.url,
-      }));
+      links = apiLinks.map((link) => {
+        const nameRecord = {};
+        link.names.forEach((item) => {
+          nameRecord[item.language] = item.text;
+        });
+
+        const descriptionRecord = {};
+        if (link.descriptions && link.descriptions.length > 0) {
+          link.descriptions.forEach((item) => {
+            descriptionRecord[item.language] = item.text;
+          });
+        }
+
+        return {
+          id: link.id,
+          name: nameRecord,
+          description: descriptionRecord,
+          url: link.url,
+        };
+      });
     } catch (err) {
       console.error("Failed to load links:", err);
       error = err.message;
@@ -67,47 +98,6 @@
     }
   }
 
-  // Load data when component mounts or language changes
-  $effect(() => {
-    loadLinks();
-  });
-
-  // Table columns configuration
-  const columns = $derived([
-    {
-      key: "name",
-      header: "Name",
-      primary: true,
-      render: (item) => {
-        const translation = getTranslation(item.name, currentLanguage);
-        const warning = !hasTranslation(item.name, currentLanguage)
-          ? `<span class="ml-2 text-xs text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">Übersetzung fehlt</span>`
-          : "";
-        return `${translation}${warning}`;
-      },
-    },
-    {
-      key: "description",
-      header: "Beschreibung",
-      render: (item) => {
-        const translation = getTranslation(item.description, currentLanguage);
-        const warning =
-          item.description &&
-          Object.keys(item.description).length > 0 &&
-          !hasTranslation(item.description, currentLanguage)
-            ? `<span class="ml-2 text-xs text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">Übersetzung fehlt</span>`
-            : "";
-        return `<span class="max-w-xs truncate">${translation}</span>${warning}`;
-      },
-    },
-    {
-      key: "url",
-      header: "URL",
-      render: (item) =>
-        `<a href="${item.url}" target="_blank" rel="noopener noreferrer" class="hover:text-blue-600 transition-colors underline">${item.url}</a>`,
-    },
-  ]);
-
   function openCreateModal() {
     editingLink = null;
     formData = { name: {}, description: {}, url: "" };
@@ -117,6 +107,7 @@
 
   function openEditModal(link) {
     editingLink = link;
+    // Since we already have all translations, we can use them directly
     formData = {
       name: { ...link.name },
       description: { ...link.description },
@@ -140,35 +131,40 @@
 
       const authToken = getAuthToken();
 
-      // Clean up form data
       const cleanedName = {};
-      const cleanedDescription = {};
-
       for (const [lang, value] of Object.entries(formData.name)) {
         if (value && value.trim()) {
           cleanedName[lang] = value.trim();
         }
       }
 
+      const cleanedDescription = {};
       for (const [lang, value] of Object.entries(formData.description)) {
         if (value && value.trim()) {
           cleanedDescription[lang] = value.trim();
         }
       }
 
-      const linkData = {
-        name: cleanedName,
-        description: Object.keys(cleanedDescription).length > 0 ? cleanedDescription : undefined,
-        url: formData.url,
-      };
+      if (!editingLink && Object.keys(cleanedName).length === 0) {
+        throw new Error("At least one name translation is required for a new link.");
+      }
+      // For updates, if cleanedName is {}, it implies clearing all names, which is allowed by sending name: {}
 
       if (editingLink) {
-        await trpcAuthQuery("link.update", authToken, {
+        const updatePayload = {
           id: editingLink.id,
-          ...linkData,
-        });
+          name: cleanedName, // Sending {} will clear names if all name fields were emptied
+          description: Object.keys(cleanedDescription).length > 0 ? cleanedDescription : null,
+          url: formData.url,
+        };
+        await trpcAuthQuery("link.update", authToken, updatePayload);
       } else {
-        await trpcAuthQuery("link.create", authToken, linkData);
+        const createPayload = {
+          name: cleanedName, // Already validated to be non-empty for new links
+          description: Object.keys(cleanedDescription).length > 0 ? cleanedDescription : undefined,
+          url: formData.url,
+        };
+        await trpcAuthQuery("link.create", authToken, createPayload);
       }
 
       await loadLinks();

@@ -1,7 +1,6 @@
 export type AppTranslationSchema = typeof enTranslations;
 
 export const enTranslations = {
-	appTitle: "App",
 	pages: {
 		homepage: {
 			wellcome: {
@@ -52,7 +51,7 @@ export const enTranslations = {
 				title: "Books",
 				link: "Go to books page"
 			},
-			auios: {
+			audios: {
 				title: "Audios",
 				empty: "No audios available."
 			},
@@ -71,6 +70,12 @@ export const enTranslations = {
 			videoNotSupported: "Your browser does not support the video tag.",
 			previewNotAvailable: "Preview not available.",
 			openFile: "Open file here"
+		},
+		links: {
+			title: "Resources & Support for ALS",
+			subtitle: "Useful links for those affected, family members, and interested individuals.",
+			description1: "This website offers comprehensive information about ALS, its symptoms, and treatment options.",
+			description2: "Support networks and counseling services for those affected and their loved ones."
 		}
 	},
 	cookieBanner: {
@@ -85,4 +90,4 @@ export const enTranslations = {
 		imprint: "Imprint",
 		adminPanel: "Admin-Panel",
 	}
-};
+}

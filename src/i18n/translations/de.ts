@@ -1,7 +1,6 @@
 import type { AppTranslationSchema } from "./en";
 
 export const deTranslations: AppTranslationSchema = {
-	appTitle: "App",
 	pages: {
 		homepage: {
 			wellcome: {
@@ -52,7 +51,7 @@ export const deTranslations: AppTranslationSchema = {
 				title: "Bücher",
 				link: "Zur Bücher-Seite"
 			},
-			auios: {
+			audios: {
 				title: "Audios",
 				empty: "Keine Audios vorhanden."
 			},
@@ -71,6 +70,12 @@ export const deTranslations: AppTranslationSchema = {
 			videoNotSupported: "Dein Browser unterstützt den Video-Tag nicht.",
 			previewNotAvailable: "Vorschau nicht verfügbar.",
 			openFile: "Datei hier öffnen"
+		},
+		links: {
+			title: "Ressourcen & Unterstützung bei ALS",
+			subtitle: "Nützliche Links für Betroffene, Angehörige und Interessierte.",
+			description1: "Diese Webseite bietet umfassende Informationen über ALS, Symptome und Behandlungsmöglichkeiten.",
+			description2: "Unterstützungsnetzwerke und Beratungsangebote für Betroffene und Angehörige."
 		}
 	},
 	cookieBanner: {
@@ -85,4 +90,4 @@ export const deTranslations: AppTranslationSchema = {
 		imprint: "Impressum",
 		adminPanel: "Admin-Panel",
 	}
-};
+}

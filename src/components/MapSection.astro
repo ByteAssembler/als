@@ -15,6 +15,6 @@ const [mapPoints, mapCategories] = await Promise.all([
 
 <Section sectionTitle={i18n.tLang(lang, "pages.homepage.map.title")} sectionId="map">
     <div class="z-0 mx-auto max-w-6xl">
-        <MapComponent client:only="react" points={mapPoints} categories={mapCategories} />
+        <MapComponent client:only="react" lang={lang} points={mapPoints} categories={mapCategories} />
     </div>
 </Section>

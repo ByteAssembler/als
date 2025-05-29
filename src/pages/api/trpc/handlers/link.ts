@@ -127,7 +127,7 @@ export const linkHandlers = {
 	},
 
 	list: async () => {
-		const links = await prisma.link.findMany({
+		const linksFromDb = await prisma.link.findMany({
 			include: {
 				name: {
 					include: {
@@ -142,11 +142,11 @@ export const linkHandlers = {
 			},
 		});
 
-		if (!links || links.length === 0) {
+		if (!linksFromDb || linksFromDb.length === 0) {
 			return [];
 		}
 
-		return links.map((link) => ({
+		return linksFromDb.map((link) => ({
 			...link,
 			names: link.name.translations.map(t => ({
 				text: t.value,
@@ -192,7 +192,10 @@ export const linkHandlers = {
 };
 
 const createLinkSchema = z.object({
-	name: z.record(z.string(), z.string()),
+	name: z.record(z.string(), z.string())
+		.refine(obj => Object.keys(obj).length > 0, {
+			message: "Name must have at least one translation.",
+		}),
 	description: z.record(z.string(), z.string()).optional(),
 	url: z.string().url(),
 });

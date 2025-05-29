@@ -1,5 +1,4 @@
 export const itTranslations = {
-	appTitle: "App",
 	pages: {
 		homepage: {
 			wellcome: {
@@ -44,14 +43,47 @@ export const itTranslations = {
 					submit: "Invia messaggio",
 				},
 			},
+
 		},
-		cookieBanner: {
-			message: "Diese Website verwendet Cookies. Mehr Infos in unserer ",
-			privacyLinkText: "Datenschutzerklärung",
-			dontShowAgain: "Dieses Banner in Zukunft nicht mehr anzeigen",
-			acceptAll: "Alle akzeptieren",
-			acceptEssential: "Nur essenzielle akzeptieren",
+		media: {
+			title: "Media",
+			books: {
+				title: "Libri",
+				link: "Vai alla pagina dei libri"
+			},
+			audios: {
+				title: "Audio",
+				empty: "Nessun file audio disponibile."
+			},
+			images: {
+				title: "Immagini",
+				empty: "Nessuna immagine disponibile."
+			},
+			information: {
+				title: "Informazioni",
+				empty: "Nessuna informazione disponibile."
+			},
+			download: "Scarica",
+			openInNewTab: "Apri in una nuova scheda",
+			close: "Chiudi",
+			audioNotSupported: "Il tuo browser non supporta il tag audio.",
+			videoNotSupported: "Il tuo browser non supporta il tag video.",
+			previewNotAvailable: "Anteprima non disponibile.",
+			openFile: "Apri il file qui"
 		},
+		links: {
+			title: "Risorse e supporto per la SLA",
+			subtitle: "Link utili per i malati, i familiari e gli interessati.",
+			description1: "Questo sito web offre informazioni complete sulla SLA, i sintomi e le possibilità di trattamento.",
+			description2: "Reti di supporto e servizi di consulenza per i pazienti e i loro cari."
+		},
+	},
+	cookieBanner: {
+		message: "Diese Website verwendet Cookies. Mehr Infos in unserer ",
+		privacyLinkText: "Datenschutzerklärung",
+		dontShowAgain: "Dieses Banner in Zukunft nicht mehr anzeigen",
+		acceptAll: "Alle akzeptieren",
+		acceptEssential: "Nur essenzielle akzeptieren",
 	},
 	footer: {
 		legalNotice: "Tutti i diritti riservati",

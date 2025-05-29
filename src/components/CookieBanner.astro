@@ -9,14 +9,14 @@ const lang = Astro.locals.lang;
     id="cookie-banner-wrapper"
 >
     <p class="mb-3 text-lg md:mb-0">
-        {i18n.tLang(lang, "pages.cookieBanner.message")}{" "}
+        {i18n.tLang(lang, "cookieBanner.message")}{" "}
         <a href="/privacy" class="text-blue-400 underline hover:text-blue-300">
-            {i18n.tLang(lang, "pages.cookieBanner.privacyLinkText")}
+            {i18n.tLang(lang, "cookieBanner.privacyLinkText")}
         </a>.
     </p>
     <div class="flex flex-col">
         <label class="my-2 flex items-center gap-2" for="cookie-banner-input">
-            {i18n.tLang(lang, "pages.cookieBanner.dontShowAgain")}
+            {i18n.tLang(lang, "cookieBanner.dontShowAgain")}
             <input type="checkbox" class="h-5 w-5 cursor-pointer accent-blue-500" id="cookie-banner-input" />
         </label>
         <div class="flex gap-2">
@@ -24,13 +24,13 @@ const lang = Astro.locals.lang;
                 class="rounded-lg bg-blue-500 px-5 py-2 font-semibold text-white hover:bg-blue-600"
                 id="cookie-banner-accept"
             >
-                {i18n.tLang(lang, "pages.cookieBanner.acceptAll")}
+                {i18n.tLang(lang, "cookieBanner.acceptAll")}
             </button>
             <button
                 class="rounded-lg bg-gray-600 px-5 py-2 font-semibold text-white hover:bg-gray-700"
                 id="cookie-banner-essential"
             >
-                {i18n.tLang(lang, "pages.cookieBanner.acceptEssential")}
+                {i18n.tLang(lang, "cookieBanner.acceptEssential")}
             </button>
         </div>
     </div>

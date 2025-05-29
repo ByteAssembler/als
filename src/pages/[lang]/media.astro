@@ -4,7 +4,6 @@ import Layout from "../../layouts/Layout.astro";
 import BlobAPI from "../../utils/api";
 const lang = Astro.locals.lang;
 
-
 const fileServerURL = process.env.FILE_SERVER_URL;
 const fileServerToken = process.env.FILE_SERVER_TOKEN;
 
@@ -49,7 +48,7 @@ const informationFiles = mediaFiles.filter((file) =>
 );
 ---
 
-<Layout title={i18n.tLang(lang, "pages.media.books")} defaultPadding={true} showTitle={true}>
+<Layout title="Media" defaultPadding={true} showTitle={true}>
     <div class="max-w-3xl mx-auto p-6 flex flex-col gap-6">
         <!-- Bücher Kachel -->
         <button
@@ -57,17 +56,15 @@ const informationFiles = mediaFiles.filter((file) =>
             class="bg-blue-400 p-6 rounded-xl text-xl font-semibold hover:bg-blue-400 transition text-black"
             onclick="toggleSection('books')" 
         >
-            📚 Bücher {i18n.tLang(lang, "pages.media.books.title")}
+            📚 {i18n.tLang(lang, "pages.media.books.title")}
         </button>
         <div id="books" class="hidden pl-6">
-            <!-- Beispiel-Link zur Bücher-Seite -->
-            {i18n.tLang(lang, "pages.media.books.link")}
             <a
                 href="/books"
                 class="text-blue-600 hover:underline"
                 onclick="return showMedia(event, 'books', 'book-page', '/books')"
             >
-                Zur Bücher-Seite
+				{i18n.tLang(lang, "pages.media.books.link")}
             </a>
             <div id="viewer-books" class="mt-2"></div>
         </div>
@@ -78,14 +75,14 @@ const informationFiles = mediaFiles.filter((file) =>
             class="bg-blue-400 p-6 rounded-xl text-xl font-semibold hover:bg-blue-400 transition"
             onclick="toggleSection('audios')"
         >
-            🎧 Audios {i18n.tLang(lang,"pages.media.auios")}
+            🎧 {i18n.tLang(lang, "pages.media.audios.title")}
         </button>
         <div id="audios" class="hidden pl-6">
             {
                 audios.length > 0 ? (
                     <ul class="space-y-2">
                         {audios.map((file) => (
-                            <li key={file.id}>
+                            <li>
                                 <a
                                     href={`${fileServerURL}/files/${bucketId}/${file.id}`}
                                     class="text-blue-600 hover:underline"
@@ -97,7 +94,7 @@ const informationFiles = mediaFiles.filter((file) =>
                         ))}
                     </ul>
                 ) : (
-                    <p class="text-gray-500">Keine Audios vorhanden.</p>
+                    <p class="text-gray-500">{i18n.tLang(lang, "pages.media.audios.empty")}</p>
                 )
             }
             <div id="viewer-audios" class="mt-2"></div>
@@ -109,7 +106,7 @@ const informationFiles = mediaFiles.filter((file) =>
         class="bg-blue-400 p-6 rounded-xl text-xl font-semibold hover:bg-blue-400 transition"
         onclick="toggleSection('images')"
       >
-        🖼️ Bilder
+        🖼️ {i18n.tLang(lang, "pages.media.images.title")}
       </button>
       <div id="images" class="hidden pl-6">
         {
@@ -117,7 +114,7 @@ const informationFiles = mediaFiles.filter((file) =>
             <ul class="space-y-2">
               {images.map((file) => (
                 <li >
-                  <a
+                <a
                     href={`${fileServerURL}/files/${bucketId}/${file.id}`}
                     class="text-blue-600 hover:underline"
                     onclick={`event.preventDefault(); showImageModal('${file.name}', '${fileServerURL}/files/${bucketId}/${file.id}');`}
@@ -128,7 +125,7 @@ const informationFiles = mediaFiles.filter((file) =>
               ))}
             </ul>
           ) : (
-            <p class="text-gray-500">Keine Bilder vorhanden.</p>
+            <p class="text-gray-500">{i18n.tLang(lang, "pages.media.images.empty")}</p>
           )
         }
       </div>
@@ -144,7 +141,7 @@ const informationFiles = mediaFiles.filter((file) =>
           <div class="w-48 bg-gray-100 border-l border-gray-300 p-4 flex flex-col justify-between">
             <div class="space-y-2">
               <a id="modal-download" class="text-blue-600 hover:underline block" href="#" download>⬇ Herunterladen</a>
-              <a id="modal-open" class="text-blue-600 hover:underline block" href="#" target="_blank rel=" noreferrer">🌐 In neuem Tab</a>
+              <a id="modal-open" class="text-blue-600 hover:underline block" href="#">🌐 In neuem Tab</a>
             </div>
             <button onclick="closeImageModal()" class="mt-4 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded">
               Schließen
@@ -199,14 +196,14 @@ const informationFiles = mediaFiles.filter((file) =>
             class="bg-blue-400 p-6 rounded-xl text-xl font-semibold hover:bg-blue-400 transition"
             onclick="toggleSection('information')"
         >
-            📄 Informationen
+            📄 {i18n.tLang(lang, "pages.media.information.title")}
         </button>
         <div id="information" class="hidden pl-6">
             {
                 informationFiles.length > 0 ? (
                     <ul class="space-y-2">
                         {informationFiles.map((file) => (
-                            <li key={file.id}>
+                            <li>
                                 <a
                                     href={`${fileServerURL}/files/${bucketId}/${file.id}`}
                                     class="text-blue-600 hover:underline"
@@ -218,7 +215,7 @@ const informationFiles = mediaFiles.filter((file) =>
                         ))}
                     </ul>
                 ) : (
-                    <p class="text-gray-500">Keine Informationen vorhanden.</p>
+                    <p class="text-gray-500">{i18n.tLang(lang, "pages.media.information.empty")}</p>
                 )
             }
             <div id="viewer-information" class="mt-2"></div>
