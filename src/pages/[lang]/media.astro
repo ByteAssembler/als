@@ -31,8 +31,10 @@ const collapsibleCategoryKeys = mediaFiles
     : [];
 ---
 
-<Layout title={i18n.tLang(lang, "pages.media.pageTitle")} defaultPadding={true} showTitle={true}>
-    <div class="max-w-5xl mx-auto p-6 flex flex-col gap-6">
+<Layout title={i18n.tLang(lang, "pages.media.pageTitle")} defaultPadding={true} showTitle={false}>
+    <div class="max-w-5xl mx-auto p-6 flex flex-col gap-6 mt-20">
+        <h1 class="text-5xl font-bold mb-6 text-center">{i18n.tLang(lang, "pages.media.pageTitle")}</h1>
+
         {
             mediaFiles &&
                 Object.entries(mediaFiles).map(([category, files]: [string, any[]]) => {
