@@ -143,21 +143,23 @@ export const blogHandlers = {
 					},
 				},
 			},
+			orderBy: {
+				updatedAt: 'desc' // Default sort by most recently updated
+			}
 		});
 
 		if (!blogs || blogs.length === 0) return [];
 
 		return blogs.map((blog) => {
 			return {
-				...blog,
-				titles: blog.title.translations.map(t => ({
-					text: t.value,
-					language: t.language
-				})),
-				contents: blog.content.translations.map(t => ({
-					text: t.value,
-					language: t.language
-				})),
+				id: blog.id,
+				slug: blog.slug,
+				authors: blog.authors,
+				coverImageKey: blog.coverImageKey,
+				publishedAt: blog.publishedAt,
+				updatedAt: blog.updatedAt,
+				title: blog.title, // Return the full RawTranslation object
+				content: blog.content, // Return the full RawTranslation object
 			};
 		});
 	},

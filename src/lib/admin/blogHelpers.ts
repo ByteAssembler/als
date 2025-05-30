@@ -3,146 +3,140 @@ import { createAdminEntityHelper, type DataTransformers } from "./createAdminHel
 import { trpcAuthQuery } from "../../pages/api/trpc/trpc";
 import { createInitialFormDataForLanguages } from "./languageConfig";
 
-// Blog-specific types - updated to match actual API response
 interface BlogApiType {
-	id: number;
-	slug: string;
-	published?: boolean;
-	authors?: string[];
-	coverImage?: string;
-	titles?: Array<{ text: string; language: string }>;
-	contents?: Array<{ text: string; language: string }>;
-	// Additional fields that might come from the API
-	title?: any;
-	content?: any;
-	createdAt?: Date;
-	updatedAt?: Date;
-	[key: string]: any; // Allow additional fields from API
+  id: number;
+  slug: string;
+  authors: string[];
+  coverImageKey: string | null;
+  publishedAt: Date;
+  updatedAt: Date;
+  title: { translations: Array<{ language: string; value: string }> };
+  content: { translations: Array<{ language: string; value: string }> };
 }
 
 interface BlogFormType {
-	id?: number;
-	title: Record<string, string>;
-	content: Record<string, string>;
-	slug: string;
-	published: boolean;
-	authors: string[];
-	coverImage?: string;
+  id?: number;
+  title: Record<string, string>;
+  slug: string;
+  authors: string; // Comma-separated string for form input
+  content: Record<string, string>;
+  coverImageKey: string | null;
 }
 
 interface BlogApiPayload {
-	title?: Record<string, string>;
-	content?: Record<string, string>;
-	slug: string;
-	published: boolean;
-	authors: string[];
-	coverImage?: string;
+  title: Record<string, string>;
+  slug: string;
+  authors: string[];
+  content: Record<string, string>;
+  coverImageKey?: string | null;
 }
 
-// Blog-specific transformers - handle flexible API response
-const blogTransformers: DataTransformers<any, BlogFormType> = {
-	transformApiToForm: (apiData: any) => {
-		const titleObj: Record<string, string> = {};
-		const contentObj: Record<string, string> = {};
+const blogTransformers: DataTransformers<BlogApiType, BlogFormType> = {
+  transformApiToForm: (apiData) => {
+    const titleObj: Record<string, string> = {};
+    const contentObj: Record<string, string> = {};
 
-		// Handle both API format variations
-		if (apiData.titles && Array.isArray(apiData.titles)) {
-			apiData.titles.forEach((title: any) => {
-				titleObj[title.language] = title.text;
-			});
-		}
+    if (apiData.title && apiData.title.translations) {
+      apiData.title.translations.forEach((trans) => {
+        titleObj[trans.language] = trans.value;
+      });
+    }
+    if (apiData.content && apiData.content.translations) {
+      apiData.content.translations.forEach((trans) => {
+        contentObj[trans.language] = trans.value;
+      });
+    }
 
-		if (apiData.contents && Array.isArray(apiData.contents)) {
-			apiData.contents.forEach((content: any) => {
-				contentObj[content.language] = content.text;
-			});
-		}
-
-		return {
-			id: apiData.id,
-			title: titleObj,
-			content: contentObj,
-			slug: apiData.slug || "",
-			published: apiData.published || false,
-			authors: apiData.authors || [],
-			coverImage: apiData.coverImage
-		};
-	},
-
-	transformFormToApi: (formData): BlogApiPayload => ({
-		title: formData.title,
-		content: formData.content,
-		slug: formData.slug,
-		published: formData.published,
-		authors: formData.authors,
-		coverImage: formData.coverImage
-	})
+    return {
+      id: apiData.id,
+      title: titleObj,
+      slug: apiData.slug,
+      authors: Array.isArray(apiData.authors) ? apiData.authors.join(", ") : "",
+      content: contentObj,
+      coverImageKey: apiData.coverImageKey || null,
+    };
+  },
+  transformFormToApi: (formData): BlogApiPayload => ({
+    title: formData.title,
+    slug: formData.slug,
+    authors: formData.authors.split(",").map(author => author.trim()).filter(author => author),
+    content: formData.content,
+    coverImageKey: formData.coverImageKey,
+  }),
 };
 
-// Blog-specific form fields
 function createBlogFormFields(): FormField[] {
-	return [
-		{
-			id: "title",
-			label: "Titel",
-			type: "text",
-			required: true,
-			multilingual: true,
-			placeholder: "Blog-Titel eingeben"
-		},
-		{
-			id: "content",
-			label: "Inhalt",
-			type: "textarea",
-			required: true,
-			multilingual: true,
-			placeholder: "Blog-Inhalt eingeben"
-		},
-		{
-			id: "slug",
-			label: "URL-Slug",
-			type: "text",
-			required: true,
-			multilingual: false,
-			placeholder: "url-freundlicher-slug",
-			helpText: "Eindeutiger URL-Slug für den Blog-Post"
-		},
-		{
-			id: "published",
-			label: "Veröffentlicht",
-			type: "checkbox",
-			multilingual: false
-		}
-	];
+  return [
+    {
+      id: "title",
+      label: "Titel",
+      type: "text",
+      required: true,
+      multilingual: true,
+      placeholder: "Blog-Titel",
+    },
+    {
+      id: "slug",
+      label: "Slug",
+      type: "text",
+      required: true,
+      multilingual: false,
+      placeholder: "eindeutiger-blog-slug",
+      helpText: "Wird für die URL verwendet. Nur Kleinbuchstaben, Zahlen und Bindestriche.",
+    },
+    {
+      id: "authors",
+      label: "Autoren",
+      type: "text",
+      required: true,
+      multilingual: false,
+      placeholder: "Max Mustermann, Erika Mustermann",
+      helpText: "Mehrere Autoren mit Komma trennen.",
+    },
+    {
+      id: "content",
+      label: "Inhalt",
+      type: "textarea",
+      required: true,
+      multilingual: true,
+      placeholder: "Schreiben Sie hier Ihren Blog-Inhalt...",
+    },
+    {
+      id: "coverImageKey",
+      label: "Titelbild",
+      type: "text", // Will use FileManagerSelect
+      required: false,
+      multilingual: false,
+      placeholder: "Bild aus Dateimanager auswählen...",
+      useFileManager: true,
+    },
+  ];
 }
 
-function createBlogInitialFormData() {
-	return {
-		title: createInitialFormDataForLanguages(),
-		content: createInitialFormDataForLanguages(),
-		slug: "",
-		published: false,
-		authors: [],
-		coverImage: ""
-	};
+function createBlogInitialFormData(): BlogFormType {
+  return {
+    title: createInitialFormDataForLanguages(),
+    slug: "",
+    authors: "",
+    content: createInitialFormDataForLanguages(),
+    coverImageKey: null,
+  };
 }
 
-// Blog API methods - use flexible types to handle actual API response
 const blogApiMethods = {
-	list: () => trpcAuthQuery("blog.list") as Promise<any[]>, // Cast to any[] to handle flexible response
-	create: (data: BlogApiPayload) => trpcAuthQuery("blog.create", data),
-	update: (data: BlogApiPayload & { id: number }) => trpcAuthQuery("blog.update", data),
-	delete: (id: number) => trpcAuthQuery("blog.delete", id)
+  list: () => trpcAuthQuery("blog.list") as Promise<BlogApiType[]>,
+  create: (data: BlogApiPayload) => trpcAuthQuery("blog.create", data),
+  update: (data: BlogApiPayload & { id: number }) => trpcAuthQuery("blog.update", data),
+  delete: (id: number) => trpcAuthQuery("blog.delete", id),
 };
 
-// Export the blog helper
 export function createBlogHelper() {
-	return createAdminEntityHelper<any, BlogFormType>({
-		formFields: createBlogFormFields(),
-		initialFormData: createBlogInitialFormData(),
-		transformers: blogTransformers,
-		apiMethods: blogApiMethods
-	});
+  return createAdminEntityHelper<BlogApiType, BlogFormType>({
+    formFields: createBlogFormFields(),
+    initialFormData: createBlogInitialFormData(),
+    transformers: blogTransformers,
+    apiMethods: blogApiMethods,
+  });
 }
 
 export const blogHelper = createBlogHelper();

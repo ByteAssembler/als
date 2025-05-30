@@ -5,7 +5,7 @@
   // import Media from "./schema/Media.svelte";
   import Navbar from "./schema/Navbar.svelte";
   import Links from "./schema/Links.svelte";
-  // import Blogs from "./schema/Blogs.svelte";
+  import Blogs from "./schema/Blogs.svelte";
   import Celebrities from "./schema/Celebrities.svelte";
   import Map from "./schema/Map.svelte";
   // import LanguageSettings from "./schema/LanguageSettings.svelte";
@@ -38,16 +38,6 @@
           id: "navbar",
           label: "Navigation",
           iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xl:mr-2 lg:mr-0 size-4"><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M3 21h18"></path></svg>`,
-        },
-        {
-          id: "file-upload",
-          label: "File Upload",
-          iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xl:mr-2 lg:mr-0 size-4"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"></path><path d="M12.5 16h-1a2.5 2.5 0 0 0-2.5 2.5v1a2.5 2.5 0 0 0 2.5 2.5h1a2.5 2.5 0 0 0 2.5-2.5v-1A2.5 2.5 0 0 0 12.5 16z"></path><path d="M12.5 8V6a4.5 4.5 0 1 1-4.5-4.5"></path></svg>`,
-        },
-        {
-          id: "media",
-          label: "Media",
-          iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xl:mr-2 lg:mr-0 size-4"><path d="M21 16V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2z"></path><circle cx="12" cy="10" r="4"></circle><path d="M16.24 16.24A4.5 4.5 0 1 1 19.5 19.5"></path></svg>`,
         },
         {
           id: "users",

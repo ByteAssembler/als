@@ -223,3 +223,26 @@ export function createNavbarValidator() {
 		return null;
 	};
 }
+
+export function createBlogValidator() {
+	return (formData: Record<string, any>): string | null => {
+		const titleError = validateTranslations(formData.title, "Titel");
+		if (titleError) return titleError;
+
+		const slugError = validateRequired(formData.slug, "Slug");
+		if (slugError) return slugError;
+		if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(formData.slug)) {
+			return "Slug darf nur Kleinbuchstaben, Zahlen und Bindestriche enthalten und nicht mit einem Bindestrich beginnen oder enden.";
+		}
+
+		const authorsError = validateRequired(formData.authors, "Autoren");
+		if (authorsError) return authorsError;
+
+		const contentError = validateTranslations(formData.content, "Inhalt");
+		if (contentError) return contentError;
+
+		// coverImageKey is optional, no specific validation here unless format is enforced
+
+		return null;
+	};
+}
