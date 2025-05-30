@@ -57,7 +57,7 @@ model Blog {
     content                 RawTranslation @relation("BlogContent", fields: [contentRawTranslationId], references: [id], onDelete: Cascade)
 
     coverImageId String?
-    coverImage   MediaItem? @relation("BlogCoverImage", fields: [coverImageId], references: [id], onDelete: SetNull)
+    coverImage   MediaItem? @relation("BlogCoverImage", fields: [coverImageId], references: [storageKey], onDelete: SetNull)
 
     publishedAt DateTime @default(now())
     updatedAt   DateTime @updatedAt
@@ -114,7 +114,7 @@ model Book {
     author                String
 
     coverImageId String?
-    coverImage   MediaItem? @relation("BookCoverImage", fields: [coverImageId], references: [id], onDelete: SetNull)
+    coverImage   MediaItem? @relation("BookCoverImage", fields: [coverImageId], references: [storageKey], onDelete: SetNull)
 
     isbn String? @unique
 
@@ -157,7 +157,7 @@ model Celebrity {
     id Int @id @default(autoincrement())
 
     imageId String?
-    image   MediaItem? @relation("CelebrityImage", fields: [imageId], references: [id], onDelete: SetNull)
+    image   MediaItem? @relation("CelebrityImage", fields: [imageId], references: [storageKey], onDelete: SetNull)
 
     name                       String
     bioRawTranslationId        Int
@@ -172,17 +172,12 @@ model Celebrity {
 }
 
 model MediaItem {
-    id       String @id @default(cuid())
-    filename String
-
-    storageKey    String @unique
-    storageBucket String
-    storageRegion String
-    mimeType      String
-
-    size   Int
-    width  Int?
-    height Int?
+    storageKey String @id
+    filename   String
+    mimeType   String
+    size       Int
+    width      Int?
+    height     Int?
 
     altTextRawTranslationId Int?
     altText                 RawTranslation? @relation("MediaItemAltText", fields: [altTextRawTranslationId], references: [id], onDelete: SetNull)
