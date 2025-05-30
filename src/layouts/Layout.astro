@@ -3,6 +3,7 @@ import WelcomeBanner from "@/components/WelcomeBanner.astro";
 import CookieBanner from "@/components/CookieBanner.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
+import { cn } from "@/utils/utils";
 
 interface Props {
     title: string;
@@ -10,9 +11,21 @@ interface Props {
     defaultPadding?: boolean;
     footer?: boolean;
     header?: boolean;
+    className?: string;
+    classNameMain?: string;
+    classNameTitle?: string;
 }
 
-const { title, showTitle = true, defaultPadding = true, footer = true, header = true } = Astro.props;
+const {
+    title,
+    showTitle = true,
+    defaultPadding = true,
+    footer = true,
+    header = true,
+    className,
+    classNameMain,
+    classNameTitle,
+} = Astro.props;
 ---
 
 <!doctype html>
@@ -24,12 +37,18 @@ const { title, showTitle = true, defaultPadding = true, footer = true, header = 
         <link rel="icon" type="image/svg+xml" href="/favicon.png" />
         <title>{title}</title>
     </head>
-    <body class="flex min-h-screen flex-col bg-[#E6F0FA]">
+    <body class={cn("flex min-h-screen flex-col bg-[#E6F0FA]", className)}>
         <WelcomeBanner />
         <CookieBanner />
         {header && <Header />}
-        <main class="flex-1">
-            {showTitle && <h1 class="pt-20 mb-12 text-center text-4xl font-bold text-gray-900">{title}</h1>}
+        <main class={cn("flex-1", classNameMain)}>
+            {
+                showTitle && (
+                    <h1 class={cn("pt-20 mb-12 text-center text-4xl font-bold text-gray-900", classNameTitle)}>
+                        {title}
+                    </h1>
+                )
+            }
             <slot />
         </main>
         {footer && <Footer />}
