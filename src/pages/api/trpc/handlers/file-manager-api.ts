@@ -2,16 +2,7 @@ import { Client, type BucketItem } from 'minio';
 import type { Readable } from 'stream';
 
 if (!process.env.FILE_STORAGE_SERVER_ENDPOINT_FULL || !process.env.FILE_STORAGE_SERVER_ENDPOINT || !process.env.FILE_STORAGE_SERVER_BUCKET_NAME || !process.env.FILE_STORAGE_SERVER_ACCESS_KEY || !process.env.FILE_STORAGE_SERVER_SECRET_KEY) {
-
-	console.error('Missing required environment variables for MinIO configuration. Please ensure FILE_STORAGE_SERVER_ENDPOINT_FULL, FILE_STORAGE_SERVER_ENDPOINT, FILE_STORAGE_SERVER_BUCKET_NAME, FILE_STORAGE_SERVER_ACCESS_KEY, and FILE_STORAGE_SERVER_SECRET_KEY are set.');
-	console.log("FILE_STORAGE_SERVER_ENDPOINT_FULL", process.env.FILE_STORAGE_SERVER_ENDPOINT_FULL);
-	console.log("FILE_STORAGE_SERVER_ENDPOINT", process.env.FILE_STORAGE_SERVER_ENDPOINT);
-	console.log("FILE_STORAGE_SERVER_BUCKET_NAME", process.env.FILE_STORAGE_SERVER_BUCKET_NAME);
-	console.log("FILE_STORAGE_SERVER_ACCESS_KEY", process.env.FILE_STORAGE_SERVER_ACCESS_KEY);
-	console.log("FILE_STORAGE_SERVER_SECRET_KEY", process.env.FILE_STORAGE_SERVER_SECRET_KEY);
-
-
-	console.error('Missing environment variables for MinIO configuration. Please check your .env file.');
+	console.error('Missing environment variables for FileServer configuration. Please check your .env file.');
 	process.exit(1);
 }
 
