@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { hasTranslation, createTranslationWarning } from "../../lib/utils/translation";
+  import { hasTranslation, createTranslationWarning } from "@/lib/utils/translation";
 
   interface Language {
     code: string;

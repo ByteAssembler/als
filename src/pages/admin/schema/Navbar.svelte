@@ -1,13 +1,13 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import AdminPageLayout from "../../../components/admin/AdminPageLayout.svelte";
-  import type { Column } from "../../../components/ui/DataTable.svelte";
-  import { getTranslation, hasTranslation, createTranslationWarning } from "../../../lib/utils/translation";
-  import { createNavbarValidator } from "../../../lib/utils/validation";
-  import { navbarHelper } from "../../../lib/admin/navbarHelpers";
-  import { createStandardLanguages } from "../../../lib/admin/commonConfig";
+  import AdminPageLayout from "@/components/admin/AdminPageLayout.svelte";
+  import type { Column } from "@/components/ui/DataTable.svelte";
+  import { getTranslation, hasTranslation, createTranslationWarning } from "@/lib/utils/translation";
+  import { createNavbarValidator } from "@/lib/utils/validation";
+  import { navbarHelper } from "@/lib/admin/navbarHelpers";
+  import { createStandardLanguages } from "@/lib/admin/commonConfig";
   // Import TranslationBadge if you intend to use it directly in the template later
-  // import TranslationBadge from "../../../components/ui/TranslationBadge.svelte";
+  // import TranslationBadge from "@/components/ui/TranslationBadge.svelte";
 
   const languages = createStandardLanguages();
   let currentLanguage = $state("de");

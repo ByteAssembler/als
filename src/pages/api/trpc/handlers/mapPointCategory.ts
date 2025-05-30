@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import prisma from '../../../../utils/db';
+import prisma from '@/utils/db';
 import type { Prisma } from '@prisma/client';
 
 const mapTranslationsForPrisma = (translations: Record<string, string> | undefined) => {

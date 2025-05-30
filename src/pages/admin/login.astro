@@ -1,8 +1,8 @@
 ---
 import { hash } from "bcrypt";
-import Layout from "../../layouts/Layout.astro";
-import prisma from "../../utils/db";
-import { i18n } from "../i18n";
+import Layout from "@/layouts/Layout.astro";
+import prisma from "@/utils/db";
+import { i18n } from "@/i18n";
 
 if (
     (await prisma.user.findUnique({

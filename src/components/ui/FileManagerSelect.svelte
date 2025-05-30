@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { trpcAuthQuery } from "../../pages/api/trpc/trpc";
+  import { trpcAuthQuery } from "@/pages/api/trpc/trpc";
 
   interface Props {
     value: string;

@@ -1,7 +1,7 @@
 <script lang="ts">
-  import LanguageSelector from "../ui/LanguageSelector.svelte";
-  import DataTable from "../ui/DataTable.svelte";
-  import type { Column, DataItem } from "../ui/DataTable.svelte"; // Assuming types can be imported or redefined
+  import LanguageSelector from "@/components/ui/LanguageSelector.svelte";
+  import DataTable from "@/components/ui/DataTable.svelte";
+  import type { Column, DataItem } from "@/components/ui/DataTable.svelte";
 
   interface Language {
     code: string;

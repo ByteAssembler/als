@@ -1,9 +1,9 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import AdminPageLayout from "../../../components/admin/AdminPageLayout.svelte";
-  import { createCelebrityValidator } from "../../../lib/utils/validation";
-  import { celebrityHelper } from "../../../lib/admin/celebrityHelpers";
-  import { createStandardLanguages, createCelebrityColumns } from "../../../lib/admin/commonConfig";
+  import AdminPageLayout from "@/components/admin/AdminPageLayout.svelte";
+  import { createCelebrityValidator } from "@/lib/utils/validation";
+  import { celebrityHelper } from "@/lib/admin/celebrityHelpers";
+  import { createStandardLanguages, createCelebrityColumns } from "@/lib/admin/commonConfig";
 
   // Configuration
   const languages = createStandardLanguages();

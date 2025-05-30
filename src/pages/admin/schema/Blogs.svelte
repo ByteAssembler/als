@@ -1,11 +1,11 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import AdminPageLayout from "../../../components/admin/AdminPageLayout.svelte";
-  import type { Column } from "../../../components/ui/DataTable.svelte";
-  import { getTranslation, hasTranslation, createTranslationWarning } from "../../../lib/utils/translation";
-  import { createBlogValidator } from "../../../lib/utils/validation";
-  import { blogHelper } from "../../../lib/admin/blogHelpers";
-  import { createStandardLanguages } from "../../../lib/admin/commonConfig";
+  import AdminPageLayout from "@/components/admin/AdminPageLayout.svelte";
+  import type { Column } from "@/components/ui/DataTable.svelte";
+  import { getTranslation, hasTranslation, createTranslationWarning } from "@/lib/utils/translation";
+  import { createBlogValidator } from "@/lib/utils/validation";
+  import { blogHelper } from "@/lib/admin/blogHelpers";
+  import { createStandardLanguages } from "@/lib/admin/commonConfig";
 
   const languages = createStandardLanguages();
   let currentLanguage = $state("de");

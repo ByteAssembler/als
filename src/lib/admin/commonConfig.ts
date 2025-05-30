@@ -1,5 +1,5 @@
 import { getImageUrlForImageKey } from "@/utils";
-import type { Column } from "../../components/ui/DataTable.svelte";
+import type { Column } from "@/components/ui/DataTable.svelte";
 import { getTranslation } from "../utils/translation";
 import { getGlobalLanguages, type Language } from "./languageConfig";
 

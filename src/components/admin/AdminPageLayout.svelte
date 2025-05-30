@@ -1,8 +1,8 @@
 <script lang="ts">
   import AdminSection from "./AdminSection.svelte";
-  import MultiLanguageFormModal from "../ui/MultiLanguageFormModal.svelte";
-  import type { Column, DataItem } from "../ui/DataTable.svelte";
-  import type { FormField as ModalFormField } from "../ui/MultiLanguageFormModal.svelte";
+  import MultiLanguageFormModal from "@/components/ui/MultiLanguageFormModal.svelte";
+  import type { Column, DataItem } from "@/components/ui/DataTable.svelte";
+  import type { FormField as ModalFormField } from "@/components/ui/MultiLanguageFormModal.svelte";
 
   interface Language {
     code: string;

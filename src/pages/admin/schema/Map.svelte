@@ -1,15 +1,15 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import AdminSection from "../../../components/admin/AdminSection.svelte";
-  import MultiLanguageFormModal from "../../../components/ui/MultiLanguageFormModal.svelte";
-  import { getTranslation } from "../../../lib/utils/translation";
-  import { createMapPointCategoryValidator, createMapPointValidator } from "../../../lib/utils/validation";
-  import { mapPointCategoryHelper, mapPointHelper } from "../../../lib/admin/mapHelpers";
+  import AdminSection from "@/components/admin/AdminSection.svelte";
+  import MultiLanguageFormModal from "@/components/ui/MultiLanguageFormModal.svelte";
+  import { getTranslation } from "@/lib/utils/translation";
+  import { createMapPointCategoryValidator, createMapPointValidator } from "@/lib/utils/validation";
+  import { mapPointCategoryHelper, mapPointHelper } from "@/lib/admin/mapHelpers";
   import {
     createStandardLanguages,
     createMapPointCategoryColumns,
     createMapPointColumns,
-  } from "../../../lib/admin/commonConfig";
+  } from "@/lib/admin/commonConfig";
 
   // Configuration
   const languages = createStandardLanguages();
@@ -129,7 +129,7 @@
   const { formFields: mapPointFormFields, initialFormData: mapPointInitialFormData } = mapPointHelper.formConfig;
 
   /**
-   * IMPORTANT NOTE FOR `mapPointCategoryHelper` (in `../../../lib/admin/mapHelpers.ts`):
+   * IMPORTANT NOTE FOR `mapPointCategoryHelper` (in `@/lib/admin/mapHelpers.ts`):
    * To enable icon selection for map point categories (similar to how image selection works for Celebrities),
    * the `mapPointCategoryHelper.formConfig` object needs to be correctly defined.
    *
@@ -139,7 +139,7 @@
    * Ensure your `mapPointCategoryHelper.formConfig` looks similar to this for the `iconKey`:
    *
    * ```typescript
-   * // Inside ../../../lib/admin/mapHelpers.ts (or wherever mapPointCategoryHelper is defined)
+   * // Inside @/lib/admin/mapHelpers.ts (or wherever mapPointCategoryHelper is defined)
    *
    * export const mapPointCategoryHelper = {
    *   // ... other helper parts ...
@@ -211,7 +211,7 @@
   });
 
   // Create columns
-  // IMPORTANT: The `createMapPointCategoryColumns` function (likely in ../../../lib/admin/commonConfig.ts)
+  // IMPORTANT: The `createMapPointCategoryColumns` function (likely in @/lib/admin/commonConfig.ts)
   // needs to be updated to display the iconKey or a preview of the icon.
   // Example modification for createMapPointCategoryColumns:
   // export function createMapPointCategoryColumns(currentLanguage: string, /* other params */): ColumnDef[] {

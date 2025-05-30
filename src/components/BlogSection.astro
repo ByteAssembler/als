@@ -1,7 +1,7 @@
 ﻿---
-import Section from "../layouts/Section.astro";
-import { fetchDataFromServer } from "../pages/api/trpc/serverHelpers";
-import { i18n } from "../i18n";
+import Section from "@/layouts/Section.astro";
+import { fetchDataFromServer } from "@/pages/api/trpc/serverHelpers";
+import { i18n } from "@/i18n";
 
 const lang = Astro.locals.lang;
 if (!lang) throw new Error("Language parameter is required");

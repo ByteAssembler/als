@@ -1,8 +1,8 @@
 ﻿---
-import MapComponent from "./Map.tsx";
-import Section from "../layouts/Section.astro";
-import { fetchDataFromServer } from "../pages/api/trpc/serverHelpers";
-import { i18n } from "../i18n";
+import MapComponent from "@/components/Map.tsx";
+import Section from "@/layouts/Section.astro";
+import { fetchDataFromServer } from "@/pages/api/trpc/serverHelpers";
+import { i18n } from "@/i18n";
 
 let lang = Astro.locals.lang;
 if (!lang) throw new Error("Language parameter is required");

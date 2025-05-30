@@ -1,7 +1,7 @@
 ﻿---
 import { i18n } from "@/i18n";
-import Layout from "../../layouts/Layout.astro";
-import { fetchDataFromServer } from "../../pages/api/trpc/serverHelpers";
+import Layout from "@/layouts/Layout.astro";
+import { fetchDataFromServer } from "@/pages/api/trpc/serverHelpers";
 
 const lang = Astro.locals.lang;
 if (!lang) throw new Error("Language not set in Astro.locals");

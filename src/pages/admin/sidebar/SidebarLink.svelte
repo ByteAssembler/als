@@ -46,7 +46,7 @@
 
 <script lang="ts">
   import type { Props as ComponentProps } from "./SidebarLink.svelte"; // Import from module
-  import { cn } from "../../../utils/utils";
+  import { cn } from "@/utils/utils";
   import { createEventDispatcher } from "svelte";
 
   let {

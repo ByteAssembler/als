@@ -1,7 +1,7 @@
 ﻿---
-import Layout from "../../../layouts/Layout.astro";
-import FormattedDate from "../../../components/FormattedDate.astro";
-import { fetchDataFromServer } from "../../api/trpc/serverHelpers";
+import Layout from "@/layouts/Layout.astro";
+import FormattedDate from "@/components/FormattedDate.astro";
+import { fetchDataFromServer } from "@/pages/api/trpc/serverHelpers";
 import { i18n } from "@/i18n";
 
 const { slug, lang } = Astro.params;
