@@ -111,14 +111,22 @@
   });
 
   const tableData = $derived(
-    links.map((link) => ({
-      id: link.id,
-      title: link.title,
-      url: link.url,
-      description: link.description,
-      order: link.order,
-      isActive: link.isActive,
-    }))
+    links
+      .map((link) => ({
+        id: link.id,
+        title: link.title,
+        url: link.url,
+        description: link.description,
+        order: link.order,
+        isActive: link.isActive,
+      }))
+      .sort((a, b) => {
+        const titleA = getTranslation(a.title, currentLanguage, "de").toLowerCase();
+        const titleB = getTranslation(b.title, currentLanguage, "de").toLowerCase();
+        if (titleA < titleB) return -1;
+        if (titleA > titleB) return 1;
+        return 0;
+      })
   );
 </script>
 

@@ -3,7 +3,7 @@
 
   // import FileUplaod from "./schema/FileUplaod.svelte";
   // import Media from "./schema/Media.svelte";
-  // import Navbar from "./schema/Navbar.svelte";
+  import Navbar from "./schema/Navbar.svelte";
   import Links from "./schema/Links.svelte";
   // import Blogs from "./schema/Blogs.svelte";
   import Celebrities from "./schema/Celebrities.svelte";

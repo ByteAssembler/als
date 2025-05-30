@@ -36,10 +36,11 @@ async function getNavbarWithTranslatedFields(
 
 export const navbarHandlers = {
 	create: async (input: z.infer<typeof createNavbarSchema>) => {
-		const { texts, ...rest } = input;
+		const { texts, order, ...rest } = input;
 		return await prisma.navbar.create({
 			data: {
 				...rest,
+				order: order || 0,
 				text: {
 					create: {
 						translations: {
@@ -60,12 +61,13 @@ export const navbarHandlers = {
 	},
 
 	update: async (input: z.infer<typeof updateNavbarSchema>) => {
-		const { id, texts, ...rest } = input;
+		const { id, texts, order, ...rest } = input;
 
 		return await prisma.navbar.update({
 			where: { id },
 			data: {
 				...rest,
+				...(order !== undefined && { order }),
 				...(texts && {
 					text: {
 						update: {
@@ -93,6 +95,9 @@ export const navbarHandlers = {
 					},
 				},
 			},
+			orderBy: { // Add order by
+				order: 'asc',
+			}
 		});
 
 		if (!navbars || navbars.length === 0) {
@@ -100,11 +105,12 @@ export const navbarHandlers = {
 		}
 
 		return navbars.map((navbar) => ({
-			...navbar,
-			texts: navbar.text.translations.map(t => ({
-				text: t.value,
-				language: t.language
-			})),
+			id: navbar.id,
+			href: navbar.href,
+			withLanguagePrefix: navbar.withLanguagePrefix,
+			text: navbar.text, // Return the full RawTranslation object for text
+			order: navbar.order, // Include order field
+			// Remove the extra 'texts' field to be consistent with other helpers
 		}));
 	},
 
@@ -136,6 +142,7 @@ const createNavbarSchema = z.object({
 	texts: z.record(z.string(), z.string()),
 	href: z.string(),
 	withLanguagePrefix: z.boolean(),
+	order: z.number().optional(),
 });
 
 const updateNavbarSchema = z.object({
@@ -143,4 +150,5 @@ const updateNavbarSchema = z.object({
 	texts: z.record(z.string(), z.string()).optional(),
 	href: z.string().optional(),
 	withLanguagePrefix: z.boolean().optional(),
+	order: z.number().optional(),
 });

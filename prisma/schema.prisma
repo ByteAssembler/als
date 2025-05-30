@@ -78,6 +78,8 @@ model Navbar {
     text                 RawTranslation @relation("NavbarText", fields: [textRawTranslationId], references: [id], onDelete: Cascade)
     href                 String
 
+    order Int @default(0)
+
     withLanguagePrefix Boolean
 }
 

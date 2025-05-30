@@ -199,3 +199,27 @@ export function createMapPointValidator() {
 		return null;
 	};
 }
+
+export function createNavbarValidator() {
+	return (formData: Record<string, any>): string | null => {
+		const textError = validateTranslations(formData.text, "Anzeigetext");
+		if (textError) return textError;
+
+		const hrefError = validateRequired(formData.href, "URL (href)");
+		if (hrefError) return hrefError;
+
+		// Basic validation for relative paths, can be expanded
+		if (!formData.href.startsWith("/")) {
+			return "URL (href) muss mit einem '/' beginnen für relative Pfade.";
+		}
+
+		if (formData.order !== undefined && formData.order !== null && formData.order !== "") {
+			const orderNum = Number(formData.order);
+			if (isNaN(orderNum)) {
+				return "Reihenfolge muss eine Zahl sein.";
+			}
+		}
+
+		return null;
+	};
+}

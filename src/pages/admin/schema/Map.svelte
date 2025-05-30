@@ -195,16 +195,24 @@
   });
 
   const categoryTableData = $derived(
-    categories.map((category) => {
-      // Count map points for this category
-      // Ensure categoryId (string from form) is compared with category.id (number)
-      const pointCount = mapPoints.filter((point) => Number(point.categoryId) === category.id).length;
-      return {
-        id: category.id,
-        name: category.name, // Should be Record<string, string> from transformer
-        mapPointsCount: pointCount,
-      };
-    })
+    categories
+      .map((category) => {
+        // Count map points for this category
+        // Ensure categoryId (string from form) is compared with category.id (number)
+        const pointCount = mapPoints.filter((point) => Number(point.categoryId) === category.id).length;
+        return {
+          id: category.id,
+          name: category.name, // Should be Record<string, string> from transformer
+          mapPointsCount: pointCount,
+        };
+      })
+      .sort((a, b) => {
+        const nameA = getTranslation(a.name, currentLanguage, "de").toLowerCase();
+        const nameB = getTranslation(b.name, currentLanguage, "de").toLowerCase();
+        if (nameA < nameB) return -1;
+        if (nameA > nameB) return 1;
+        return 0;
+      })
   );
 
   const mapPointTableData = $derived(
