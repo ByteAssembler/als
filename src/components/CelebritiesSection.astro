@@ -14,7 +14,7 @@ const celebrities = await fetchDataFromServer("celebrity.list_by_language", lang
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             {
                 celebrities.map((celebrity) => (
-                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <div class="bg-[#f2f4ff] p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
                         <div class="flex items-start space-x-4">
                             {celebrity.image && (
                                 <img
@@ -24,7 +24,7 @@ const celebrities = await fetchDataFromServer("celebrity.list_by_language", lang
                                 />
                             )}
                             <div>
-                                <h3 class="text-lg font-bold text-blue-700">
+                                <h3 class="text-lg font-bold text-black-700">
                                     {celebrity.name}
                                     {celebrity.died && (
                                         <span class="text-gray-500 font-normal">

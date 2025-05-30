@@ -7,6 +7,7 @@
   import Blogs from "./schema/Blogs.svelte";
   import Celebrities from "./schema/Celebrities.svelte";
   import Map from "./schema/Map.svelte";
+  import LanguageSettings from "./schema/LanguageSettings.svelte";
   import "./styles.css";
 
   let activeItemId = $state("dashboard");
@@ -60,6 +61,11 @@
           label: "Celebrities",
           iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xl:mr-2 lg:mr-0 size-4"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"></path><path d="M12 8a4 4 0 1 1-4 4"></path><path d="M12.5 16h-1a2.5 2.5 0 0 0-2.5 2.5v1a2.5 2.5 0 0 0 2.5 2.5h1a2.5 2.5 0 0 0 2.5-2.5v-1A2.5 2.5 0 0 0 12.5 16z"></path></svg>`,
         },
+        {
+          id: "language-settings",
+          label: "Sprachen",
+          iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xl:mr-2 lg:mr-0 size-4"><path d="M5 8l6 6"></path><path d="M4 14l6-6 2-3"></path><path d="M2 5h12"></path><path d="M7 2h1"></path><path d="M22 22l-5-10-5 10"></path><path d="M14 18h6"></path></svg>`,
+        },
       ],
     },
     // ... other sections like "Discover", "Library" can be added here in the same format
@@ -79,7 +85,9 @@
   <main class="xl:pl-64 lg:pl-16 md:pl-16 pl-0 min-h-screen transition-all duration-300">
     <!-- Content Area -->
     <div class="px-6 py-8 lg:px-8">
-      {#if activeItemId === "links"}
+      {#if activeItemId === "language-settings"}
+        <LanguageSettings />
+      {:else if activeItemId === "links"}
         <Links />
       {:else if activeItemId === "navbar"}
         <Navbar />

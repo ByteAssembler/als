@@ -4,6 +4,8 @@
     key: string;
     primary?: boolean;
     render?: (item: DataItem) => string;
+    clickable?: boolean;
+    onClick?: (item: DataItem) => void;
   }
 
   export interface DataItem {
@@ -83,7 +85,16 @@
             {#each columns as column}
               <td class="px-6 py-4 text-sm" class:font-medium={column.primary} role="cell">
                 {#if column.render}
-                  {@html column.render(item)}
+                  {#if column.clickable && column.onClick}
+                    <button
+                      onclick={() => column.onClick?.(item)}
+                      class="text-left w-full focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+                    >
+                      {@html column.render(item)}
+                    </button>
+                  {:else}
+                    {@html column.render(item)}
+                  {/if}
                 {:else}
                   {item[column.key] || "-"}
                 {/if}

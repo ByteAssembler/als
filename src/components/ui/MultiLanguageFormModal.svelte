@@ -97,6 +97,16 @@
               bind:checked={formData[field.id]}
               class="rounded border-input focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+          {:else if field.id === "authors"}
+            <!-- Special handling for authors array field -->
+            <input
+              id={field.id}
+              type="text"
+              bind:value={formData[field.id]}
+              required={field.required}
+              class="w-full px-3 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder={field.placeholder || ""}
+            />
           {:else}
             <input
               id={field.id}

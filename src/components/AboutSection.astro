@@ -8,9 +8,10 @@ const lang = Astro.locals.lang;
 <Section sectionTitle={i18n.tLang(lang, "pages.homepage.aboutUs.title")} sectionId="about">
     <div class="mx-auto max-w-6xl">
         <div class="grid gap-12 md:grid-cols-2">
-            <p class="mb-6 text-gray-600 text-base leading-relaxed">
-                {i18n.tLang(lang, "pages.homepage.aboutUs.content")}
-            </p>
+            <p
+                set:html={i18n.tLang(lang, "pages.homepage.aboutUs.content")}
+                class="mb-6 text-gray-600 text-base leading-relaxed"
+            />
             <div class="rounded-lg bg-gray-100">
                 <img src="/placeholder.webp" alt="" class="h-full w-full rounded-lg object-cover" />
             </div>

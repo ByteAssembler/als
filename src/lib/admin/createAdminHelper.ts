@@ -3,7 +3,7 @@ import type { FormField } from "../../components/ui/MultiLanguageFormModal.svelt
 // Generic data transformation interface
 export interface DataTransformers<ApiType, FormType> {
 	transformApiToForm: (apiData: ApiType) => FormType;
-	transformFormToApi: (formData: FormType) => any; // Return type is flexible for API payload
+	transformFormToApi: (formData: FormType) => any;
 }
 
 // Generic form configuration
@@ -17,7 +17,6 @@ export interface CrudConfig<ApiType, FormType> {
 	onSave: (formData: FormType, isEdit: boolean, editingItem?: any) => Promise<void>;
 	onDelete: (id: string | number) => Promise<void>;
 	initialFormData: Record<string, any>;
-	transformers: DataTransformers<ApiType, FormType>;
 }
 
 // Generic CRUD functions factory
@@ -32,10 +31,11 @@ export function createCrudFunctions<ApiType, FormType>(
 			state.showModal = true;
 		},
 
-		openEditModal: (state: any, item: any) => {
+		openEditModal: (state: any, item: FormType) => {
 			state.editingItem = item;
 			state.modalLanguage = "de";
-			state.formData = config.transformers.transformApiToForm(item);
+			// Use the item data directly since it's already transformed from the list
+			state.formData = { ...item };
 			state.showModal = true;
 		},
 
@@ -78,14 +78,14 @@ export function createCrudFunctions<ApiType, FormType>(
 	};
 }
 
-// Generic admin entity helper
+// Generic admin entity helper with proper type handling
 export function createAdminEntityHelper<ApiType, FormType>(
 	entityConfig: {
 		formFields: FormField[];
 		initialFormData: Record<string, any>;
 		transformers: DataTransformers<ApiType, FormType>;
 		apiMethods: {
-			list: () => Promise<ApiType[]>;
+			list: () => Promise<any[]>; // Keep flexible for API response
 			create: (data: any) => Promise<any>;
 			update: (data: any) => Promise<any>;
 			delete: (id: number) => Promise<any>;
@@ -101,7 +101,7 @@ export function createAdminEntityHelper<ApiType, FormType>(
 		transformers: entityConfig.transformers,
 
 		createCrud: (loadDataCallback: () => Promise<void>) => {
-			return createCrudFunctions({
+			return createCrudFunctions<ApiType, FormType>({
 				onSave: async (formData, isEdit, editingItem) => {
 					const apiData = entityConfig.transformers.transformFormToApi(formData);
 					if (isEdit && editingItem) {
@@ -115,14 +115,16 @@ export function createAdminEntityHelper<ApiType, FormType>(
 					await entityConfig.apiMethods.delete(Number(id));
 					await loadDataCallback();
 				},
-				initialFormData: entityConfig.initialFormData,
-				transformers: entityConfig.transformers
+				initialFormData: entityConfig.initialFormData
 			});
 		},
 
-		loadData: async () => {
+		loadData: async (): Promise<FormType[]> => {
 			const result = await entityConfig.apiMethods.list();
-			return result.map(entityConfig.transformers.transformApiToForm);
+			// Fix: Explicitly type the map callback parameter
+			return result.map((item: any): FormType =>
+				entityConfig.transformers.transformApiToForm(item as ApiType)
+			);
 		}
 	};
 }
