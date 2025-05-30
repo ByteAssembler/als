@@ -220,12 +220,22 @@
               <td class="px-6 py-4 text-right text-sm">
                 {#if editingLanguage && editingLanguage.code === lang.code}
                   <div class="flex justify-end space-x-2">
-                    <button onclick={handleUpdate} class="text-green-600 hover:text-green-900 p-1" title="Speichern">
+                    <button
+                      onclick={handleUpdate}
+                      class="text-green-600 hover:text-green-900 p-1"
+                      title="Speichern"
+                      aria-label="Speichern"
+                    >
                       <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                       </svg>
                     </button>
-                    <button onclick={cancelEdit} class="text-gray-600 hover:text-gray-900 p-1" title="Abbrechen">
+                    <button
+                      onclick={cancelEdit}
+                      class="text-gray-600 hover:text-gray-900 p-1"
+                      title="Abbrechen"
+                      aria-label="Abbrechen"
+                    >
                       <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"
                         ></path>
@@ -238,6 +248,7 @@
                       onclick={() => handleEdit(lang)}
                       class="text-blue-600 hover:text-blue-900 p-1"
                       title="Bearbeiten"
+                      aria-label="Bearbeiten"
                     >
                       <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path
@@ -252,6 +263,7 @@
                       onclick={() => handleDelete(lang.code)}
                       class="text-red-600 hover:text-red-900 p-1"
                       title="Löschen"
+                      aria-label="Löschen"
                     >
                       <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path
