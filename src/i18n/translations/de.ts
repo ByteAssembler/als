@@ -47,7 +47,7 @@ export const deTranslations: AppTranslationSchema = {
           PEC: "PEC",
           alternativeEmail: "Alternative E-Mail",
           mobile: "Mobil",
-          iban: "IBAN",
+          iban: "IBAN für Spende",
           taxNumber: "Steuernummer",
         },
         form: {
@@ -87,8 +87,7 @@ export const deTranslations: AppTranslationSchema = {
       openFile: "Datei hier öffnen"
     },
     links: {
-      title: "Ressourcen & Unterstützung bei ALS",
-      subtitle: "Nützliche Links für Betroffene, Angehörige und Interessierte.",
+      title: "Nützliche Links für Betroffene, Angehörige und Interessierte",
       description1: "Diese Webseite bietet umfassende Informationen über ALS, Symptome und Behandlungsmöglichkeiten.",
       description2: "Unterstützungsnetzwerke und Beratungsangebote für Betroffene und Angehörige."
     }

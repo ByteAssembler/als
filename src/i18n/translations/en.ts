@@ -25,7 +25,7 @@ export const enTranslations = {
       },
       aboutUs: {
         title: "About us",
-        content: 'The "Collegium vincere ALS" is an association dedicated to the fight against amyotrophic lateral sclerosis (ALS), a chronic degenerative disease of the motor nervous system. We see ALS as a "disease of a thousand farewells" and want to support those affected and their families during this difficult time. Our goals include comprehensive care for those affected, intensive public relations work to raise awareness of ALS, networking relevant stakeholders, and promoting ALS research. With actions such as themed tables and our mobile ALS case, we aim to inform and collect donations to initiate research projects and thereby improve the quality of life of those affected. If you have questions, are seeking help, or would like to support our work - contact us, because your quality of life is important to us!'
+        content: 'The “Collegium vincere ALS” is an association dedicated to the fight against amyotrophic lateral sclerosis (ALS), a chronic degenerative disease of the motor nervous system.<br>We see ALS as a “disease of a thousand goodbyes” and aim to support those affected and their families during this difficult time.<br>Our goals include providing comprehensive care for patients, raising public awareness about ALS, building networks among relevant stakeholders, and promoting ALS research.<br>Through initiatives such as informational tables and our mobile ALS kit, we aim to educate the public and raise donations to support research projects and improve the quality of life for those affected.<br>If you have questions, need help, or would like to support our work, please get in touch - because your quality of life matters to us!'
       },
       research: {
         title: "Research & Exchange",
@@ -47,7 +47,7 @@ export const enTranslations = {
           PEC: "PEC",
           alternativeEmail: "Alternative Email",
           mobile: "Mobile",
-          iban: "IBAN",
+          iban: "IBAN for Donation",
           taxNumber: "Tax Number",
         },
         form: {
@@ -87,8 +87,7 @@ export const enTranslations = {
       openFile: "Open file here"
     },
     links: {
-      title: "Resources & Support for ALS",
-      subtitle: "Useful links for those affected, family members, and interested individuals.",
+      title: "Useful links for those affected, family members, and interested individuals",
       description1: "This website offers comprehensive information about ALS, its symptoms, and treatment options.",
       description2: "Support networks and counseling services for those affected and their loved ones."
     }

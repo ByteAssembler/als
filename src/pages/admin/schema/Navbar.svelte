@@ -2,7 +2,7 @@
   import LanguageSelector from "../../../components/ui/LanguageSelector.svelte";
   import DataTable from "../../../components/ui/DataTable.svelte";
   import LanguageModal from "../../../components/ui/LanguageModal.svelte";
-  import { getTranslation, hasTranslation } from "../../../lib/utils/translation.js";
+  import { getTranslation, hasTranslation } from "../../../lib/utils/translation";
   import { trpcAuthQuery } from "../../api/trpc/trpc.js";
 
   const languages = [

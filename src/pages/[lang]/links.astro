@@ -8,18 +8,9 @@ if (!lang) throw new Error("Language not set in Astro.locals");
 const links = await fetchDataFromServer("link.list_by_language", lang);
 ---
 
-<Layout title="Links" defaultPadding={false}>
-    <main class="min-h-screen bg-blue-200 pt-0 pb-16 px-6 sm:px-12">
+<Layout title={i18n.tLang(lang, "pages.links.title")} defaultPadding={false}>
+    <main class="min-h-screen pt-0 pb-16 px-6 sm:px-12">
         <div class="mx-auto max-w-4xl">
-            <header class="mb-12 text-center">
-                <h1 class="text-5xl font-extrabold text-blue-900 drop-shadow-md">
-                    {i18n.tLang(lang, "pages.links.title")}
-                </h1>
-                <p class="mt-4 text-lg text-blue-700 max-w-2xl mx-auto">
-                    {i18n.tLang(lang, "pages.links.subtitle")}
-                </p>
-            </header>
-
             <ul class="space-y-8">
                 {
                     links.map((link, index) => (

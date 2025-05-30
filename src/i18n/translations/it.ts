@@ -10,10 +10,14 @@ export const itTranslations = {
       },
     },
     blog: {
-      "[slug]": {
-        update: "Aggiornato il",
-        backToOverview: "← Torna alla panoramica",
-      }
+      "[lang]": {
+        blog: {
+          "[slug]": {
+            update: "Aggiornato il",
+            backToOverview: "← Torna alla panoramica",
+          }
+        }
+      },
     },
     homepage: {
       wellcome: {
@@ -46,7 +50,7 @@ export const itTranslations = {
           PEC: "PEC",
           alternativeEmail: "Email alternativa",
           mobile: "Cellulare",
-          iban: "IBAN",
+          iban: "IBAN per donare",
           taxNumber: "Codice fiscale",
         },
         form: {
@@ -87,8 +91,7 @@ export const itTranslations = {
       openFile: "Apri il file qui"
     },
     links: {
-      title: "Risorse e supporto per la SLA",
-      subtitle: "Link utili per i malati, i familiari e gli interessati.",
+      title: "Link utili per i malati, i familiari e gli interessati",
       description1: "Questo sito web offre informazioni complete sulla SLA, i sintomi e le possibilità di trattamento.",
       description2: "Reti di supporto e servizi di consulenza per i pazienti e i loro cari."
     },

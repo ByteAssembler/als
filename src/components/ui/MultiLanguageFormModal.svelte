@@ -1,6 +1,5 @@
 <script lang="ts">
   import LanguageModal from "./LanguageModal.svelte";
-  import type { Snippet } from "svelte";
 
   interface Language {
     code: string;
@@ -10,7 +9,7 @@
   export interface FormField {
     id: string;
     label: string;
-    type?: "text" | "textarea";
+    type?: "text" | "textarea" | "checkbox";
     required?: boolean;
     multilingual?: boolean;
     placeholder?: string;
@@ -90,14 +89,25 @@
             {field.label}
             {#if field.required}<span aria-label="Pflichtfeld">*</span>{/if}
           </label>
-          <input
-            id={field.id}
-            type={field.type || "text"}
-            bind:value={formData[field.id]}
-            required={field.required}
-            class="w-full px-3 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            placeholder={field.placeholder || ""}
-          />
+
+          {#if field.type === "checkbox"}
+            <input
+              id={field.id}
+              type="checkbox"
+              bind:checked={formData[field.id]}
+              class="rounded border-input focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          {:else}
+            <input
+              id={field.id}
+              type={field.type || "text"}
+              bind:value={formData[field.id]}
+              required={field.required}
+              class="w-full px-3 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder={field.placeholder || ""}
+            />
+          {/if}
+
           {#if field.helpText}
             <p class="mt-1 text-xs text-muted-foreground">{field.helpText}</p>
           {/if}

@@ -1,217 +1,143 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import AdminPageLayout from "../../../components/admin/AdminPageLayout.svelte";
   import TranslationBadge from "../../../components/ui/TranslationBadge.svelte";
-  import type { FormField } from "../../../components/ui/MultiLanguageFormModal.svelte";
-  import type { Column, DataItem } from "../../../components/ui/DataTable.svelte";
-  import { trpcAuthQuery } from "../../api/trpc/trpc.js";
+  import type { Column } from "../../../components/ui/DataTable.svelte";
+  import { getTranslation } from "../../../lib/utils/translation.js";
+  import { createLinkValidator } from "../../../lib/utils/validation.js";
+  import { linkHelper } from "../../../lib/admin/linkHelpers.js";
+  import { createStandardLanguages } from "../../../lib/admin/commonConfig.js";
 
-  const languages = [
-    { code: "de", name: "Deutsch" },
-    { code: "en", name: "English" },
-    { code: "it", name: "Italienisch" },
-  ];
-
+  // Configuration
+  const languages = createStandardLanguages();
   let currentLanguage = $state("de");
-  let data: DataItem[] = $state([]);
+  let links = $state<any[]>([]);
   let loading = $state(false);
-  let showModal = $state(false);
-  let editingItem: DataItem | null = $state(null);
-  let modalLanguage = $state("de");
-  let formData = $state<Record<string, any>>({});
 
-  const columns: Column[] = [
+  // CRUD state
+  let crudState = $state({
+    showModal: false,
+    editingItem: null as any,
+    modalLanguage: "de",
+    formData: {} as Record<string, any>,
+    loading: false,
+  });
+
+  // Load data
+  async function loadLinks() {
+    try {
+      loading = true;
+      links = await linkHelper.loadData();
+    } catch (error) {
+      console.error("Fehler beim Laden der Links:", error);
+      alert("Fehler beim Laden der Links. Bitte laden Sie die Seite neu.");
+    } finally {
+      loading = false;
+    }
+  }
+
+  // Setup CRUD
+  const crudFunctions = linkHelper.createCrud(loadLinks);
+  const crud = {
+    get showModal() {
+      return crudState.showModal;
+    },
+    get editingItem() {
+      return crudState.editingItem;
+    },
+    get modalLanguage() {
+      return crudState.modalLanguage;
+    },
+    set modalLanguage(value: string) {
+      crudState.modalLanguage = value;
+    },
+    get formData() {
+      return crudState.formData;
+    },
+    get loading() {
+      return crudState.loading;
+    },
+    openCreateModal: (initialData = {}) => crudFunctions.openCreateModal(crudState, initialData),
+    openEditModal: (item: any) => crudFunctions.openEditModal(crudState, item),
+    deleteItem: async (id: string | number, confirmMessage?: string) =>
+      await crudFunctions.deleteItem(crudState, id, confirmMessage),
+    closeModal: () => crudFunctions.closeModal(crudState),
+    saveItem: () => crudFunctions.saveItem(crudState),
+  };
+
+  // Configuration from helper
+  const { formFields, initialFormData } = linkHelper.formConfig;
+
+  // Create columns as a derived value to capture currentLanguage reactively
+  const columns = $derived<Column[]>([
     {
-      header: "Name",
-      key: "name",
+      header: "Titel",
+      key: "title",
       primary: true,
       render: (item) => {
-        const name = item.name || "Unbenannt";
-        const badge = item.names?.length > 0 ? `<span class="inline-block">${TranslationBadge}</span>` : "";
-        return `${name}${badge}`;
+        const title = getTranslation(item.title, currentLanguage);
+        return `<div class="flex items-center"><span>${title}</span></div>`;
       },
     },
     {
       header: "URL",
       key: "url",
-      render: (item) =>
-        `<a href="${item.url}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 underline">${item.url}</a>`,
+      render: (item) => {
+        const isExternal = item.url?.startsWith("http");
+        const icon = isExternal
+          ? '<svg class="inline w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>'
+          : "";
+        return `<span class="font-mono text-xs">${item.url}${icon}</span>`;
+      },
     },
     {
       header: "Beschreibung",
       key: "description",
       render: (item) => {
-        const desc = item.description || "-";
-        const hasDescriptions = item.descriptions?.length > 0;
-        return hasDescriptions ? `${desc} <span class="text-xs text-amber-600">⚠</span>` : desc;
+        const description = getTranslation(item.description, currentLanguage);
+        return description ? `<span class="text-xs text-muted-foreground">${description}</span>` : "-";
       },
     },
-  ];
+  ]);
 
-  const formFields: FormField[] = [
-    {
-      id: "name",
-      label: "Name",
-      type: "text",
-      required: true,
-      multilingual: true,
-      placeholder: "z.B. Wikipedia",
-      helpText: "Der angezeigte Name des Links",
-    },
-    {
-      id: "description",
-      label: "Beschreibung",
-      type: "textarea",
-      multilingual: true,
-      placeholder: "Optionale Beschreibung des Links",
-      helpText: "Eine kurze Beschreibung was sich hinter dem Link verbirgt",
-    },
-    {
-      id: "url",
-      label: "URL",
-      type: "text",
-      required: true,
-      multilingual: false,
-      placeholder: "https://example.com",
-      helpText: "Die vollständige URL des Links",
-    },
-  ];
-
-  const initialFormData = {
-    name: { de: "", en: "" },
-    description: { de: "", en: "" },
-    url: "",
-  };
-
-  async function loadData() {
-    try {
-      loading = true;
-      const result = await trpcAuthQuery(
-        currentLanguage === "de" ? "link.list" : "link.list_by_language",
-        ...(currentLanguage === "de" ? [] : [currentLanguage])
-      );
-      data = result || [];
-    } catch (error) {
-      console.error("Fehler beim Laden der Links:", error);
-      data = [];
-    } finally {
-      loading = false;
-    }
-  }
-
-  function openCreateModal(initialData?: Record<string, any>) {
-    editingItem = null;
-    formData = { ...(initialData || initialFormData) };
-    modalLanguage = "de";
-    showModal = true;
-  }
-
-  function openEditModal(item: DataItem) {
-    editingItem = item;
-    formData = {
-      name: item.names?.reduce((acc: Record<string, string>, name: any) => {
-        acc[name.language] = name.text;
-        return acc;
-      }, {}) || { de: item.name || "", en: "" },
-      description: item.descriptions?.reduce((acc: Record<string, string>, desc: any) => {
-        acc[desc.language] = desc.text;
-        return acc;
-      }, {}) || { de: item.description || "", en: "" },
-      url: item.url || "",
-    };
-    modalLanguage = "de";
-    showModal = true;
-  }
-
-  async function deleteItem(id: string | number, confirmMessage = "Möchten Sie diesen Link wirklich löschen?") {
-    if (!confirm(confirmMessage)) return;
-
-    try {
-      loading = true;
-      await trpcAuthQuery("link.delete", Number(id));
-      await loadData();
-    } catch (error) {
-      console.error("Fehler beim Löschen:", error);
-      alert("Fehler beim Löschen des Links");
-    } finally {
-      loading = false;
-    }
-  }
-
-  function closeModal() {
-    showModal = false;
-    editingItem = null;
-    formData = { ...initialFormData };
-  }
-
-  function saveItem() {
-    return async (event: SubmitEvent) => {
-      event.preventDefault();
-
-      try {
-        loading = true;
-
-        if (editingItem) {
-          // Update payload with required id
-          const updatePayload = {
-            id: Number(editingItem.id),
-            name: formData.name,
-            description: formData.description,
-            url: formData.url,
-          };
-          await trpcAuthQuery("link.update", updatePayload);
-        } else {
-          // Create payload without id
-          const createPayload = {
-            name: formData.name,
-            description: formData.description,
-            url: formData.url,
-          };
-          await trpcAuthQuery("link.create", createPayload);
-        }
-
-        closeModal();
-        await loadData();
-      } catch (error) {
-        console.error("Fehler beim Speichern:", error);
-        alert("Fehler beim Speichern des Links");
-      } finally {
-        loading = false;
-      }
-    };
-  }
-
-  // Create crud object with proper state accessors
-  const crud = $derived({
-    showModal,
-    editingItem,
-    modalLanguage,
-    formData,
-    loading,
-    openCreateModal,
-    openEditModal,
-    deleteItem,
-    closeModal,
-    saveItem,
+  onMount(() => {
+    loadLinks();
   });
 
-  // Load data on component mount and language change
-  $effect(() => {
-    loadData();
-  });
+  const tableData = $derived(
+    links.map((link) => ({
+      id: link.id,
+      title: link.title,
+      url: link.url,
+      description: link.description,
+      order: link.order,
+      isActive: link.isActive,
+    }))
+  );
 </script>
 
 <AdminPageLayout
-  title="Link Verwaltung"
+  title="Links Verwaltung"
   {languages}
   {currentLanguage}
   onLanguageChange={(lang) => (currentLanguage = lang)}
   {columns}
-  {data}
+  data={tableData}
   {crud}
-  {formFields}
-  {initialFormData}
   createButtonText="Neuen Link hinzufügen"
   emptyStateTitle="Keine Links vorhanden"
-  emptyStateDescription="Erstellen Sie Ihren ersten Link, um zu beginnen."
-  deleteConfirmMessage="Möchten Sie diesen Link wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden."
+  emptyStateDescription="Erstellen Sie Ihren ersten Link für die Navigation."
+  {formFields}
+  deleteConfirmMessage="Sind Sie sicher, dass Sie diesen Link löschen möchten?"
+  {initialFormData}
+  validateForm={createLinkValidator()}
 />
+
+{#if loading}
+  <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
+    <div class="bg-white rounded-lg p-6">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+      <p class="mt-2 text-center text-sm text-gray-600">Lade Links...</p>
+    </div>
+  </div>
+{/if}

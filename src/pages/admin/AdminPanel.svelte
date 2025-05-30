@@ -1,11 +1,12 @@
 <script>
-  import Links from "./schema/Links.svelte";
-  import Blogs from "./schema/Blogs.svelte";
-  import Navbar from "./schema/Navbar.svelte";
-  import Sidebar from "./sidebar/Sidebar.svelte";
-  import Celebrities from "./schema/Celebrities.svelte";
-  import Media from "./schema/Media.svelte";
   import FileUplaod from "./schema/FileUplaod.svelte";
+  import Media from "./schema/Media.svelte";
+  import Navbar from "./schema/Navbar.svelte";
+  import Links from "./schema/Links.svelte";
+  import Sidebar from "./sidebar/Sidebar.svelte";
+  import Blogs from "./schema/Blogs.svelte";
+  import Celebrities from "./schema/Celebrities.svelte";
+  import Map from "./schema/Map.svelte";
   import "./styles.css";
 
   let activeItemId = $state("dashboard");
@@ -50,6 +51,11 @@
           iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xl:mr-2 lg:mr-0 size-4"><path d="M21 8V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2"></path><path d="M3.5 8h17"></path><path d="M3.5 12h17"></path><path d="M3.5 16h17"></path></svg>`,
         },
         {
+          id: "map",
+          label: "map",
+          iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xl:mr-2 lg:mr-0 size-4"><path d="M3 3v18a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z"></path><path d="M16.5 6.5l1.5-1.5"></path><path d="M19.5 9.5l1.5-1.5"></path><path d="M16.5 12.5l1.5-1.5"></path></svg>`,
+        },
+        {
           id: "celebrities",
           label: "Celebrities",
           iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xl:mr-2 lg:mr-0 size-4"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"></path><path d="M12 8a4 4 0 1 1-4 4"></path><path d="M12.5 16h-1a2.5 2.5 0 0 0-2.5 2.5v1a2.5 2.5 0 0 0 2.5 2.5h1a2.5 2.5 0 0 0 2.5-2.5v-1A2.5 2.5 0 0 0 12.5 16z"></path></svg>`,
@@ -79,6 +85,8 @@
         <Navbar />
       {:else if activeItemId === "blogs"}
         <Blogs />
+      {:else if activeItemId === "map"}
+        <Map />
       {:else if activeItemId === "celebrities"}
         <Celebrities />
       {:else if activeItemId === "dashboard"}
