@@ -27,7 +27,6 @@ async function getBlogWithTranslatedFields(
 					translations: { where: { language } },
 				},
 			},
-			coverImage: true,
 		},
 	});
 
@@ -155,7 +154,6 @@ export const blogHandlers = {
 						translations: true,
 					},
 				},
-				coverImage: true,
 			},
 		});
 
@@ -192,7 +190,6 @@ export const blogHandlers = {
 						},
 					},
 				},
-				coverImage: true,
 			},
 		});
 
@@ -205,7 +202,6 @@ export const blogHandlers = {
 				content: blog.content.translations.length > 0 ?
 					blog.content.translations[0].value
 					: null,
-				coverImage: blog.coverImage || null, // Simplified
 			};
 		});
 	},

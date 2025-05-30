@@ -65,7 +65,6 @@ export const bookHandlers = {
 						},
 					},
 				},
-				coverImage: input.coverImage ? { connect: { storageKey: input.coverImage } } : undefined,
 				author: authors,
 			}
 		});
@@ -86,7 +85,6 @@ export const bookHandlers = {
 			where: { id },
 			data: {
 				...otherUpdateData,
-				coverImage: coverImage ? { connect: { storageKey: coverImage } } : undefined,
 			}
 		});
 	},
@@ -108,7 +106,6 @@ export const bookHandlers = {
 						translations: true,
 					},
 				},
-				coverImage: true,
 			},
 		});
 
@@ -146,7 +143,6 @@ export const bookHandlers = {
 						},
 					},
 				},
-				coverImage: true,
 			},
 		});
 
