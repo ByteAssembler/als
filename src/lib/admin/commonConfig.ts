@@ -1,3 +1,4 @@
+import { getImageUrlForImageKey } from "@/utils";
 import type { Column } from "../../components/ui/DataTable.svelte";
 import { getTranslation } from "../utils/translation";
 import { getGlobalLanguages, type Language } from "./languageConfig";
@@ -53,10 +54,10 @@ export function createCelebrityColumns(currentLanguage: string): Column[] {
 			key: "name",
 			primary: true,
 			render: (item) => {
-				// Fix: Use the correct file path format and handle empty imageKey
+				const imageURL = getImageUrlForImageKey(item.imageKey);
 				const imageHtml =
 					item.imageKey && item.imageKey.trim()
-						? `<img src="/api/files/${item.imageKey}" alt="${item.name}" class="w-8 h-8 min-w-8 min-h-8 rounded-full mr-2 object-cover" onerror="this.style.display='none'">`
+						? `<img src="${imageURL}" alt="${item.name}" class="w-8 h-8 min-w-8 min-h-8 rounded-full mr-2 object-cover" onerror="this.style.display='none'">`
 						: '<div class="w-8 h-8 min-w-8 min-h-8 rounded-full mr-2 bg-gray-200 flex items-center justify-center"><svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg></div>';
 
 				return `<div class="flex items-center">
