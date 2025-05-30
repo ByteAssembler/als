@@ -163,7 +163,7 @@ const createBookSchema = z.object({
 	slug: z.string(),
 	authors: z.string(),
 	contents: z.record(z.string(), z.string()).optional(),
-	coverImage: z.string().optional(), // ID is a string
+	coverImage: z.string().optional(),
 });
 
 const updateBookSchema = z.object({
@@ -172,5 +172,5 @@ const updateBookSchema = z.object({
 	slug: z.string().optional(),
 	authors: z.array(z.string()).optional(),
 	content: z.record(z.string(), z.string()).optional(),
-	coverImage: z.string().optional(), // ID is a string
+	coverImage: z.string().optional(),
 });

@@ -60,12 +60,7 @@ export const blogHandlers = {
 						},
 					},
 				},
-				...(coverImage !== undefined && coverImage !== null && { // Check for undefined or null
-					coverImage: {
-						connect: { storageKey: coverImage }
-					}
-				})
-			}
+			},
 		});
 	},
 	read: async (id: number) => {
@@ -128,14 +123,7 @@ export const blogHandlers = {
 						},
 					},
 				}),
-				...(coverImage !== undefined && {
-					coverImage: coverImage ? {
-						connect: { storageKey: coverImage }
-					} : {
-						disconnect: true
-					}
-				})
-			}
+			},
 		});
 	},
 	delete: async (id: number) => {
@@ -212,7 +200,7 @@ const createBlogSchema = z.object({
 	slug: z.string(),
 	authors: z.array(z.string()),
 	content: z.record(z.string(), z.string()).optional(),
-	coverImage: z.string().optional(), // ID is a string
+	coverImage: z.string().optional().nullable(),
 });
 
 const updateBlogSchema = z.object({
@@ -221,5 +209,5 @@ const updateBlogSchema = z.object({
 	slug: z.string().optional(),
 	authors: z.array(z.string()).optional(),
 	content: z.record(z.string(), z.string()).optional(),
-	coverImage: z.string().optional().nullable(), // ID is a string
+	coverImage: z.string().optional().nullable(),
 });

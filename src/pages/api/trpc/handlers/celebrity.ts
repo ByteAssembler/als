@@ -28,7 +28,6 @@ async function getCelebrityWithTranslatedFields(
 					translations: language ? { where: { language } } : true,
 				},
 			},
-			image: true,
 		},
 	});
 
@@ -132,7 +131,6 @@ export const celebrityHandlers = {
 						translations: true,
 					},
 				},
-				image: true,
 			},
 		});
 
@@ -170,7 +168,6 @@ export const celebrityHandlers = {
 						},
 					},
 				},
-				image: true,
 			},
 		});
 
@@ -187,7 +184,7 @@ export const celebrityHandlers = {
 };
 
 const createCelebritySchema = z.object({
-	image: z.string().optional(),
+	image: z.string().optional().nullable(),
 	name: z.string(),
 	bios: z.record(z.string(), z.string()),
 	professions: z.record(z.string(), z.string()),
