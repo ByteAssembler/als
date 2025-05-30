@@ -19,11 +19,6 @@ const minioClient = new Client({
 	secretKey: FILE_STORAGE_SERVER_SECRET_KEY,
 });
 
-export function getImageUrlForImageKey(imageKey: string | null | undefined): string | null {
-	if (!imageKey || imageKey.length === 0) return null;
-	return `${FILE_STORAGE_SERVER_ENDPOINT_FULL}${BUCKET_NAME}/${encodeURIComponent(imageKey)}`;
-}
-
 async function listEntries(options: { prefix?: string; recursive?: boolean } = {}): Promise<BucketItem[]> {
 	return new Promise((resolve, reject) => {
 		const items: BucketItem[] = [];
@@ -177,6 +172,52 @@ async function listAllFiles(): Promise<string[]> {
 	});
 }
 
+async function getPublicContent(): Promise<{ [category: string]: (BucketItem & { mediaType: string })[] }> {
+	const prefix = `public-media/`;
+
+	try {
+		const items = await listEntries({ prefix, recursive: true });
+		const files = items.filter(item => item.name && !item.name.endsWith('/'));
+
+		const categorizedContent: { [category: string]: (BucketItem & { mediaType: string })[] } = {};
+
+		for (const item of files) {
+			if (!item.name) continue;
+
+			const pathParts = item.name.split('/');
+
+			if (pathParts.length > 1) {
+				const folderCategoryKey = pathParts[1];
+
+				if (!categorizedContent[folderCategoryKey]) {
+					categorizedContent[folderCategoryKey] = [];
+				}
+
+				let serverMediaType = 'application/octet-stream';
+				try {
+					const stat = await statFile({ name: item.name });
+					if (stat && stat.metaData) {
+						serverMediaType = stat.metaData['content-type'] || stat.metaData['Content-Type'] || serverMediaType;
+					}
+				} catch (statError: any) {
+					console.warn(`Metadaten für ${item.name} konnten nicht abgerufen werden: ${statError.message}`);
+				}
+
+				const enrichedItem = {
+					...item,
+					mediaType: serverMediaType
+				};
+
+				categorizedContent[folderCategoryKey].push(enrichedItem);
+			}
+		}
+
+		return categorizedContent;
+	} catch (error: any) {
+		throw new Error(`Fehler beim Abrufen öffentlicher Inhalte: ${error.message || error}`);
+	}
+}
+
 export const fileManager = {
 	listEntries,
 	getObjectStream,
@@ -190,6 +231,7 @@ export const fileManager = {
 	renameFile,
 	deleteFile,
 	listAllFiles,
+	getPublicContent,
 
 	createFolder,
 	deleteFolder,

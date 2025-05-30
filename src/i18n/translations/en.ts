@@ -25,7 +25,8 @@ export const enTranslations = {
 			},
 			aboutUs: {
 				title: "About us",
-				content: 'The “Collegium vincere ALS” is an association dedicated to the fight against amyotrophic lateral sclerosis (ALS), a chronic degenerative disease of the motor nervous system.<br><br>We see ALS as a “disease of a thousand goodbyes” and aim to support those affected and their families during this difficult time.<br><br>Our goals include providing comprehensive care for patients, raising public awareness about ALS, building networks among relevant stakeholders, and promoting ALS research.<br><br>Through initiatives such as informational tables and our mobile ALS kit, we aim to educate the public and raise donations to support research projects and improve the quality of life for those affected.<br><br>If you have questions, need help, or would like to support our work, please get in touch - because your quality of life matters to us!'
+				content: 'The “Collegium vincere ALS” is an association dedicated to the fight against amyotrophic lateral sclerosis (ALS), a chronic degenerative disease of the motor nervous system.<br><br>We see ALS as a “disease of a thousand goodbyes” and aim to support those affected and their families during this difficult time.<br><br>Our goals include providing comprehensive care for patients, raising public awareness about ALS, building networks among relevant stakeholders, and promoting ALS research.<br><br>Through initiatives such as informational tables and our mobile ALS kit, we aim to educate the public and raise donations to support research projects and improve the quality of life for those affected.<br><br>If you have questions, need help, or would like to support our work, please get in touch - because your quality of life matters to us!',
+				imageCaption: "Head of the Association: Gerd Steger",
 			},
 			research: {
 				title: "Research & Exchange",
@@ -61,30 +62,40 @@ export const enTranslations = {
 			}
 		},
 		media: {
-			title: "Media",
-			books: {
-				title: "Books",
-				link: "Go to books page"
+			pageTitle: "Media",
+			categories: {
+				books: {
+					title: "Books",
+				},
+				audios: {
+					title: "Audios",
+					empty: "No audios available.",
+				},
+				images: {
+					title: "Images",
+					empty: "No images available.",
+				},
+				videos: {
+					title: "Videos",
+					empty: "No videos available.",
+				},
+				documents: {
+					title: "Documents",
+					empty: "No documents available.",
+				},
+				information: {
+					title: "Information",
+					empty: "No information available.",
+				},
 			},
-			audios: {
-				title: "Audios",
-				empty: "No audios available."
+			actions: {
+				download: "Download",
+				openInNewTab: "Open in new tab",
+				close: "Close",
 			},
-			images: {
-				title: "Images",
-				empty: "No images available."
-			},
-			information: {
-				title: "Information",
-				empty: "No information available."
-			},
-			download: "Download",
-			openInNewTab: "Open in new tab",
-			close: "Close",
-			audioNotSupported: "Your browser does not support the audio tag.",
-			videoNotSupported: "Your browser does not support the video tag.",
-			previewNotAvailable: "Preview not available.",
-			openFile: "Open file here"
+			noContent: "No media content is currently available.",
+			noPreview: "Preview not available.",
+			openFile: "Open file",
 		},
 		links: {
 			title: "Useful links for those affected, family members, and interested individuals",

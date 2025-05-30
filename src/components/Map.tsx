@@ -1,75 +1,10 @@
 ﻿import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import type { fetchDataFromServer } from "../pages/api/trpc/serverHelpers";
+import type { fetchDataFromServer } from "@/pages/api/trpc/serverHelpers";
 import { i18n } from "@/i18n";
-
-function getIconUrl(category: string) {
-	let url = "/marker.png";
-	switch (category) {
-		// Events
-		case "event":
-		case "Aktionen / Veranstaltungen":
-		case "Events / Activities":
-		case "Eventi / Attività":
-			url = "https://img.icons8.com/ios-filled/50/000000/calendar.png";
-			break;
-
-		// Hospitals
-		case "hospital":
-			url = "https://img.icons8.com/ios-filled/50/000000/hospital.png";
-			break;
-
-		// Self-help groups
-		case "self_help_group":
-		case "Selbsthilfegruppe":
-		case "Support Groups":
-		case "Gruppi di auto-aiuto":
-			url = "https://img.icons8.com/ios-filled/50/000000/conference.png";
-			break;
-
-		// Studies
-		case "study":
-		case "Studien (wo Teilnahme möglich?)":
-		case "Clinical Studies (participation possible)":
-		case "Studi clinici (partecipazione possibile)":
-			url = "https://img.icons8.com/ios-filled/50/000000/open-book.png";
-			break;
-
-		// Clinics
-		case "clinic":
-		case "Kliniken":
-		case "Clinics":
-		case "Cliniche":
-			url = "https://img.icons8.com/ios-filled/50/000000/clinic.png";
-			break;
-
-		case "research_center":
-			url = "https://img.icons8.com/ios-filled/50/000000/microscope.png";
-			break;
-
-		// Organizations
-		case "organization":
-		case "Vereine":
-		case "Associations":
-		case "Associazioni":
-			url = "https://img.icons8.com/ios-filled/50/000000/organization.png";
-			break;
-
-		case "therapy":
-			url = "https://img.icons8.com/ios-filled/50/000000/therapy.png";
-			break;
-
-		case "support":
-			url = "https://img.icons8.com/ios-filled/50/000000/helping-hand.png";
-			break;
-
-		default:
-			url = "https://img.icons8.com/ios-filled/50/000000/marker.png";
-	}
-	return url;
-}
-
+import markerIconImagePath from "/marker.png?url";
+import { getImageUrlForImageKey } from "@/utils";
 
 const MapComponent = (
 	{
@@ -83,7 +18,6 @@ const MapComponent = (
 	const mapRef = useRef<L.Map | null>(null);
 	const markersRef = useRef<L.Marker[]>([]);
 	const [category, setCategory] = useState("");
-
 
 	useEffect(() => {
 		if (!mapRef.current) {
@@ -106,7 +40,7 @@ const MapComponent = (
 		selectedpoints.forEach((point) => {
 			const marker = L.marker([point.latitude, point.longitude], {
 				icon: L.icon({
-					iconUrl: getIconUrl(point.category.name || "default"),
+					iconUrl: getImageUrlForImageKey(point.category.iconKey) || markerIconImagePath,
 					iconSize: [20, 20],
 					iconAnchor: [15, 45],
 				})
@@ -116,8 +50,6 @@ const MapComponent = (
 			markersRef.current.push(marker);
 			group.push(marker);
 		});
-
-
 
 		if (group.length > 1) {
 			const groupLayer = L.featureGroup(group);

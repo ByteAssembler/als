@@ -6,4 +6,6 @@ export const publicHandlers = {
 	"filemanager.bucket.list": fileManager.listEntries,
 	"filemanager.file.download-url": fileManager.getDownloadFileUrlForClient,
 	"filemanager.file.stat": fileManager.statFile,
+
+	"filemanager.public-media": fileManager.getPublicContent,
 };

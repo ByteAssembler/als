@@ -29,6 +29,7 @@ export const itTranslations = {
 				title: "Chi siamo",
 				content:
 					'Il “Collegium vincere ALS” è un’associazione dedicata alla lotta contro la sclerosi laterale amiotrofica (SLA), una malattia degenerativa cronica del sistema nervoso motorio.<br><br>Consideriamo la SLA come una “malattia dei mille addii” e desideriamo offrire supporto alle persone colpite e alle loro famiglie in questo momento difficile.<br><br>I nostri obiettivi includono l’assistenza completa ai pazienti, la sensibilizzazione dell’opinione pubblica sulla SLA, la creazione di reti tra gli attori coinvolti e la promozione della ricerca sulla SLA.<br><br>Attraverso iniziative come i tavoli informativi e la nostra valigetta mobile sulla SLA, vogliamo informare il pubblico e raccogliere donazioni per sostenere progetti di ricerca e migliorare la qualità della vita delle persone colpite.<br><br>Se hai domande, hai bisogno di aiuto o desideri sostenere il nostro lavoro, contattaci – perché la tua qualità della vita è importante per noi!',
+				imageCaption: "Capo dell’associazione: Gerd Steger",
 			},
 			research: {
 				title: "Ricerca & Scambio",

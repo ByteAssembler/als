@@ -1,11 +1,11 @@
 ﻿---
-import { getImageUrlForImageKey } from "@/pages/api/trpc/handlers/file-manager-api";
-import Section from "../layouts/Section.astro";
-import { fetchDataFromServer } from "../pages/api/trpc/serverHelpers";
+import { getImageUrlForImageKey } from "@/utils";
+import Section from "@/layouts/Section.astro";
+import { fetchDataFromServer } from "@/pages/api/trpc/serverHelpers";
 
 const lang = Astro.locals.lang;
 if (!lang) throw new Error("Language is required");
-import { i18n } from "../i18n";
+import { i18n } from "@/i18n";
 
 const celebrities = await fetchDataFromServer("celebrity.list_by_language", lang);
 ---
