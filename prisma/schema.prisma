@@ -140,7 +140,7 @@ model MapPoint {
     description                 RawTranslation? @relation("MapPointDescription", fields: [descriptionRawTranslationId], references: [id], onDelete: SetNull)
 
     categoryId Int
-    category   MapPointCategory @relation(fields: [categoryId], references: [id])
+    category   MapPointCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
     latitude  Float
     longitude Float
