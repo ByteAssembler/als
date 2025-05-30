@@ -1,7 +1,7 @@
 import type { FormField } from "../../components/ui/MultiLanguageFormModal.svelte";
-import { createAdminEntityHelper, type DataTransformers } from "./createAdminHelper.js";
-import { trpcAuthQuery } from "../../pages/api/trpc/trpc.js";
-import { getGlobalLanguages, createInitialFormDataForLanguages } from "./languageConfig.js";
+import { createAdminEntityHelper, type DataTransformers } from "./createAdminHelper";
+import { trpcAuthQuery } from "../../pages/api/trpc/trpc";
+import { getGlobalLanguages, createInitialFormDataForLanguages } from "./languageConfig";
 
 // Link-specific types
 interface LinkApiType {

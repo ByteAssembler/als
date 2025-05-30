@@ -234,7 +234,6 @@ export const mapPointHandlers = {
 	},
 };
 
-// Fix: Ensure proper number types in schema
 const createMapPointSchema = z.object({
 	names: z.record(z.string(), z.string()),
 	descriptions: z.record(z.string(), z.string()).optional(),

@@ -2,10 +2,10 @@
   import { onMount } from "svelte";
   import AdminPageLayout from "../../../components/admin/AdminPageLayout.svelte";
   import type { Column } from "../../../components/ui/DataTable.svelte";
-  import { getTranslation } from "../../../lib/utils/translation.js";
-  import { createCelebrityValidator } from "../../../lib/utils/validation.js";
-  import { celebrityHelper } from "../../../lib/admin/celebrityHelpers.js";
-  import { createStandardLanguages, createCelebrityColumns } from "../../../lib/admin/commonConfig.js";
+  import { getTranslation } from "../../../lib/utils/translation";
+  import { createCelebrityValidator } from "../../../lib/utils/validation";
+  import { celebrityHelper } from "../../../lib/admin/celebrityHelpers";
+  import { createStandardLanguages, createCelebrityColumns } from "../../../lib/admin/commonConfig";
 
   // Configuration
   const languages = createStandardLanguages();
