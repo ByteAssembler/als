@@ -36,7 +36,7 @@ export const deTranslations: AppTranslationSchema = {
 			},
 			promis: {
 				title: "Prominente ALS-Kämpfer",
-				age: "Alte  r",
+				age: "Alter",
 				diagnosis: "Diagnose",
 			},
 			contact: {
