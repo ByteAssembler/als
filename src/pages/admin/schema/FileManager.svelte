@@ -18,7 +18,8 @@
   import Check from "@lucide/svelte/icons/check"; // Added
 
   import type { BucketItem } from "minio";
-  import { trpcAuthQuery } from "@/pages/api/trpc/trpc";
+  import { trpcAuthQuery, trpcQuery } from "@/pages/api/trpc/trpc";
+  import { cn } from "@/utils/utils";
 
   // --- Type definitions ---
   interface DisplayItem {
@@ -208,7 +209,7 @@
 
     try {
       const options = { prefix: loadTargetPrefix, recursive: false };
-      const rawItems: BucketItem[] = await trpcAuthQuery("filemanager.bucket.list", options);
+      const rawItems: BucketItem[] = await trpcQuery("filemanager.bucket.list", options);
       const freshItems = processItems(rawItems, loadTargetPrefix);
       updateCache(loadTargetPrefix, freshItems);
       if (currentPrefix === loadTargetPrefix) {
@@ -638,7 +639,7 @@
     isPreviewLoading = true;
     showPreviewDialog = true;
     try {
-      const url = await trpcAuthQuery("filemanager.file.download-url", itemToPreview.name);
+      const url = await trpcQuery("filemanager.file.download-url", itemToPreview.name);
       if (!url) throw new Error("No preview URL received.");
       previewUrl = url;
     } catch (err: any) {

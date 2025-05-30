@@ -16,7 +16,14 @@ const navbarContentByLang =
         navbarContentByLang.map((item) => (
             <MenuItem
                 {...item}
-                href={Astro.url.origin + (item.withLanguagePrefix ? "/" + (lang ? lang : "en") : "") + "/" + item.href}
+                href={
+                    item.href.startsWith("#")
+                        ? item.href
+                        : Astro.url.origin +
+                          (item.withLanguagePrefix ? "/" + (lang ? lang : "en") : "") +
+                          "/" +
+                          item.href
+                }
                 text={item.text}
             />
         ))

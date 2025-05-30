@@ -1,4 +1,6 @@
 <script>
+  import FileManager from "./schema/FileManager.svelte";
+
   // import FileUplaod from "./schema/FileUplaod.svelte";
   // import Media from "./schema/Media.svelte";
   // import Navbar from "./schema/Navbar.svelte";
@@ -21,6 +23,11 @@
           id: "dashboard",
           label: "Dashboard",
           iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xl:mr-2 lg:mr-0 size-4"><rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="12" rx="1"></rect><rect width="7" height="5" x="3" y="16" rx="1"></rect></svg>`,
+        },
+        {
+          id: "file-manager",
+          label: "File Manager",
+          iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xl:mr-2 lg:mr-0 size-4"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"></path><path d="M12.5 16h-1a2.5 2.5 0 0 0-2.5 2.5v1a2.5 2.5 0 0 0 2.5 2.5h1a2.5 2.5 0 0 0 2.5-2.5v-1A2.5 2.5 0 0 0 12.5 16z"></path><path d="M12.5 8V6a4.5 4.5 0 1 1-4.5-4.5"></path></svg>`,
         },
         {
           id: "links",
@@ -90,6 +97,8 @@
         <LanguageSettings />
       {:else if activeItemId === "links"}
         <Links />
+      {:else if activeItemId === "file-manager"}
+        <FileManager />
       {:else if activeItemId === "navbar"}
         <Navbar />
       {:else if activeItemId === "blogs"}

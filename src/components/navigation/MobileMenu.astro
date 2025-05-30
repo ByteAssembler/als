@@ -2,13 +2,14 @@
 // Astro-Teil
 import MenuItem from "./MenuItem.astro";
 import LanguageSelector from "./LanguageSelector.astro";
-import type { NavbarItem } from "./navbar-content";
+import { navbarContent } from "./navbar-content";
 
-interface Props {
-    navBarItems: readonly NavbarItem[];
-}
+const { lang } = Astro.locals;
 
-const { navBarItems } = Astro.props;
+const navbarContentByLang =
+    lang && (lang as keyof typeof navbarContent) in navbarContent
+        ? navbarContent[lang as keyof typeof navbarContent]
+        : navbarContent.en;
 ---
 
 <div
@@ -37,7 +38,7 @@ const { navBarItems } = Astro.props;
         <nav class="mt-8">
             <ul class="space-y-4">
                 {
-                    navBarItems.map((item) => (
+                    navbarContentByLang.map((item) => (
                         <li>
                             <MenuItem {...item} className="text-xl block py-2 px-2" />
                         </li>
