@@ -54,7 +54,12 @@ model Blog {
     contentRawTranslationId Int
     content                 RawTranslation @relation("BlogContent", fields: [contentRawTranslationId], references: [id], onDelete: Cascade)
 
+<<<<<<< HEAD
     coverImageKey String?
+=======
+    coverImageId String?
+    coverImage   MediaItem? @relation("BlogCoverImage", fields: [coverImageId], references: [storageKey], onDelete: SetNull)
+>>>>>>> 6764d90ebf968dcada002db65007b042929843e4
 
     publishedAt DateTime @default(now())
     updatedAt   DateTime @updatedAt
@@ -110,7 +115,12 @@ model Book {
     title                 RawTranslation @relation("BookTitle", fields: [titleRawTranslationId], references: [id], onDelete: Cascade)
     author                String
 
+<<<<<<< HEAD
     coverImageKey String?
+=======
+    coverImageId String?
+    coverImage   MediaItem? @relation("BookCoverImage", fields: [coverImageId], references: [storageKey], onDelete: SetNull)
+>>>>>>> 6764d90ebf968dcada002db65007b042929843e4
 
     isbn String? @unique
 
@@ -152,7 +162,12 @@ model MapPoint {
 model Celebrity {
     id Int @id @default(autoincrement())
 
+<<<<<<< HEAD
     imageKey String?
+=======
+    imageId String?
+    image   MediaItem? @relation("CelebrityImage", fields: [imageId], references: [storageKey], onDelete: SetNull)
+>>>>>>> 6764d90ebf968dcada002db65007b042929843e4
 
     name                       String
     bioRawTranslationId        Int
@@ -165,3 +180,33 @@ model Celebrity {
 
     alsYear Int
 }
+<<<<<<< HEAD
+=======
+
+model MediaItem {
+    storageKey String @id
+    filename   String
+    mimeType   String
+    size       Int
+    width      Int?
+    height     Int?
+
+    altTextRawTranslationId Int?
+    altText                 RawTranslation? @relation("MediaItemAltText", fields: [altTextRawTranslationId], references: [id], onDelete: SetNull)
+
+    captionRawTranslationId Int?
+    caption                 RawTranslation? @relation("MediaItemCaption", fields: [captionRawTranslationId], references: [id], onDelete: SetNull)
+
+    uploadedAt DateTime @default(now())
+
+    uploaderId Int?
+    uploader   User? @relation(fields: [uploaderId], references: [id], onDelete: SetNull)
+
+    showInMediaGallery Boolean @default(false)
+    mediaType          String?
+
+    blogsAsCover       Blog[]      @relation("BlogCoverImage")
+    booksAsCover       Book[]      @relation("BookCoverImage")
+    celebritiesAsImage Celebrity[] @relation("CelebrityImage")
+}
+>>>>>>> 6764d90ebf968dcada002db65007b042929843e4
