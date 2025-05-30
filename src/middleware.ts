@@ -11,12 +11,14 @@ export const onRequest = defineMiddleware((context, next) => {
 	if (segments.length > 0) {
 		const langCode = segments[0];
 
-		if (!allLanguages.includes(langCode)) {
-			// redirect to default language if not found
-			return new Response(null, {
-				status: 302,
-				headers: { Location: `/${allLanguages[0]}` },
-			});
+		if (langCode.length >= 2 && langCode.length <= 3) {
+			if (!allLanguages.includes(langCode)) {
+				// redirect to default language if not found
+				return new Response(null, {
+					status: 302,
+					headers: { Location: `/${allLanguages[0]}` },
+				});
+			}
 		}
 
 		context.locals.lang = langCode;
