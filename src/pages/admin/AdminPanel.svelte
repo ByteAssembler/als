@@ -141,6 +141,10 @@
         <Links />
       {:else if activeItemId === "file-manager"}
         <FileManager />
+        <p class="mt-4 text-sm text-muted-foreground px-4">
+          <strong>Hinweis:</strong> Alle Ordner die sich in "public-media" befinden werden automatisch auf der Media Seite
+          angezeigt. Die Kategorisierung erfolgt automatisch anhand der ordnernamen.
+        </p>
       {:else if activeItemId === "navbar"}
         <Navbar />
       {:else if activeItemId === "blogs"}
