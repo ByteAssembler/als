@@ -33,7 +33,6 @@ const collapsibleCategoryKeys = mediaFiles
 
 <Layout title={i18n.tLang(lang, "pages.media.pageTitle")} defaultPadding={true} showTitle={true}>
     <div class="max-w-5xl mx-auto p-6 flex flex-col gap-6">
-        {/* Changed max-w-3xl to max-w-5xl */}
         {
             mediaFiles &&
                 Object.entries(mediaFiles).map(([category, files]: [string, any[]]) => {
@@ -139,7 +138,7 @@ const collapsibleCategoryKeys = mediaFiles
         {
             (!mediaFiles || Object.keys(mediaFiles).length === 0) && (
                 <p class="text-gray-600 dark:text-gray-300 text-center py-10">
-                    {i18n.tLang(lang, "pages.media.noContent")}
+                    {i18n.tLang(lang, "pages.media.actions.noContent")}
                 </p>
             )
         }
@@ -201,14 +200,15 @@ const collapsibleCategoryKeys = mediaFiles
     <script
         define:vars={{
             categories: JSON.stringify(collapsibleCategoryKeys), // Use filtered keys
-            i18nNoPreview: i18n.tLang(lang, "pages.media.noPreview"),
-            i18nOpenFile: i18n.tLang(lang, "pages.media.openFile"),
+            i18nNoPreview: i18n.tLang(lang, "pages.media.actions.noPreview"),
+            i18nOpenFile: i18n.tLang(lang, "pages.media.actions.openFile"),
         }}
         is:inline
     >
         const dynamicCategories = JSON.parse(categories);
 
-        function toggleSection(id) {
+        window.toggleSection = function (id) {
+            // Attach to window
             dynamicCategories.forEach((sectionId) => {
                 const el = document.getElementById(sectionId);
                 if (!el) return;
@@ -231,9 +231,10 @@ const collapsibleCategoryKeys = mediaFiles
                     }
                 }
             });
-        }
+        }; // Added semicolon
 
-        function showImageModal(filename, url) {
+        window.showImageModal = function (filename, url) {
+            // Attach to window
             const modal = document.getElementById("image-modal");
             const modalImage = document.getElementById("modal-image");
             const modalDownload = document.getElementById("modal-download");
@@ -251,26 +252,28 @@ const collapsibleCategoryKeys = mediaFiles
 
             modal.classList.remove("hidden");
             document.body.style.overflow = "hidden"; // Prevent background scrolling
-        }
+        }; // Added semicolon
 
-        function closeImageModal() {
+        window.closeImageModal = function () {
+            // Attach to window
             document.getElementById("image-modal").classList.add("hidden");
             const modalImage = document.getElementById("modal-image");
             modalImage.src = ""; // Clear image src to prevent loading issues
             document.body.style.overflow = ""; // Restore background scrolling
-        }
+        }; // Added semicolon
 
         // Close modal on escape key
         document.addEventListener("keydown", function (event) {
             if (event.key === "Escape") {
                 const modal = document.getElementById("image-modal");
                 if (modal && !modal.classList.contains("hidden")) {
-                    closeImageModal();
+                    window.closeImageModal(); // Call the window-attached function
                 }
             }
         });
 
-        function showMedia(event, category, fileId, displayName, url, mediaType) {
+        window.showMedia = function (event, category, fileId, displayName, url, mediaType) {
+            // Attach to window
             event.preventDefault();
 
             const viewerId = "viewer-" + category;
@@ -293,12 +296,12 @@ const collapsibleCategoryKeys = mediaFiles
 
             if (lowerMediaType.startsWith("audio/")) {
                 html = `<audio controls autoplay style="width: 100%;">
-                          <source src="${url}" type="${mediaType || "audio/" + fileExtension}">
-                          Your browser does not support the audio tag.
+                        <source src="${url}" type="${mediaType || "audio/" + fileExtension}">
+                        Your browser does not support the audio tag.
                         </audio>`;
             } else if (lowerMediaType.startsWith("video/")) {
                 html = `<video controls autoplay style="width: 100%; max-height: 400px;">
-                          <source src="${url}" type="${mediaType || "video/" + fileExtension}">
+                        <source src="${url}" type="${mediaType || "video/" + fileExtension}">
                         </video>`;
             } else if (lowerMediaType === "application/pdf") {
                 html = `<iframe src="${url}" style="width: 100%; height: 600px; border-radius: 8px;" frameborder="0"></iframe>`;
@@ -325,6 +328,6 @@ const collapsibleCategoryKeys = mediaFiles
             }
 
             return false;
-        }
+        }; // Added semicolon
     </script>
 </Layout>

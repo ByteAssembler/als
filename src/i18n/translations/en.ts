@@ -92,10 +92,10 @@ export const enTranslations = {
 				download: "Download",
 				openInNewTab: "Open in new tab",
 				close: "Close",
+				noContent: "No media content is currently available.",
+				noPreview: "Preview not available.",
+				openFile: "Open file",
 			},
-			noContent: "No media content is currently available.",
-			noPreview: "Preview not available.",
-			openFile: "Open file",
 		},
 		links: {
 			title: "Useful links for those affected, family members, and interested individuals",

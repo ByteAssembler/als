@@ -1,6 +1,4 @@
-import type { AppTranslationSchema } from "./en";
-
-export const deTranslations: AppTranslationSchema = {
+export const deTranslations = {
 	pages: {
 		books: {
 			book: {
@@ -14,22 +12,22 @@ export const deTranslations: AppTranslationSchema = {
 		blog: {
 			"[slug]": {
 				update: "Aktualisiert am",
-				backToOverview: "← Zurück zur Übersicht",
+				backToOverview: "← Zurück zur Übersicht"
 			}
 		},
 		homepage: {
 			wellcome: {
 				title: "Wir kämpfen gemeinsam gegen ALS",
-				subtitle: "Begleite uns in diesem starken Kampf",
+				subtitle: "Schließen Sie sich uns in diesem starken Kampf an",
 				learnMore: "Mehr erfahren",
-			},
-			research: {
-				title: "Forschung & Austausch",
 			},
 			aboutUs: {
 				title: "Über uns",
-				content: 'Das „Collegium vincere ALS“ ist ein Verein, der sich dem Kampf gegen die Amyotrophe Lateralsklerose (ALS), eine chronisch degenerative Erkrankung des motorischen Nervensystems, verschrieben hat.<br><br>Wir sehen ALS als „Krankheit der tausend Abschiede“ und wollen Betroffene und ihre Familien in dieser schweren Zeit unterstützen.<br><br>Zu unseren Zielen gehören die umfassende Betreuung von Patienten, die Sensibilisierung der Öffentlichkeit für ALS, die Vernetzung relevanter Akteure und die Förderung der ALS-Forschung. <br><br>Mit Initiativen wie Informationstischen und unserem mobilen ALS-Kit wollen wir die Öffentlichkeit aufklären und Spenden sammeln, um Forschungsprojekte zu unterstützen und die Lebensqualität der Betroffenen zu verbessern.<br><br>Wenn Sie Fragen haben, Hilfe brauchen oder unsere Arbeit unterstützen möchten, nehmen Sie bitte Kontakt auf - denn Ihre Lebensqualität ist uns wichtig!',
-				imageCaption: "Vereinsleiter: Gerd Steger",
+				content: 'Das „Collegium vincere ALS“ ist ein Verein, der sich dem Kampf gegen Amyotrophe Lateralsklerose (ALS) widmet, eine chronisch degenerative Erkrankung des motorischen Nervensystems.<br><br>Wir sehen ALS als eine „Krankheit der tausend Abschiede“ und wollen Betroffene und ihre Familien in dieser schwierigen Zeit unterstützen.<br><br>Unsere Ziele umfassen die umfassende Versorgung von Patienten, die Sensibilisierung der Öffentlichkeit für ALS, den Aufbau von Netzwerken zwischen relevanten Akteuren und die Förderung der ALS-Forschung.<br><br>Durch Initiativen wie Infostände und unser mobiles ALS-Kit wollen wir die Öffentlichkeit aufklären und Spenden sammeln, um Forschungsprojekte zu unterstützen und die Lebensqualität der Betroffenen zu verbessern.<br><br>Wenn Sie Fragen haben, Hilfe benötigen oder unsere Arbeit unterstützen möchten, nehmen Sie bitte Kontakt mit uns auf - denn Ihre Lebensqualität liegt uns am Herzen!',
+				imageCaption: "Leiter des Vereins: Gerd Steger",
+			},
+			research: {
+				title: "Forschung & Austausch",
 			},
 			map: {
 				title: "Wo Sie Hilfe finden",
@@ -48,7 +46,7 @@ export const deTranslations: AppTranslationSchema = {
 					PEC: "PEC",
 					alternativeEmail: "Alternative E-Mail",
 					mobile: "Mobil",
-					iban: "IBAN für Spende",
+					iban: "IBAN für Spenden",
 					taxNumber: "Steuernummer",
 				},
 				form: {
@@ -62,43 +60,53 @@ export const deTranslations: AppTranslationSchema = {
 			}
 		},
 		media: {
-			title: "Medien",
-			books: {
-				title: "Bücher",
-				link: "Zur Bücher-Seite"
+			pageTitle: "Medien",
+			categories: {
+				books: {
+					title: "Bücher",
+				},
+				audios: {
+					title: "Audios",
+					empty: "Keine Audios verfügbar.",
+				},
+				images: {
+					title: "Bilder",
+					empty: "Keine Bilder verfügbar.",
+				},
+				videos: {
+					title: "Videos",
+					empty: "Keine Videos verfügbar.",
+				},
+				documents: {
+					title: "Dokumente",
+					empty: "Keine Dokumente verfügbar.",
+				},
+				information: {
+					title: "Informationen",
+					empty: "Keine Informationen verfügbar.",
+				},
 			},
-			audios: {
-				title: "Audios",
-				empty: "Keine Audios vorhanden."
+			actions: {
+				download: "Herunterladen",
+				openInNewTab: "In neuem Tab öffnen",
+				close: "Schließen",
+				noContent: "Aktuell sind keine Medieninhalte verfügbar.",
+				noPreview: "Vorschau nicht verfügbar.",
+				openFile: "Datei öffnen",
 			},
-			images: {
-				title: "Bilder",
-				empty: "Keine Bilder vorhanden."
-			},
-			information: {
-				title: "Informationen",
-				empty: "Keine Informationen vorhanden."
-			},
-			download: "Herunterladen",
-			openInNewTab: "In neuem Tab",
-			close: "Schließen",
-			audioNotSupported: "Dein Browser unterstützt den Audio-Tag nicht.",
-			videoNotSupported: "Dein Browser unterstützt den Video-Tag nicht.",
-			previewNotAvailable: "Vorschau nicht verfügbar.",
-			openFile: "Datei hier öffnen"
 		},
 		links: {
-			title: "Nützliche Links für Betroffene, Angehörige und Interessierte",
-			description1: "Diese Webseite bietet umfassende Informationen über ALS, Symptome und Behandlungsmöglichkeiten.",
-			description2: "Unterstützungsnetzwerke und Beratungsangebote für Betroffene und Angehörige."
+			title: "Nützliche Links für Betroffene, Familienangehörige und Interessierte",
+			description1: "Diese Website bietet umfassende Informationen über ALS, ihre Symptome und Behandlungsmöglichkeiten.",
+			description2: "Unterstützungsnetzwerke und Beratungsdienste für Betroffene und ihre Angehörigen."
 		}
 	},
 	cookieBanner: {
 		message: "Diese Website verwendet Cookies. Mehr Infos in unserer ",
 		privacyLinkText: "Datenschutzerklärung",
-		dontShowAgain: "Dieses Banner in Zukunft nicht mehr anzeigen",
+		dontShowAgain: "Diesen Banner nicht mehr anzeigen",
 		acceptAll: "Alle akzeptieren",
-		acceptEssential: "Nur essenzielle akzeptieren",
+		acceptEssential: "Nur essentielle akzeptieren",
 	},
 	footer: {
 		legalNotice: "Alle Rechte vorbehalten",

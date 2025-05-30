@@ -24,22 +24,24 @@ async function getMapPointCategoryWithTranslatedFields(
 				},
 			},
 			mapPoints: true,
+			// iconKey is a scalar field, Prisma includes it by default
 		},
 	});
 
 	if (!mapPointCategory) return null;
 
 	return {
-		...mapPointCategory,
+		...mapPointCategory, // iconKey will be part of this spread
 		name: mapPointCategory.name.translations.length > 0 ? mapPointCategory.name.translations[0]?.value : null,
 	};
 }
 
 export const mapPointCategoryHandlers = {
 	create: async (input: z.infer<typeof createMapPointCategorySchema>) => {
-		const { names } = input;
+		const { names, iconKey } = input; // Destructure iconKey
 		return await prisma.mapPointCategory.create({
 			data: {
+				iconKey, // Save iconKey
 				name: {
 					create: {
 						translations: {
@@ -60,11 +62,12 @@ export const mapPointCategoryHandlers = {
 	},
 
 	update: async (input: z.infer<typeof updateMapPointCategorySchema>) => {
-		const { id, names } = input;
+		const { id, names, iconKey } = input; // Destructure iconKey
 
 		return await prisma.mapPointCategory.update({
 			where: { id },
 			data: {
+				...(iconKey !== undefined && { iconKey }), // Update iconKey if provided
 				...(names && {
 					name: {
 						update: {
@@ -92,6 +95,7 @@ export const mapPointCategoryHandlers = {
 					},
 				},
 				mapPoints: true,
+				// iconKey is a scalar field, Prisma includes it by default
 			},
 		});
 
@@ -100,7 +104,7 @@ export const mapPointCategoryHandlers = {
 		}
 
 		return mapPointCategories.map((mapPointCategory) => ({
-			...mapPointCategory,
+			...mapPointCategory, // iconKey will be part of this spread
 			names: mapPointCategory.name.translations.map(t => ({
 				text: t.value,
 				language: t.language
@@ -120,6 +124,7 @@ export const mapPointCategoryHandlers = {
 					},
 				},
 				mapPoints: true,
+				// iconKey is a scalar field, Prisma includes it by default
 			},
 		});
 
@@ -128,7 +133,7 @@ export const mapPointCategoryHandlers = {
 		}
 
 		return mapPointCategories.map((mapPointCategory) => ({
-			...mapPointCategory,
+			...mapPointCategory, // iconKey will be part of this spread
 			name: mapPointCategory.name.translations.length > 0 ? mapPointCategory.name.translations[0].value : null,
 		}));
 	},
@@ -136,9 +141,11 @@ export const mapPointCategoryHandlers = {
 
 const createMapPointCategorySchema = z.object({
 	names: z.record(z.string(), z.string()),
+	iconKey: z.string().optional().nullable(), // Added iconKey
 });
 
 const updateMapPointCategorySchema = z.object({
 	id: z.number(),
 	names: z.record(z.string(), z.string()).optional(),
+	iconKey: z.string().optional().nullable(), // Added iconKey
 });

@@ -128,6 +128,8 @@ model MapPointCategory {
     nameRawTranslationId Int
     name                 RawTranslation @relation("MapPointCategoryName", fields: [nameRawTranslationId], references: [id], onDelete: Cascade)
 
+    iconKey String? // Add this line to store the icon file name
+
     mapPoints MapPoint[]
 }
 

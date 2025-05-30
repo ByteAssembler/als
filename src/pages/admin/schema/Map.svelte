@@ -128,6 +128,67 @@
     mapPointCategoryHelper.formConfig;
   const { formFields: mapPointFormFields, initialFormData: mapPointInitialFormData } = mapPointHelper.formConfig;
 
+  /**
+   * IMPORTANT NOTE FOR `mapPointCategoryHelper` (in `../../../lib/admin/mapHelpers.ts`):
+   * To enable icon selection for map point categories (similar to how image selection works for Celebrities),
+   * the `mapPointCategoryHelper.formConfig` object needs to be correctly defined.
+   *
+   * The `MultiLanguageFormModal` uses the `useFileManager: true` property on a field definition
+   * to render the `FileManagerSelect` component, allowing users to pick a file.
+   *
+   * Ensure your `mapPointCategoryHelper.formConfig` looks similar to this for the `iconKey`:
+   *
+   * ```typescript
+   * // Inside ../../../lib/admin/mapHelpers.ts (or wherever mapPointCategoryHelper is defined)
+   *
+   * export const mapPointCategoryHelper = {
+   *   // ... other helper parts ...
+   *   formConfig: {
+   *     formFields: [
+   *       {
+   *         id: "names", // Example: your existing multilingual name field
+   *         label: "Name",
+   *         type: "text",
+   *         multilingual: true,
+   *         required: true,
+   *         placeholder: "Kategoriename"
+   *       },
+   *       // THIS IS THE CRUCIAL PART FOR ICON SELECTION:
+   *       {
+   *         id: "iconKey",
+   *         label: "Icon (Dateiname)",
+   *         type: "text", // FileManagerSelect binds to a text input that stores the filename
+   *         useFileManager: true, // This tells MultiLanguageFormModal to use FileManagerSelect
+   *         multilingual: false,  // iconKey is typically not multilingual
+   *         required: false,      // Set to true if an icon is mandatory
+   *         placeholder: "z.B. kategorie_icon.png",
+   *         helpText: "Wählen Sie eine Datei aus dem File Manager als Icon für diese Kategorie."
+   *       }
+   *       // ... any other fields ...
+   *     ],
+   *     initialFormData: {
+   *       names: { de: "", en: "" }, // Ensure all languages defined in createStandardLanguages() are present
+   *       iconKey: "",               // Initial value for the icon key
+   *       // ... other initial form data properties ...
+   *     },
+   *   },
+   *   // Ensure transformApiToForm and transformFormToApi correctly handle 'iconKey':
+   *   // transformApiToForm: (item) => ({ ...item, names: parseTranslations(item.names), iconKey: item.iconKey || "" }),
+   *   // transformFormToApi: (formData) => ({ ...formData, iconKey: formData.iconKey || null }), // Send null if empty
+   *
+   *   // The createMapPointCategoryValidator factory function (part of mapPointCategoryHelper)
+   *   // should be updated to validate `iconKey` if necessary (e.g., ensure it's a string if provided).
+   *   // Example within the validator:
+   *   // if (data.iconKey && typeof data.iconKey !== 'string') {
+   *   //   return "Icon Key muss ein String sein.";
+   *   // }
+   * };
+   * ```
+   *
+   * By setting `useFileManager: true` for the `iconKey` field, the modal will automatically
+   * render the file selection component for it.
+   */
+
   // Enhanced map point form fields with category selector
   const enhancedMapPointFormFields = $derived(() => {
     return mapPointFormFields.map((field) => {
@@ -150,6 +211,20 @@
   });
 
   // Create columns
+  // IMPORTANT: The `createMapPointCategoryColumns` function (likely in ../../../lib/admin/commonConfig.ts)
+  // needs to be updated to display the iconKey or a preview of the icon.
+  // Example modification for createMapPointCategoryColumns:
+  // export function createMapPointCategoryColumns(currentLanguage: string, /* other params */): ColumnDef[] {
+  //   return [
+  //     // ... other columns ...
+  //     {
+  //       accessorKey: "iconKey",
+  //       header: "Icon Key",
+  //       cellRenderer: (item) => item.iconKey || "-", // Or render an <img> tag if you have the base URL
+  //     },
+  //     // ... other columns ...
+  //   ];
+  // }
   const categoryColumns = $derived(createMapPointCategoryColumns(currentLanguage));
   const mapPointColumns = $derived(createMapPointColumns(currentLanguage));
 
@@ -203,6 +278,7 @@
         return {
           id: category.id,
           name: category.name, // Should be Record<string, string> from transformer
+          iconKey: category.iconKey, // Add iconKey here
           mapPointsCount: pointCount,
         };
       })

@@ -83,12 +83,13 @@ export const itTranslations = {
 				title: "Informazioni",
 				empty: "Nessuna informazione disponibile."
 			},
-			download: "Scarica",
-			openInNewTab: "Apri in una nuova scheda",
-			close: "Chiudi",
-			audioNotSupported: "Il tuo browser non supporta il tag audio.",
-			videoNotSupported: "Il tuo browser non supporta il tag video.",
-			previewNotAvailable: "Anteprima non disponibile.",
+			actions: {
+				download: "Scarica",
+				openInNewTab: "Apri in una nuova scheda",
+				close: "Chiudi",
+			},
+			noContent: "Il tuo browser non supporta il tag audio.",
+			noPreview: "Anteprima non disponibile.",
 			openFile: "Apri il file qui"
 		},
 		links: {
