@@ -1,22 +1,31 @@
 import { Client, type BucketItem } from 'minio';
 import type { Readable } from 'stream';
 
-if (!process.env.MINIO_ENDPOINT_FULL || !process.env.MINIO_ENDPOINT || !process.env.MINIO_BUCKET_NAME || !process.env.MINIO_ACCESS_KEY || !process.env.MINIO_SECRET_KEY) {
+if (!process.env.FILE_STORAGE_SERVER_ENDPOINT_FULL || !process.env.FILE_STORAGE_SERVER_ENDPOINT || !process.env.FILE_STORAGE_SERVER_BUCKET_NAME || !process.env.FILE_STORAGE_SERVER_ACCESS_KEY || !process.env.FILE_STORAGE_SERVER_SECRET_KEY) {
+
+	console.error('Missing required environment variables for MinIO configuration. Please ensure FILE_STORAGE_SERVER_ENDPOINT_FULL, FILE_STORAGE_SERVER_ENDPOINT, FILE_STORAGE_SERVER_BUCKET_NAME, FILE_STORAGE_SERVER_ACCESS_KEY, and FILE_STORAGE_SERVER_SECRET_KEY are set.');
+	console.log("FILE_STORAGE_SERVER_ENDPOINT_FULL", process.env.FILE_STORAGE_SERVER_ENDPOINT_FULL);
+	console.log("FILE_STORAGE_SERVER_ENDPOINT", process.env.FILE_STORAGE_SERVER_ENDPOINT);
+	console.log("FILE_STORAGE_SERVER_BUCKET_NAME", process.env.FILE_STORAGE_SERVER_BUCKET_NAME);
+	console.log("FILE_STORAGE_SERVER_ACCESS_KEY", process.env.FILE_STORAGE_SERVER_ACCESS_KEY);
+	console.log("FILE_STORAGE_SERVER_SECRET_KEY", process.env.FILE_STORAGE_SERVER_SECRET_KEY);
+
+
 	console.error('Missing environment variables for MinIO configuration. Please check your .env file.');
 	process.exit(1);
 }
 
-export const MINIO_ENDPOINT_FULL = process.env.MINIO_ENDPOINT_FULL;
-export const MINIO_ENDPOINT = process.env.MINIO_ENDPOINT;
-export const BUCKET_NAME = process.env.MINIO_BUCKET_NAME;
+export const FILE_STORAGE_SERVER_ENDPOINT_FULL = process.env.FILE_STORAGE_SERVER_ENDPOINT_FULL;
+export const FILE_STORAGE_SERVER_ENDPOINT = process.env.FILE_STORAGE_SERVER_ENDPOINT;
+export const BUCKET_NAME = process.env.FILE_STORAGE_SERVER_BUCKET_NAME;
 
-export const MINIO_ACCESS_KEY = process.env.MINIO_ACCESS_KEY;
-export const MINIO_SECRET_KEY = process.env.MINIO_SECRET_KEY;
+export const FILE_STORAGE_SERVER_ACCESS_KEY = process.env.FILE_STORAGE_SERVER_ACCESS_KEY;
+export const FILE_STORAGE_SERVER_SECRET_KEY = process.env.FILE_STORAGE_SERVER_SECRET_KEY;
 
 const minioClient = new Client({
-	endPoint: MINIO_ENDPOINT,
-	accessKey: MINIO_ACCESS_KEY,
-	secretKey: MINIO_SECRET_KEY,
+	endPoint: FILE_STORAGE_SERVER_ENDPOINT,
+	accessKey: FILE_STORAGE_SERVER_ACCESS_KEY,
+	secretKey: FILE_STORAGE_SERVER_SECRET_KEY,
 });
 
 async function listEntries(options: { prefix?: string; recursive?: boolean } = {}): Promise<BucketItem[]> {

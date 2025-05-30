@@ -1,14 +1,15 @@
 <script>
-  import FileUplaod from "./schema/FileUplaod.svelte";
-  import Media from "./schema/Media.svelte";
-  import Navbar from "./schema/Navbar.svelte";
+  // import FileUplaod from "./schema/FileUplaod.svelte";
+  // import Media from "./schema/Media.svelte";
+  // import Navbar from "./schema/Navbar.svelte";
   import Links from "./schema/Links.svelte";
-  import Sidebar from "./sidebar/Sidebar.svelte";
-  import Blogs from "./schema/Blogs.svelte";
-  import Celebrities from "./schema/Celebrities.svelte";
-  import Map from "./schema/Map.svelte";
-  import LanguageSettings from "./schema/LanguageSettings.svelte";
+  // import Blogs from "./schema/Blogs.svelte";
+  // import Celebrities from "./schema/Celebrities.svelte";
+  // import Map from "./schema/Map.svelte";
+  // import LanguageSettings from "./schema/LanguageSettings.svelte";
   import "./styles.css";
+
+  import Sidebar from "./sidebar/Sidebar.svelte";
 
   let activeItemId = $state("dashboard");
 
