@@ -2,7 +2,6 @@
 import { hash } from "bcrypt";
 import Layout from "@/layouts/Layout.astro";
 import prisma from "@/utils/db";
-import { i18n } from "@/i18n";
 
 if (
     (await prisma.user.findUnique({
@@ -11,10 +10,12 @@ if (
         },
     })) == null
 ) {
+    const defaultGerdPassword = process.env.DEFAULT_GERD_PASSWORD || "admin1234";
+
     await prisma.user.create({
         data: {
             email: "gerdsteger@hotmail.com",
-            passwordHash: await hash("admin1234", 10),
+            passwordHash: await hash(defaultGerdPassword, 10),
             role: "SUPERADMIN",
             name: "Gerd Steger",
         },
