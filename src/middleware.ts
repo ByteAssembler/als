@@ -12,7 +12,17 @@ export const onRequest = defineMiddleware((context, next) => {
 		const langCode = segments[0];
 
 		if (langCode.length >= 2 && langCode.length <= 3) {
-			if (!allLanguages.includes(langCode)) {
+			if (
+				!allLanguages.includes(langCode) &&
+				langCode !== "admin" &&
+				langCode !== "api" &&
+				langCode !== "static" &&
+				langCode !== "assets" &&
+				langCode !== "favicon.ico" &&
+				langCode !== "robots.txt" &&
+				!langCode.includes("langCode") &&
+				!langCode.includes("trpc")
+			) {
 				// redirect to default language if not found
 				return new Response(null, {
 					status: 302,
