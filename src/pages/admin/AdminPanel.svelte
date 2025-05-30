@@ -1,4 +1,5 @@
 <script>
+  import { onMount } from "svelte";
   import FileManager from "./schema/FileManager.svelte";
   import Navbar from "./schema/Navbar.svelte";
   import Links from "./schema/Links.svelte";
@@ -29,11 +30,13 @@
           label: "Links",
           iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>`,
         },
-        {
+        /*
+		{
           id: "navbar",
           label: "Navigation",
           iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M3 21h18"></path></svg>`,
         },
+		*/
         {
           id: "users",
           label: "Users",
@@ -61,11 +64,49 @@
   const currentLabel = $derived(
     sidebarSections.flatMap((section) => section.links).find((item) => item.id === activeItemId)?.label || "Dashboard"
   );
+
+  // Handle section changes with history
+  function changeSection(sectionId) {
+    if (sectionId !== activeItemId) {
+      activeItemId = sectionId;
+      // Update browser history
+      const url = new URL(window.location);
+      url.searchParams.set("section", sectionId);
+      window.history.pushState({ section: sectionId }, "", url);
+    }
+  }
+
+  // Handle browser back/forward buttons
+  function handlePopState(event) {
+    const section = event.state?.section || new URLSearchParams(window.location.search).get("section") || "dashboard";
+    activeItemId = section;
+  }
+
+  onMount(() => {
+    // Initialize from URL on page load
+    const urlParams = new URLSearchParams(window.location.search);
+    const sectionFromUrl = urlParams.get("section");
+    if (sectionFromUrl) {
+      activeItemId = sectionFromUrl;
+    }
+
+    // Listen for browser back/forward
+    window.addEventListener("popstate", handlePopState);
+
+    // Set initial history state
+    const url = new URL(window.location);
+    url.searchParams.set("section", activeItemId);
+    window.history.replaceState({ section: activeItemId }, "", url);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  });
 </script>
 
 <div class="min-h-screen bg-background">
   <!-- Sidebar -->
-  <Sidebar sections={sidebarSections} {activeItemId} on:select={(event) => (activeItemId = event.detail.id)} />
+  <Sidebar sections={sidebarSections} {activeItemId} on:select={(event) => changeSection(event.detail.id)} />
 
   <!-- Main Content -->
   <main class="xl:pl-64 lg:pl-16 md:pl-16 pl-0 min-h-screen transition-all duration-300">
@@ -81,7 +122,7 @@
               <li>
                 <button
                   class="flex items-center space-x-4 px-6 py-4 rounded-lg bg-card hover:bg-muted transition-colors w-full text-left border text-lg"
-                  onclick={() => (activeItemId = item.id)}
+                  onclick={() => changeSection(item.id)}
                 >
                   {@html item.iconSvg}
                   <span>{item.label}</span>
