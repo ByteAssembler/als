@@ -2,7 +2,7 @@
   import SidebarNavSection from "./SidebarNavSection.svelte";
   import type { NavLinkData as NavSectionLinkData } from "./SidebarNavSection.svelte";
   // import { type ScrollableNavLinkData } from "./SidebarScrollableNavSection.svelte"; // Keep if used elsewhere
-  import "../styles.css";
+  import "@/styles.css";
   import { createEventDispatcher } from "svelte";
 
   type SectionLink = {

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { cn } from "@/../utils/utils";
+  import { cn } from "@/utils/utils";
   import SidebarLink, { type LinkState } from "./SidebarLink.svelte";
   import { createEventDispatcher } from "svelte";
 

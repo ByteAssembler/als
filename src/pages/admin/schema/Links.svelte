@@ -2,10 +2,10 @@
   import { onMount } from "svelte";
   import AdminPageLayout from "@/components/admin/AdminPageLayout.svelte";
   import type { Column } from "@/components/ui/DataTable.svelte";
-  import { getTranslation } from "@/../lib/utils/translation";
-  import { createLinkValidator } from "@/../lib/utils/validation";
-  import { linkHelper } from "@/../lib/admin/linkHelpers";
-  import { createStandardLanguages } from "@/../lib/admin/commonConfig";
+  import { getTranslation } from "@/lib/utils/translation";
+  import { createLinkValidator } from "@/lib/utils/validation";
+  import { linkHelper } from "@/lib/admin/linkHelpers";
+  import { createStandardLanguages } from "@/lib/admin/commonConfig";
 
   // Configuration
   const languages = createStandardLanguages();
