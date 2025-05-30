@@ -667,23 +667,23 @@
 </script>
 
 <!-- Main container -->
-<div class="p-4 md:p-6 space-y-6 bg-neutral-900 text-gray-100 rounded-lg border border-neutral-800">
+<div class="p-4 md:p-6 space-y-6 bg-white text-gray-900 rounded-lg border border-gray-200">
   <!-- Title -->
   <h2 class="text-2xl font-bold">File Manager</h2>
 
   <!-- Breadcrumbs -->
   <nav
     aria-label="Breadcrumb"
-    class="flex items-center space-x-1 text-sm text-neutral-400 overflow-x-auto whitespace-nowrap py-1"
+    class="flex items-center space-x-1 text-sm text-gray-600 overflow-x-auto whitespace-nowrap py-1"
   >
     {#each breadcrumbs as part, i (part.path)}
       {#if i > 0}<ChevronRight class="h-4 w-4 flex-shrink-0" />{/if}
       {#if i === breadcrumbs.length - 1}
-        <span class="font-semibold text-gray-100 truncate" aria-current="page">{part.name}</span>
+        <span class="font-semibold text-gray-900 truncate" aria-current="page">{part.name}</span>
       {:else}
         <button
           onclick={() => navigateToFolder(part.path, true)}
-          class="hover:underline hover:text-gray-100 truncate flex items-center"
+          class="hover:underline hover:text-gray-900 truncate flex items-center"
           disabled={isLoading || isProcessing || renamingItemName !== null}
         >
           {#if i === 0}<Home class="inline h-4 w-4 mr-1" />{/if}{part.name}
@@ -693,13 +693,13 @@
   </nav>
 
   <!-- Controls -->
-  <div class="flex flex-wrap gap-2 items-center border-b border-neutral-800 pb-4">
+  <div class="flex flex-wrap gap-2 items-center border-b border-gray-200 pb-4">
     <!-- Back Button -->
     {#if navigationHistory.length > 0}
       <button
         onclick={handleBackClick}
         class={cn(
-          "p-2 bg-neutral-800 rounded-md hover:bg-neutral-700 transition-colors",
+          "p-2 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors",
           (isLoading || isProcessing || renamingItemName !== null) && "opacity-50 cursor-not-allowed"
         )}
         title="Go back to previous folder"
@@ -713,7 +713,7 @@
     <!-- Upload Button -->
     <label
       class={cn(
-        "flex items-center gap-2 px-4 py-2 bg-neutral-800 rounded-md hover:bg-neutral-700 cursor-pointer transition-colors",
+        "flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 cursor-pointer transition-colors",
         (isProcessing || isLoading || renamingItemName !== null) && "opacity-50 cursor-not-allowed"
       )}
       aria-disabled={isProcessing || isLoading || renamingItemName !== null}
@@ -730,18 +730,18 @@
 
     <!-- New Folder Input/Button -->
     {#if showNewFolderInput}
-      <div class="flex items-center gap-2 bg-neutral-800 p-1 rounded-md">
+      <div class="flex items-center gap-2 bg-gray-100 p-1 rounded-md">
         <input
           type="text"
           bind:value={newFolderName}
           placeholder="Folder name"
-          class="px-3 py-1.5 bg-neutral-700 rounded-md border border-neutral-600 focus:outline-none focus:ring-1 focus:ring-neutral-500 text-sm"
+          class="px-3 py-1.5 bg-white rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-400 text-sm"
           onkeydown={(e) => e.key === "Enter" && !isProcessing && !renamingItemName && handleCreateFolder()}
           disabled={isProcessing || renamingItemName !== null}
         />
         <button
           onclick={handleCreateFolder}
-          class="p-2 bg-green-600 hover:bg-green-500 rounded-md disabled:opacity-50"
+          class="p-2 bg-green-600 hover:bg-green-500 rounded-md disabled:opacity-50 text-white"
           title="Create Folder"
           aria-label="Create Folder"
           disabled={isProcessing || !newFolderName.trim() || isLoading || renamingItemName !== null}
@@ -754,7 +754,7 @@
             newFolderName = "";
             error = null;
           }}
-          class="p-2 bg-red-600 hover:bg-red-500 rounded-md disabled:opacity-50"
+          class="p-2 bg-red-600 hover:bg-red-500 rounded-md disabled:opacity-50 text-white"
           title="Cancel"
           aria-label="Cancel creating folder"
           disabled={isProcessing || renamingItemName !== null}
@@ -766,7 +766,7 @@
       <button
         onclick={() => (showNewFolderInput = true)}
         class={cn(
-          "flex items-center gap-2 px-4 py-2 bg-neutral-800 rounded-md hover:bg-neutral-700 transition-colors",
+          "flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors",
           (isProcessing || isLoading || renamingItemName !== null) && "opacity-50 cursor-not-allowed"
         )}
         disabled={isProcessing || isLoading || renamingItemName !== null}
@@ -780,7 +780,7 @@
       <button
         onclick={() => loadItemsForPrefix(currentPrefix, true)}
         class={cn(
-          "p-2 bg-neutral-800 rounded-md hover:bg-neutral-700 transition-colors",
+          "p-2 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors",
           (isProcessing || (isLoading && !isOptimisticLoading) || renamingItemName !== null) &&
             "opacity-50 cursor-not-allowed"
         )}
@@ -797,7 +797,7 @@
       <!-- Show sync indicator when cache is shown OR an action is processing -->
       {#if isOptimisticLoading || isProcessing}
         <div title="Syncing changes..." aria-label="Optimistic update indicator">
-          <Loader2 class="h-4 w-4 animate-spin text-blue-400" />
+          <Loader2 class="h-4 w-4 animate-spin text-blue-600" />
         </div>
       {/if}
     </div>
@@ -805,13 +805,13 @@
 
   <!-- Status display -->
   {#if error}
-    <div class="mt-4 p-3 bg-red-900 border border-red-700 rounded-md text-red-100 text-sm whitespace-pre-wrap">
+    <div class="mt-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-800 text-sm whitespace-pre-wrap">
       Error: {error}
     </div>
   {/if}
   {#if isProcessing && !isLoading && !isOptimisticLoading}
     <!-- Should not be visible often due to loader above -->
-    <div class="mt-4 flex items-center gap-2 text-sm text-blue-300">
+    <div class="mt-4 flex items-center gap-2 text-sm text-blue-700">
       <HardDriveUpload class="h-4 w-4 animate-pulse" /><span>Processing...</span>
     </div>
   {/if}
@@ -819,66 +819,60 @@
   <!-- File and folder list -->
   <div class="mt-6">
     {#if isLoading && !isOptimisticLoading}
-      <p class="text-neutral-400 flex items-center gap-2">
+      <p class="text-gray-600 flex items-center gap-2">
         <RefreshCw class="h-4 w-4 animate-spin" /> Loading...
       </p>
     {:else if items.length === 0 && !error}
-      <p class="text-neutral-500">Folder is empty.</p>
+      <p class="text-gray-500">Folder is empty.</p>
     {:else if items.length > 0}
       <div class="overflow-x-auto">
         <table class="w-full text-left text-sm table-auto border-collapse">
-          <thead class="border-b border-neutral-700">
+          <thead class="border-b border-gray-300">
             <tr>
               <th class="p-2 w-8"></th> <th class="p-2">Name</th>
               <th class="p-2">Size</th>
               <th class="p-2">Last Modified</th>
               <th class="p-2 w-20 text-right">Actions</th>
-              <!-- Adjusted width -->
             </tr>
           </thead>
           <tbody>
             {#each items as item (item.name)}
               <tr
                 class={cn(
-                  "border-b border-neutral-800 transition-colors group",
-                  renamingItemName !== item.name && "hover:bg-neutral-850",
-                  renamingItemName === item.name && "bg-neutral-800" // Highlight row being renamed
+                  "border-b border-gray-200 transition-colors group",
+                  renamingItemName !== item.name && "hover:bg-gray-50",
+                  renamingItemName === item.name && "bg-gray-100"
                 )}
               >
                 <td class="p-2 align-middle">
                   {#if item.isDir}
-                    <FolderIcon class="h-4 w-4 text-blue-400" />
+                    <FolderIcon class="h-4 w-4 text-blue-600" />
                   {:else}
-                    <FileIcon class="h-4 w-4 text-gray-400" />
+                    <FileIcon class="h-4 w-4 text-gray-600" />
                   {/if}
                 </td>
                 <td
                   class={cn(
                     "p-2 align-middle truncate max-w-xs md:max-w-md lg:max-w-lg",
-                    // Apply hover styles if it's a directory OR a file (and not currently being renamed)
                     (item.isDir || !item.isDir) && renamingItemName !== item.name && "cursor-pointer hover:underline",
                     (isLoading || isProcessing || renamingItemName !== null) && renamingItemName !== item.name
-                      ? "opacity-70 pointer-events-none" // Keep general disabling logic
+                      ? "opacity-70 pointer-events-none"
                       : "",
-                    renamingItemName === item.name && "py-1" // Adjust padding for input
+                    renamingItemName === item.name && "py-1"
                   )}
                   title={renamingItemName === item.name
                     ? "Renaming..."
                     : item.isDir
                       ? `Open folder ${item.displayName}`
                       : `Click to preview ${item.displayName}`}
-                  onclick={() =>
-                    !isLoading &&
-                    !isProcessing &&
-                    renamingItemName !== item.name && // Prevent click when renaming this item
-                    handleItemClick(item)}
+                  onclick={() => !isLoading && !isProcessing && renamingItemName !== item.name && handleItemClick(item)}
                 >
                   {#if renamingItemName === item.name}
                     <div class="flex items-center gap-1">
                       <input
                         type="text"
                         bind:value={newItemName}
-                        class="px-2 py-1 bg-neutral-700 rounded border border-neutral-600 focus:outline-none focus:ring-1 focus:ring-neutral-500 text-sm w-full"
+                        class="px-2 py-1 bg-white rounded border border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-400 text-sm w-full"
                         onkeydown={(e) => {
                           if (e.key === "Enter") handleRenameItem();
                           if (e.key === "Escape") cancelRename();
@@ -894,14 +888,14 @@
                 <td class="p-2 align-middle">
                   {#if !item.isDir && item.size != null}{formatBytes(item.size)}{:else}-{/if}
                 </td>
-                <td class="p-2 align-middle text-neutral-400">{formatDate(item.lastModified)}</td>
+                <td class="p-2 align-middle text-gray-600">{formatDate(item.lastModified)}</td>
                 <td class="p-2 align-middle text-right">
                   {#if renamingItemName === item.name}
                     <!-- Rename Save/Cancel Buttons -->
                     <div class="flex justify-end items-center gap-1">
                       <button
                         onclick={handleRenameItem}
-                        class="p-1 text-green-400 hover:text-green-300 rounded disabled:opacity-50"
+                        class="p-1 text-green-600 hover:text-green-700 rounded disabled:opacity-50"
                         title="Save changes"
                         aria-label="Save rename"
                         disabled={isProcessing || !newItemName.trim() || newItemName.trim() === item.displayName}
@@ -910,7 +904,7 @@
                       </button>
                       <button
                         onclick={cancelRename}
-                        class="p-1 text-red-400 hover:text-red-300 rounded disabled:opacity-50"
+                        class="p-1 text-red-600 hover:text-red-700 rounded disabled:opacity-50"
                         title="Cancel rename"
                         aria-label="Cancel rename"
                         disabled={isProcessing}
@@ -926,7 +920,7 @@
                       {#if !item.isDir}
                         <button
                           onclick={() => startRename(item)}
-                          class="p-1 text-neutral-400 hover:text-blue-400 rounded disabled:opacity-50"
+                          class="p-1 text-gray-600 hover:text-blue-600 rounded disabled:opacity-50"
                           title="Rename File"
                           aria-label="Rename {item.displayName}"
                           disabled={isProcessing || isLoading || renamingItemName !== null}
@@ -936,7 +930,7 @@
                       {/if}
                       <button
                         onclick={() => handleDeleteItem(item)}
-                        class="p-1 text-neutral-400 hover:text-red-400 rounded disabled:opacity-50"
+                        class="p-1 text-gray-600 hover:text-red-600 rounded disabled:opacity-50"
                         title="Delete {item.isDir ? 'Folder' : 'File'}"
                         aria-label="Delete {item.displayName}"
                         disabled={isProcessing || isLoading || renamingItemName !== null}
@@ -960,24 +954,24 @@
   <dialog
     bind:this={dialogElement}
     onclose={handleDialogClose}
-    class="bg-neutral-800 text-gray-100 rounded-lg shadow-xl p-0 w-full max-w-3xl border border-neutral-700 backdrop:bg-black/50 open:animate-fade-in"
+    class="bg-white text-gray-900 rounded-lg shadow-xl p-0 w-full max-w-3xl border border-gray-300 backdrop:bg-black/50 open:animate-fade-in"
   >
-    <header class="flex justify-between items-center p-4 border-b border-neutral-700">
+    <header class="flex justify-between items-center p-4 border-b border-gray-300">
       <h3 class="font-semibold text-lg truncate pr-4" title={previewItem?.displayName}>
         Preview: {previewItem?.displayName ?? "File"}
       </h3>
-      <button onclick={closePreview} class="p-1 rounded-full hover:bg-neutral-700" aria-label="Close preview">
+      <button onclick={closePreview} class="p-1 rounded-full hover:bg-gray-100" aria-label="Close preview">
         <X class="h-5 w-5" />
       </button>
     </header>
     <div class="p-4 min-h-[60vh] max-h-[75vh] overflow-y-auto flex justify-center items-center">
       {#if isPreviewLoading}
-        <div class="flex flex-col items-center gap-2 text-neutral-400">
+        <div class="flex flex-col items-center gap-2 text-gray-600">
           <Loader2 class="h-8 w-8 animate-spin" />
           <span>Loading preview...</span>
         </div>
       {:else if previewError}
-        <div class="flex flex-col items-center gap-2 text-red-400">
+        <div class="flex flex-col items-center gap-2 text-red-600">
           <AlertTriangle class="h-8 w-8" />
           <span>{previewError}</span>
         </div>
@@ -998,20 +992,20 @@
           ></iframe>
         {/key}
       {:else}
-        <div class="flex flex-col items-center gap-2 text-neutral-500">
+        <div class="flex flex-col items-center gap-2 text-gray-500">
           <AlertTriangle class="h-8 w-8" />
           <span>Preview not available or load failed.</span>
         </div>
       {/if}
     </div>
-    <footer class="p-4 border-t border-neutral-700 text-right">
+    <footer class="p-4 border-t border-gray-300 text-right">
       <a
         href={previewUrl ?? "#"}
         download={previewItem?.displayName}
         target="_blank"
         rel="noopener noreferrer"
         class={cn(
-          "px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded text-sm transition-colors",
+          "px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded text-sm transition-colors text-white",
           "ml-auto w-fit",
           "flex items-center justify-center gap-2",
           (!previewUrl || previewError) && "opacity-50 cursor-not-allowed pointer-events-none"
