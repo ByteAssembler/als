@@ -92,7 +92,10 @@
   };
 
   // Setup CRUD for map points
-  const mapPointCrudFunctions = mapPointHelper.createCrud(() => Promise.all([loadMapPoints(), loadCategories()]));
+  const mapPointCrudFunctions = mapPointHelper.createCrud(async () => {
+    await loadMapPoints();
+    await loadCategories();
+  });
   const mapPointCrud = {
     get showModal() {
       return mapPointCrudState.showModal;
@@ -132,10 +135,13 @@
         return {
           ...field,
           type: "select" as const,
-          options: categories.map((cat) => ({
-            value: cat.id.toString(),
-            label: getTranslation(cat.name, currentLanguage),
-          })),
+          options: [
+            { value: "", label: "Bitte wählen Sie eine Kategorie..." },
+            ...categories.map((cat) => ({
+              value: cat.id.toString(),
+              label: getTranslation(cat.name, currentLanguage),
+            })),
+          ],
           helpText: `Verfügbare Kategorien: ${categories.length}`,
         };
       }
@@ -160,10 +166,7 @@
 
   // Form validation with better error handling
   function handleMapPointSubmit(event: SubmitEvent) {
-    // Convert categoryId to number for validation
-    if (mapPointCrud.formData.categoryId) {
-      mapPointCrud.formData.categoryId = Number(mapPointCrud.formData.categoryId);
-    }
+    // Don't convert categoryId to number here - keep it as string for the select field
     if (mapPointCrud.formData.latitude) {
       mapPointCrud.formData.latitude = Number(mapPointCrud.formData.latitude);
     }
@@ -171,7 +174,13 @@
       mapPointCrud.formData.longitude = Number(mapPointCrud.formData.longitude);
     }
 
-    const error = createMapPointValidator()(mapPointCrud.formData);
+    // Create a copy of formData with categoryId converted to number for validation
+    const validationData = {
+      ...mapPointCrud.formData,
+      categoryId: Number(mapPointCrud.formData.categoryId),
+    };
+
+    const error = createMapPointValidator()(validationData);
     if (error) {
       alert(error);
       event.preventDefault();
@@ -186,32 +195,48 @@
   });
 
   const categoryTableData = $derived(
-    categories.map((category) => ({
-      id: category.id,
-      name: category.name,
-      mapPoints: mapPoints.filter((point) => point.categoryId === category.id), // Fix: Calculate mapPoints count
-    }))
+    categories.map((category) => {
+      // Count map points for this category
+      // Ensure categoryId (string from form) is compared with category.id (number)
+      const pointCount = mapPoints.filter((point) => Number(point.categoryId) === category.id).length;
+      return {
+        id: category.id,
+        name: category.name, // Should be Record<string, string> from transformer
+        mapPointsCount: pointCount,
+      };
+    })
   );
 
   const mapPointTableData = $derived(
-    mapPoints.map((point) => {
-      // Fix: Find the category and transform its name properly
-      const category = categories.find((cat) => cat.id === point.categoryId);
-      return {
-        id: point.id,
-        name: point.name,
-        description: point.description,
-        categoryId: point.categoryId,
-        latitude: point.latitude,
-        longitude: point.longitude,
-        category: category
-          ? {
-              id: category.id,
-              name: category.name,
-            }
-          : null,
-      };
-    })
+    mapPoints
+      .map((point) => {
+        // The point object from mapPoints should already contain a transformed category object
+        // if the mapPointTransformers.transformApiToForm is working correctly.
+        return {
+          id: point.id,
+          name: point.name, // Should be Record<string, string>
+          description: point.description, // Should be Record<string, string>
+          categoryId: point.categoryId, // String
+          latitude: point.latitude,
+          longitude: point.longitude,
+          category: point.category, // This should be the transformed category object {id, name: Record<string,string>}
+        };
+      })
+      .sort((a, b) => {
+        const categoryNameA = a.category ? getTranslation(a.category.name, currentLanguage, "de").toLowerCase() : "";
+        const categoryNameB = b.category ? getTranslation(b.category.name, currentLanguage, "de").toLowerCase() : "";
+        const pointNameA = getTranslation(a.name, currentLanguage, "de").toLowerCase();
+        const pointNameB = getTranslation(b.name, currentLanguage, "de").toLowerCase();
+
+        if (categoryNameA < categoryNameB) return -1;
+        if (categoryNameA > categoryNameB) return 1;
+
+        // If categories are the same, sort by point name
+        if (pointNameA < pointNameB) return -1;
+        if (pointNameA > pointNameB) return 1;
+
+        return 0;
+      })
   );
 </script>
 

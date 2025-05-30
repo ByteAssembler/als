@@ -36,7 +36,7 @@ interface MapPointFormType {
 	id?: number;
 	name: Record<string, string>;
 	description: Record<string, string>;
-	categoryId: number;
+	categoryId: string; // Fix: Change to string for form compatibility
 	latitude: number;
 	longitude: number;
 }
@@ -55,26 +55,48 @@ const mapPointTransformers: DataTransformers<any, MapPointFormType> = {
 		const nameObj: Record<string, string> = {};
 		const descriptionObj: Record<string, string> = {};
 
-		// Handle API format - both arrays and single language formats
-		if (apiData.names && Array.isArray(apiData.names)) {
-			apiData.names.forEach((name: any) => {
-				nameObj[name.language] = name.text;
+		if (apiData.name && apiData.name.translations && Array.isArray(apiData.name.translations)) {
+			apiData.name.translations.forEach((trans: { language: string; value: string }) => {
+				nameObj[trans.language] = trans.value;
 			});
+		} else if (apiData.names && Array.isArray(apiData.names)) { // Fallback
+			apiData.names.forEach((item: any) => nameObj[item.language] = item.text || item.value);
 		}
 
-		if (apiData.descriptions && Array.isArray(apiData.descriptions)) {
-			apiData.descriptions.forEach((desc: any) => {
-				descriptionObj[desc.language] = desc.text;
+		if (apiData.description && apiData.description.translations && Array.isArray(apiData.description.translations)) {
+			apiData.description.translations.forEach((trans: { language: string; value: string }) => {
+				descriptionObj[trans.language] = trans.value;
 			});
+		} else if (apiData.descriptions && Array.isArray(apiData.descriptions)) { // Fallback
+			apiData.descriptions.forEach((item: any) => descriptionObj[item.language] = item.text || item.value);
+		}
+
+		let transformedCategory: { id: number; name: Record<string, string> } | undefined = undefined;
+		if (apiData.category) {
+			const categoryNameObj: Record<string, string> = {};
+			if (apiData.category.name && apiData.category.name.translations && Array.isArray(apiData.category.name.translations)) {
+				apiData.category.name.translations.forEach((trans: { language: string; value: string }) => {
+					categoryNameObj[trans.language] = trans.value;
+				});
+			} else if (apiData.category.names && Array.isArray(apiData.category.names)) { // Fallback for category names
+				apiData.category.names.forEach((item: any) => categoryNameObj[item.language] = item.text || item.value);
+			}
+			transformedCategory = {
+				id: apiData.category.id,
+				name: categoryNameObj,
+			};
 		}
 
 		return {
 			id: apiData.id,
 			name: nameObj,
 			description: descriptionObj,
-			categoryId: String(apiData.categoryId || 0), // Fix: Convert to string for select field
+			categoryId: String(apiData.categoryId || ""),
 			latitude: Number(apiData.latitude) || 0,
-			longitude: Number(apiData.longitude) || 0
+			longitude: Number(apiData.longitude) || 0,
+			// Store the fully transformed category object if available
+			// This is used by mapPointTableData in Map.svelte
+			category: transformedCategory,
 		};
 	},
 
@@ -92,11 +114,12 @@ const mapPointCategoryTransformers: DataTransformers<any, MapPointCategoryFormTy
 	transformApiToForm: (apiData: any) => {
 		const nameObj: Record<string, string> = {};
 
-		// Handle API format - both arrays and single language formats
-		if (apiData.names && Array.isArray(apiData.names)) {
-			apiData.names.forEach((name: any) => {
-				nameObj[name.language] = name.text;
+		if (apiData.name && apiData.name.translations && Array.isArray(apiData.name.translations)) {
+			apiData.name.translations.forEach((trans: { language: string; value: string }) => {
+				nameObj[trans.language] = trans.value;
 			});
+		} else if (apiData.names && Array.isArray(apiData.names)) { // Fallback
+			apiData.names.forEach((item: any) => nameObj[item.language] = item.text || item.value);
 		}
 
 		return {
@@ -146,10 +169,10 @@ function createMapPointFormFields(): FormField[] {
 		{
 			id: "categoryId",
 			label: "Kategorie",
-			type: "text",
+			type: "select", // Fix: Change to select type
 			required: true,
 			multilingual: false,
-			placeholder: "Kategorie-ID auswählen",
+			placeholder: "Kategorie auswählen",
 			helpText: "Wählen Sie eine Kategorie für diesen Punkt"
 		},
 		{
@@ -184,7 +207,7 @@ function createMapPointInitialFormData() {
 	return {
 		name: createInitialFormDataForLanguages(),
 		description: createInitialFormDataForLanguages(),
-		categoryId: 0,
+		categoryId: "", // Fix: Change to empty string
 		latitude: 0,
 		longitude: 0
 	};
