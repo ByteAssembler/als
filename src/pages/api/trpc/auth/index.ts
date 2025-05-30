@@ -19,25 +19,24 @@ function isAuthenticated(request: Request): boolean {
 
 			// Decode the token
 			const decodedToken = authHeader?.startsWith("Bearer ")
-				? authHeader.slice(7) // Remove "Bearer " prefix
+				? authHeader.slice(7)
 				: authHeader;
 
 			if (!decodedToken) {
-				return false; // No token found
+				return false;
 			}
 
-			const decoded = jwt.verify(decodedToken, SECRET_KEY);
-			console.log("Decoded token:", decoded);
-			//! TODO: Implement your actual token validation logic here
-			return true; // Token is valid
+			try {
+				const decoded = jwt.verify(decodedToken, SECRET_KEY);
+				return true;
+			} catch (err) {
+				return false;
+			}
 		}
 	}
-	if (!authHeader) {
-		return false; // No auth header or cookie found
-	}
-	console.log("Auth header:", authHeader);
-	// TODO: Implement your actual authentication logic here
-	// For example: JWT validation, session check, API key validation, etc.
+
+	if (!authHeader) return false;
+
 	return authHeader?.startsWith("Bearer ") || false;
 }
 
