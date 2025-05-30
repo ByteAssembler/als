@@ -4,19 +4,7 @@ import "leaflet/dist/leaflet.css";
 import type { fetchDataFromServer } from "../pages/api/trpc/serverHelpers";
 import { i18n } from "@/i18n";
 
-const MapComponent = (
-  {
-    lang, points, categories
-  }: {
-    lang: string | undefined | null;
-    points: Awaited<ReturnType<typeof fetchDataFromServer<"mapPoint.list_by_language">>>;
-    categories: Awaited<ReturnType<typeof fetchDataFromServer<"mapPointCategory.list_by_language">>>;
-  }
-) => {
-  const mapRef = useRef<L.Map | null>(null);
-  const markersRef = useRef<L.Marker[]>([]);
-  const [category, setCategory] = useState("");
-
+function getIconUrl(category: string) {
   let url = "/marker.png";
   switch (category) {
     // Events
@@ -79,12 +67,23 @@ const MapComponent = (
     default:
       url = "https://img.icons8.com/ios-filled/50/000000/marker.png";
   }
+  return url;
+}
 
-  const customIcon = L.icon({
-    iconUrl: url,
-    iconSize: [45, 45],
-    iconAnchor: [15, 45],
-  });
+
+const MapComponent = (
+  {
+    lang, points, categories
+  }: {
+    lang: string | undefined | null;
+    points: Awaited<ReturnType<typeof fetchDataFromServer<"mapPoint.list_by_language">>>;
+    categories: Awaited<ReturnType<typeof fetchDataFromServer<"mapPointCategory.list_by_language">>>;
+  }
+) => {
+  const mapRef = useRef<L.Map | null>(null);
+  const markersRef = useRef<L.Marker[]>([]);
+  const [category, setCategory] = useState("");
+
 
   useEffect(() => {
     if (!mapRef.current) {
@@ -101,25 +100,24 @@ const MapComponent = (
     markersRef.current.forEach((marker) => mapRef.current?.removeLayer(marker));
     markersRef.current = [];
 
-    const selectedCategories = category ? [points.find((item) => item.name === category)] : points;
+    const selectedpoints = category === "" ? points : points.filter((point) => point.category.name === category);
     let group: L.Marker[] = [];
 
-    console.log("selectedCategories", selectedCategories, url, points);
-
-
-    selectedCategories.forEach((category) => {
-      if (category) {
-        points.forEach((point) => {
-          const marker = L.marker([point.latitude, point.longitude], {
-            icon: customIcon,
-          })
-            .bindPopup(`<b>${point.name}</b><p>${point.description}</p>`)
-            .addTo(mapRef.current!);
-          markersRef.current.push(marker);
-          group.push(marker);
-        });
-      }
+    selectedpoints.forEach((point) => {
+      const marker = L.marker([point.latitude, point.longitude], {
+        icon: L.icon({
+          iconUrl: getIconUrl(point.category.name || "default"),
+          iconSize: [20, 20],
+          iconAnchor: [15, 45],
+        })
+      })
+        .bindPopup(`<b>${point.name}</b><p>${point.description}</p>`)
+        .addTo(mapRef.current!);
+      markersRef.current.push(marker);
+      group.push(marker);
     });
+
+
 
     if (group.length > 1) {
       const groupLayer = L.featureGroup(group);

@@ -105,6 +105,7 @@ export const mapPointCategoryHandlers = {
 				text: t.value,
 				language: t.language
 			})),
+			mapPoints: mapPointCategory.mapPoints,
 		}));
 	},
 

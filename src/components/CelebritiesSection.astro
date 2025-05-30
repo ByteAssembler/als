@@ -1,4 +1,5 @@
 ﻿---
+import { getImageUrlForImageKey } from "@/pages/api/trpc/handlers/file-manager-api";
 import Section from "../layouts/Section.astro";
 import { fetchDataFromServer } from "../pages/api/trpc/serverHelpers";
 
@@ -16,9 +17,9 @@ const celebrities = await fetchDataFromServer("celebrity.list_by_language", lang
                 celebrities.map((celebrity) => (
                     <div class="bg-[#f2f4ff] p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
                         <div class="flex items-start space-x-4">
-                            {celebrity.image && (
+                            {celebrity.imageKey && (
                                 <img
-                                    src={celebrity.image}
+                                    src={getImageUrlForImageKey(celebrity.imageKey)}
                                     alt={celebrity.name}
                                     class="w-20 h-20 object-cover rounded-full"
                                 />

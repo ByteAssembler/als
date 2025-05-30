@@ -1,5 +1,6 @@
 <script lang="ts">
   import LanguageModal from "./LanguageModal.svelte";
+  import FileManagerSelect from "./FileManagerSelect.svelte";
 
   interface Language {
     code: string;
@@ -9,12 +10,14 @@
   export interface FormField {
     id: string;
     label: string;
-    type?: "text" | "textarea" | "checkbox";
+    type?: "text" | "textarea" | "checkbox" | "select";
     required?: boolean;
     multilingual?: boolean;
     placeholder?: string;
     helpText?: string;
     getHelpText?: (currentLanguage: string) => string;
+    useFileManager?: boolean;
+    options?: Array<{ value: string; label: string }>; // New for select fields
   }
 
   interface Props {
@@ -96,6 +99,26 @@
               type="checkbox"
               bind:checked={formData[field.id]}
               class="rounded border-input focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          {:else if field.type === "select"}
+            <!-- Select dropdown -->
+            <select
+              id={field.id}
+              bind:value={formData[field.id]}
+              required={field.required}
+              class="w-full px-3 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="">{field.placeholder || "Bitte auswählen..."}</option>
+              {#each field.options || [] as option}
+                <option value={option.value}>{option.label}</option>
+              {/each}
+            </select>
+          {:else if field.useFileManager}
+            <!-- File Manager Selection -->
+            <FileManagerSelect
+              bind:value={formData[field.id]}
+              placeholder={field.placeholder || "Auswählen..."}
+              {field}
             />
           {:else if field.id === "authors"}
             <!-- Special handling for authors array field -->

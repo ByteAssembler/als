@@ -46,6 +46,7 @@ export const celebrityHandlers = {
 		return await prisma.celebrity.create({
 			data: {
 				...rest,
+				imageKey: image,
 				bio: {
 					create: {
 						translations: {
@@ -78,6 +79,7 @@ export const celebrityHandlers = {
 			where: { id },
 			data: {
 				...rest,
+				...(image !== undefined && { imageKey: image }),
 				...(bios && {
 					bio: {
 						update: {

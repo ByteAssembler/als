@@ -19,6 +19,11 @@ const minioClient = new Client({
 	secretKey: FILE_STORAGE_SERVER_SECRET_KEY,
 });
 
+export function getImageUrlForImageKey(imageKey: string | null | undefined): string | null {
+	if (!imageKey || imageKey.length === 0) return null;
+	return `${FILE_STORAGE_SERVER_ENDPOINT_FULL}${BUCKET_NAME}/${encodeURIComponent(imageKey)}`;
+}
+
 async function listEntries(options: { prefix?: string; recursive?: boolean } = {}): Promise<BucketItem[]> {
 	return new Promise((resolve, reject) => {
 		const items: BucketItem[] = [];

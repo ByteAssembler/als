@@ -6,8 +6,8 @@
   // import Navbar from "./schema/Navbar.svelte";
   import Links from "./schema/Links.svelte";
   // import Blogs from "./schema/Blogs.svelte";
-  // import Celebrities from "./schema/Celebrities.svelte";
-  // import Map from "./schema/Map.svelte";
+  import Celebrities from "./schema/Celebrities.svelte";
+  import Map from "./schema/Map.svelte";
   // import LanguageSettings from "./schema/LanguageSettings.svelte";
   import "./styles.css";
 
@@ -88,12 +88,14 @@
   <!-- Sidebar -->
   <Sidebar sections={sidebarSections} {activeItemId} on:select={(event) => (activeItemId = event.detail.id)} />
 
-  <!-- button back home -->
   <!-- Main Content -->
   <main class="xl:pl-64 lg:pl-16 md:pl-16 pl-0 min-h-screen transition-all duration-300">
-    <!-- Content Area -->
     <div class="px-6 py-8 lg:px-8">
-      {#if activeItemId === "language-settings"}
+      {#if activeItemId === "map"}
+        <Map />
+      {:else if activeItemId === "celebrities"}
+        <Celebrities />
+      {:else if activeItemId === "language-settings"}
         <LanguageSettings />
       {:else if activeItemId === "links"}
         <Links />
@@ -103,10 +105,6 @@
         <Navbar />
       {:else if activeItemId === "blogs"}
         <Blogs />
-      {:else if activeItemId === "map"}
-        <Map />
-      {:else if activeItemId === "celebrities"}
-        <Celebrities />
       {:else if activeItemId === "dashboard"}
         <!-- Dashboard Content -->
         <div class="space-y-6">
