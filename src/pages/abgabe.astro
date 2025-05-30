@@ -1,5 +1,9 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import { getImageUrlForImageKey } from "@/utils";
+
+const videoUrl = getImageUrlForImageKey("abgabe/abgabe.mp4");
+const codeUrl = getImageUrlForImageKey("abgabe/code.zip");
 ---
 
 <Layout title="Abgabe" showTitle={false}>
@@ -19,25 +23,39 @@ import Layout from "@/layouts/Layout.astro";
                 <div class="p-8">
                     <div class="space-y-6">
                         <!-- Video Section -->
-                        <div class="bg-gray-50 rounded-lg p-6 flex items-center space-x-6">
-                            <div class="flex-shrink-0">
-                                <div class="h-12 w-12 bg-red-500 rounded-full flex items-center justify-center">
-                                    <svg class="h-6 w-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M8 5v14l11-7z"></path>
-                                    </svg>
+                        <div class="bg-gray-50 rounded-lg p-6">
+                            <div class="flex items-center space-x-6 mb-4">
+                                <div class="flex-shrink-0">
+                                    <div class="h-12 w-12 bg-red-500 rounded-full flex items-center justify-center">
+                                        <svg class="h-6 w-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M8 5v14l11-7z"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-1">Video Präsentation</h3>
                                 </div>
                             </div>
-                            <div class="flex-1">
-                                <h3 class="text-lg font-semibold text-gray-900 mb-1">Video Präsentation</h3>
+
+                            <!-- Video Player -->
+                            <div class="w-full">
+                                <video controls class="w-full rounded-lg shadow-lg" preload="metadata">
+                                    <source src={videoUrl} type="video/mp4" />
+                                    Ihr Browser unterstützt das Video-Element nicht.
+                                </video>
+                            </div>
+
+                            <!-- Download Link -->
+                            <div class="mt-4">
                                 <a
-                                    href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                                    href={videoUrl}
                                     target="_blank"
                                     class="inline-flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200"
                                 >
                                     <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M8 5v14l11-7z"></path>
                                     </svg>
-                                    Video ansehen
+                                    Video herunterladen
                                 </a>
                             </div>
                         </div>
@@ -64,7 +82,7 @@ import Layout from "@/layouts/Layout.astro";
                             <div class="flex-1">
                                 <h3 class="text-lg font-semibold text-gray-900 mb-1">Quellcode</h3>
                                 <a
-                                    href="/downloads/project-code.zip"
+                                    href={codeUrl}
                                     download
                                     class="inline-flex items-center px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-200"
                                 >
