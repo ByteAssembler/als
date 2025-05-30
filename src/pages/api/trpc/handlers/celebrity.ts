@@ -60,12 +60,7 @@ export const celebrityHandlers = {
 						},
 					},
 				},
-				...(image && {
-					image: {
-						connect: { storageKey: image }
-					}
-				})
-			}
+			},
 		});
 	},
 
@@ -103,13 +98,6 @@ export const celebrityHandlers = {
 						},
 					},
 				}),
-				...(image !== undefined && {
-					image: image ? {
-						connect: { storageKey: image }
-					} : {
-						disconnect: true
-					}
-				})
 			}
 		});
 	},

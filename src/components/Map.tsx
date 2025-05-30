@@ -19,33 +19,63 @@ const MapComponent = (
 
   let url = "/marker.png";
   switch (category) {
+    // Events
     case "event":
+    case "Aktionen / Veranstaltungen":
+    case "Events / Activities":
+    case "Eventi / Attività":
       url = "https://img.icons8.com/ios-filled/50/000000/calendar.png";
       break;
+
+    // Hospitals
     case "hospital":
       url = "https://img.icons8.com/ios-filled/50/000000/hospital.png";
       break;
+
+    // Self-help groups
     case "self_help_group":
+    case "Selbsthilfegruppe":
+    case "Support Groups":
+    case "Gruppi di auto-aiuto":
       url = "https://img.icons8.com/ios-filled/50/000000/conference.png";
       break;
+
+    // Studies
     case "study":
+    case "Studien (wo Teilnahme möglich?)":
+    case "Clinical Studies (participation possible)":
+    case "Studi clinici (partecipazione possibile)":
       url = "https://img.icons8.com/ios-filled/50/000000/open-book.png";
       break;
+
+    // Clinics
     case "clinic":
+    case "Kliniken":
+    case "Clinics":
+    case "Cliniche":
       url = "https://img.icons8.com/ios-filled/50/000000/clinic.png";
       break;
+
     case "research_center":
       url = "https://img.icons8.com/ios-filled/50/000000/microscope.png";
       break;
+
+    // Organizations
     case "organization":
+    case "Vereine":
+    case "Associations":
+    case "Associazioni":
       url = "https://img.icons8.com/ios-filled/50/000000/organization.png";
       break;
+
     case "therapy":
       url = "https://img.icons8.com/ios-filled/50/000000/therapy.png";
       break;
+
     case "support":
       url = "https://img.icons8.com/ios-filled/50/000000/helping-hand.png";
       break;
+
     default:
       url = "https://img.icons8.com/ios-filled/50/000000/marker.png";
   }
