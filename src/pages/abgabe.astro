@@ -1,0 +1,133 @@
+---
+import Layout from "@/layouts/Layout.astro";
+---
+
+<Layout title="Abgabe" showTitle={false}>
+    <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-2xl mx-auto">
+            <!-- Header Section -->
+            <div class="text-center mb-12">
+                <h1 class="mt-14 text-4xl font-bold text-gray-900 mb-4">Projekt Abgabe</h1>
+            </div>
+
+            <!-- Project Resources Section -->
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden mb-8">
+                <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-8 py-6">
+                    <h2 class="text-2xl font-bold text-white">Projekt Ressourcen</h2>
+                </div>
+
+                <div class="p-8">
+                    <div class="space-y-6">
+                        <!-- Video Section -->
+                        <div class="bg-gray-50 rounded-lg p-6 flex items-center space-x-6">
+                            <div class="flex-shrink-0">
+                                <div class="h-12 w-12 bg-red-500 rounded-full flex items-center justify-center">
+                                    <svg class="h-6 w-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M8 5v14l11-7z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-1">Video Präsentation</h3>
+                                <a
+                                    href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                                    target="_blank"
+                                    class="inline-flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200"
+                                >
+                                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M8 5v14l11-7z"></path>
+                                    </svg>
+                                    Video ansehen
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Code Download Section -->
+                        <div class="bg-gray-50 rounded-lg p-6 flex items-center space-x-6">
+                            <div class="flex-shrink-0">
+                                <div class="h-12 w-12 bg-green-500 rounded-full flex items-center justify-center">
+                                    <svg
+                                        class="h-6 w-6 text-white"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                        ></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-1">Quellcode</h3>
+                                <a
+                                    href="/downloads/project-code.zip"
+                                    download
+                                    class="inline-flex items-center px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-200"
+                                >
+                                    <svg
+                                        class="w-4 h-4 mr-2"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="24"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-download-icon lucide-download"
+                                        ><path d="M12 15V3"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                                        ></path><path d="m7 10 5 5 5-5"></path></svg
+                                    >
+                                    Code herunterladen
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Live Demo Section -->
+                        <div class="bg-gray-50 rounded-lg p-6 flex items-center space-x-6">
+                            <div class="flex-shrink-0">
+                                <div class="h-12 w-12 bg-blue-500 rounded-full flex items-center justify-center">
+                                    <svg
+                                        class="h-6 w-6 text-white"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9V3"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-1">Live Demo</h3>
+                                <a
+                                    href="/"
+                                    target="_blank"
+                                    class="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200"
+                                >
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                                        ></path>
+                                    </svg>
+                                    Demo öffnen
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</Layout>
