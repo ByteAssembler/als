@@ -14,18 +14,7 @@ const navbarContentByLang =
 <nav class="hidden lg:flex items-center gap-10">
     {
         navbarContentByLang.map((item) => (
-            <MenuItem
-                {...item}
-                href={
-                    item.href.startsWith("#")
-                        ? item.href
-                        : Astro.url.origin +
-                          (item.withLanguagePrefix ? "/" + (lang ? lang : "en") : "") +
-                          "/" +
-                          item.href
-                }
-                text={item.text}
-            />
+            <MenuItem {...item} href={item.withLanguagePrefix ? `/${lang}${item.href}` : item.href} text={item.text} />
         ))
     }
     <LanguageSelector />

@@ -17,20 +17,20 @@ export const deTranslations = {
 		},
 		homepage: {
 			wellcome: {
-				title: "Wir kämpfen gemeinsam gegen ALS",
-				subtitle: "Schließen Sie sich uns in diesem starken Kampf an",
+				title: "Gemeinsam gegen ALS",
+				subtitle: "Mach mit in diesem starken Kampf",
 				learnMore: "Mehr erfahren",
 			},
 			aboutUs: {
 				title: "Über uns",
-				content: 'Das „Collegium vincere ALS“ ist ein Verein, der sich dem Kampf gegen Amyotrophe Lateralsklerose (ALS) widmet, eine chronisch degenerative Erkrankung des motorischen Nervensystems.<br><br>Wir sehen ALS als eine „Krankheit der tausend Abschiede“ und wollen Betroffene und ihre Familien in dieser schwierigen Zeit unterstützen.<br><br>Unsere Ziele umfassen die umfassende Versorgung von Patienten, die Sensibilisierung der Öffentlichkeit für ALS, den Aufbau von Netzwerken zwischen relevanten Akteuren und die Förderung der ALS-Forschung.<br><br>Durch Initiativen wie Infostände und unser mobiles ALS-Kit wollen wir die Öffentlichkeit aufklären und Spenden sammeln, um Forschungsprojekte zu unterstützen und die Lebensqualität der Betroffenen zu verbessern.<br><br>Wenn Sie Fragen haben, Hilfe benötigen oder unsere Arbeit unterstützen möchten, nehmen Sie bitte Kontakt mit uns auf - denn Ihre Lebensqualität liegt uns am Herzen!',
-				imageCaption: "Leiter des Vereins: Gerd Steger",
+				content: 'Das „Collegium vincere ALS“ ist ein Verein, der sich dem Kampf gegen die amyotrophe Lateralsklerose (ALS) widmet, einer chronisch-degenerativen Erkrankung des motorischen Nervensystems.<br><br>Wir sehen ALS als eine „Krankheit der tausend Abschiede“ und möchten Betroffene und ihre Familien in dieser schweren Zeit unterstützen.<br><br>Unsere Ziele sind eine umfassende Betreuung der Patienten, die Sensibilisierung der Öffentlichkeit für ALS, die Vernetzung relevanter Akteure und die Förderung der ALS-Forschung.<br><br>Durch Initiativen wie Infotische und unser mobiles ALS-Kit möchten wir die Öffentlichkeit aufklären und Spenden für Forschungsprojekte sowie zur Verbesserung der Lebensqualität der Betroffenen sammeln.<br><br>Wenn Sie Fragen haben, Hilfe benötigen oder unsere Arbeit unterstützen möchten, kontaktieren Sie uns – denn Ihre Lebensqualität ist uns wichtig!',
+				imageCaption: "Vereinsleitung: Gerd Steger",
 			},
 			research: {
 				title: "Forschung & Austausch",
 			},
 			map: {
-				title: "Wo Sie Hilfe finden",
+				title: "Hier finden Sie Hilfe",
 				allcategories: "Alle Kategorien",
 			},
 			promis: {
@@ -62,51 +62,34 @@ export const deTranslations = {
 		media: {
 			pageTitle: "Medien",
 			categories: {
-				books: {
-					title: "Bücher",
-				},
-				audios: {
-					title: "Audios",
-					empty: "Keine Audios verfügbar.",
-				},
-				images: {
-					title: "Bilder",
-					empty: "Keine Bilder verfügbar.",
-				},
-				videos: {
-					title: "Videos",
-					empty: "Keine Videos verfügbar.",
-				},
-				documents: {
-					title: "Dokumente",
-					empty: "Keine Dokumente verfügbar.",
-				},
-				information: {
-					title: "Informationen",
-					empty: "Keine Informationen verfügbar.",
-				},
+				books: { title: "Bücher" },
+				audios: { title: "Audios", empty: "Keine Audios verfügbar." },
+				images: { title: "Bilder", empty: "Keine Bilder verfügbar." },
+				videos: { title: "Videos", empty: "Keine Videos verfügbar." },
+				documents: { title: "Dokumente", empty: "Keine Dokumente verfügbar." },
+				information: { title: "Informationen", empty: "Keine Informationen verfügbar." },
 			},
 			actions: {
 				download: "Herunterladen",
 				openInNewTab: "In neuem Tab öffnen",
 				close: "Schließen",
-				noContent: "Aktuell sind keine Medieninhalte verfügbar.",
+				noContent: "Derzeit sind keine Medieninhalte verfügbar.",
 				noPreview: "Vorschau nicht verfügbar.",
 				openFile: "Datei öffnen",
 			},
 		},
 		links: {
-			title: "Nützliche Links für Betroffene, Familienangehörige und Interessierte",
+			title: "Nützliche Links für Betroffene, Angehörige und Interessierte",
 			description1: "Diese Website bietet umfassende Informationen über ALS, ihre Symptome und Behandlungsmöglichkeiten.",
-			description2: "Unterstützungsnetzwerke und Beratungsdienste für Betroffene und ihre Angehörigen."
+			description2: "Netzwerke und Beratungsangebote zur Unterstützung von Betroffenen und deren Angehörigen."
 		}
 	},
 	cookieBanner: {
 		message: "Diese Website verwendet Cookies. Mehr Infos in unserer ",
 		privacyLinkText: "Datenschutzerklärung",
-		dontShowAgain: "Diesen Banner nicht mehr anzeigen",
+		dontShowAgain: "Diesen Hinweis nicht mehr anzeigen",
 		acceptAll: "Alle akzeptieren",
-		acceptEssential: "Nur essentielle akzeptieren",
+		acceptEssential: "Nur notwendige akzeptieren",
 	},
 	footer: {
 		legalNotice: "Alle Rechte vorbehalten",

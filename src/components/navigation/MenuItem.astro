@@ -4,6 +4,7 @@ import type { NavbarItem } from "./navbar-content";
 
 type Props = NavbarItem & {
     className?: string;
+    href: any | string;
 };
 
 const { href, text, className = "" } = Astro.props;
