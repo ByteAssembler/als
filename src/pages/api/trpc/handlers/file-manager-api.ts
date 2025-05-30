@@ -1,22 +1,22 @@
 import { Client, type BucketItem } from 'minio';
 import type { Readable } from 'stream';
 
-if (!process.env.MINIO_ENDPOINT_FULL || !process.env.MINIO_ENDPOINT || !process.env.MINIO_BUCKET_NAME || !process.env.MINIO_ACCESS_KEY || !process.env.MINIO_SECRET_KEY) {
-	console.error('Missing environment variables for MinIO configuration. Please check your .env file.');
+if (!process.env.FILE_STORAGE_SERVER_ENDPOINT_FULL || !process.env.FILE_STORAGE_SERVER_ENDPOINT || !process.env.FILE_STORAGE_SERVER_BUCKET_NAME || !process.env.FILE_STORAGE_SERVER_ACCESS_KEY || !process.env.FILE_STORAGE_SERVER_SECRET_KEY) {
+	console.error('Missing environment variables for FileServer configuration. Please check your .env file.');
 	process.exit(1);
 }
 
-export const MINIO_ENDPOINT_FULL = process.env.MINIO_ENDPOINT_FULL;
-export const MINIO_ENDPOINT = process.env.MINIO_ENDPOINT;
-export const BUCKET_NAME = process.env.MINIO_BUCKET_NAME;
+export const FILE_STORAGE_SERVER_ENDPOINT_FULL = process.env.FILE_STORAGE_SERVER_ENDPOINT_FULL;
+export const FILE_STORAGE_SERVER_ENDPOINT = process.env.FILE_STORAGE_SERVER_ENDPOINT;
+export const BUCKET_NAME = process.env.FILE_STORAGE_SERVER_BUCKET_NAME;
 
-export const MINIO_ACCESS_KEY = process.env.MINIO_ACCESS_KEY;
-export const MINIO_SECRET_KEY = process.env.MINIO_SECRET_KEY;
+export const FILE_STORAGE_SERVER_ACCESS_KEY = process.env.FILE_STORAGE_SERVER_ACCESS_KEY;
+export const FILE_STORAGE_SERVER_SECRET_KEY = process.env.FILE_STORAGE_SERVER_SECRET_KEY;
 
 const minioClient = new Client({
-	endPoint: MINIO_ENDPOINT,
-	accessKey: MINIO_ACCESS_KEY,
-	secretKey: MINIO_SECRET_KEY,
+	endPoint: FILE_STORAGE_SERVER_ENDPOINT,
+	accessKey: FILE_STORAGE_SERVER_ACCESS_KEY,
+	secretKey: FILE_STORAGE_SERVER_SECRET_KEY,
 });
 
 async function listEntries(options: { prefix?: string; recursive?: boolean } = {}): Promise<BucketItem[]> {
@@ -153,6 +153,71 @@ async function deleteFolder(folderName: string) {
 	});
 }
 
+async function listAllFiles(): Promise<string[]> {
+	return new Promise((resolve, reject) => {
+		const filePaths: string[] = [];
+		const stream = minioClient.listObjectsV2(BUCKET_NAME, '', true);
+
+		stream.on('data', (obj: BucketItem) => {
+			if (obj.name && !obj.name.endsWith('/')) {
+				filePaths.push(obj.name);
+			}
+		});
+		stream.on('error', (err: Error) => {
+			reject(err);
+		});
+		stream.on('end', () => {
+			resolve(filePaths);
+		});
+	});
+}
+
+async function getPublicContent(): Promise<{ [category: string]: (BucketItem & { mediaType: string })[] }> {
+	const prefix = `public-media/`;
+
+	try {
+		const items = await listEntries({ prefix, recursive: true });
+		const files = items.filter(item => item.name && !item.name.endsWith('/'));
+
+		const categorizedContent: { [category: string]: (BucketItem & { mediaType: string })[] } = {};
+
+		for (const item of files) {
+			if (!item.name) continue;
+
+			const pathParts = item.name.split('/');
+
+			if (pathParts.length > 1) {
+				const folderCategoryKey = pathParts[1];
+
+				if (!categorizedContent[folderCategoryKey]) {
+					categorizedContent[folderCategoryKey] = [];
+				}
+
+				let serverMediaType = 'application/octet-stream';
+				try {
+					const stat = await statFile({ name: item.name });
+					if (stat && stat.metaData) {
+						serverMediaType = stat.metaData['content-type'] || stat.metaData['Content-Type'] || serverMediaType;
+					}
+				} catch (statError: any) {
+					console.warn(`Metadaten für ${item.name} konnten nicht abgerufen werden: ${statError.message}`);
+				}
+
+				const enrichedItem = {
+					...item,
+					mediaType: serverMediaType
+				};
+
+				categorizedContent[folderCategoryKey].push(enrichedItem);
+			}
+		}
+
+		return categorizedContent;
+	} catch (error: any) {
+		throw new Error(`Fehler beim Abrufen öffentlicher Inhalte: ${error.message || error}`);
+	}
+}
+
 export const fileManager = {
 	listEntries,
 	getObjectStream,
@@ -165,6 +230,8 @@ export const fileManager = {
 	getDownloadFileUrlForClient,
 	renameFile,
 	deleteFile,
+	listAllFiles,
+	getPublicContent,
 
 	createFolder,
 	deleteFolder,

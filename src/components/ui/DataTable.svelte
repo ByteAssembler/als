@@ -1,4 +1,22 @@
-<script>
+<script lang="ts">
+  export interface Column {
+    header: string;
+    key: string;
+    primary?: boolean;
+    render?: (item: DataItem) => string;
+    clickable?: boolean;
+    onClick?: (item: DataItem) => void;
+  }
+
+  export interface DataItem {
+    id: string | number;
+    [key: string]: any;
+  }
+
+  type OnEditCallback = (item: DataItem) => void;
+  type OnDeleteCallback = (id: string | number) => void;
+  type OnCreateCallback = () => void;
+
   let {
     title,
     columns,
@@ -9,6 +27,16 @@
     createButtonText = "Neuen Eintrag hinzufügen",
     emptyStateTitle = "Keine Einträge vorhanden",
     emptyStateDescription = "Erstellen Sie Ihren ersten Eintrag, um zu beginnen.",
+  }: {
+    title: string;
+    columns: Column[];
+    data: DataItem[];
+    onEdit?: OnEditCallback;
+    onDelete?: OnDeleteCallback;
+    onCreate?: OnCreateCallback;
+    createButtonText?: string;
+    emptyStateTitle?: string;
+    emptyStateDescription?: string;
   } = $props();
 </script>
 
@@ -57,7 +85,16 @@
             {#each columns as column}
               <td class="px-6 py-4 text-sm" class:font-medium={column.primary} role="cell">
                 {#if column.render}
-                  {@html column.render(item)}
+                  {#if column.clickable && column.onClick}
+                    <button
+                      onclick={() => column.onClick?.(item)}
+                      class="text-left w-full focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+                    >
+                      {@html column.render(item)}
+                    </button>
+                  {:else}
+                    {@html column.render(item)}
+                  {/if}
                 {:else}
                   {item[column.key] || "-"}
                 {/if}

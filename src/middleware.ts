@@ -2,7 +2,7 @@
 
 import jwt from "jsonwebtoken";
 
-const SECRET_KEY = process.env.JWT_SECRET || "supersecretkey";
+export const SECRET_KEY = process.env.JWT_SECRET || "supersecretkey";
 
 export const onRequest = defineMiddleware((context, next) => {
 	// 1. Set lang

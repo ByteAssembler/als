@@ -29,8 +29,6 @@ model RawTranslation {
     blogContents          Blog[]             @relation("BlogContent")
     bookTitles            Book[]             @relation("BookTitle")
     bookContents          Book[]             @relation("BookContent")
-    mediaItemAltTexts     MediaItem[]        @relation("MediaItemAltText")
-    mediaItemCaptions     MediaItem[]        @relation("MediaItemCaption")
 }
 
 model Translation {
@@ -56,8 +54,12 @@ model Blog {
     contentRawTranslationId Int
     content                 RawTranslation @relation("BlogContent", fields: [contentRawTranslationId], references: [id], onDelete: Cascade)
 
+<<<<<<< HEAD
+    coverImageKey String?
+=======
     coverImageId String?
     coverImage   MediaItem? @relation("BlogCoverImage", fields: [coverImageId], references: [storageKey], onDelete: SetNull)
+>>>>>>> 6764d90ebf968dcada002db65007b042929843e4
 
     publishedAt DateTime @default(now())
     updatedAt   DateTime @updatedAt
@@ -81,6 +83,8 @@ model Navbar {
     text                 RawTranslation @relation("NavbarText", fields: [textRawTranslationId], references: [id], onDelete: Cascade)
     href                 String
 
+    order Int @default(0)
+
     withLanguagePrefix Boolean
 }
 
@@ -95,8 +99,6 @@ model User {
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-
-    uploadedMediaItems MediaItem[]
 }
 
 enum Role {
@@ -113,12 +115,16 @@ model Book {
     title                 RawTranslation @relation("BookTitle", fields: [titleRawTranslationId], references: [id], onDelete: Cascade)
     author                String
 
+<<<<<<< HEAD
+    coverImageKey String?
+=======
     coverImageId String?
     coverImage   MediaItem? @relation("BookCoverImage", fields: [coverImageId], references: [storageKey], onDelete: SetNull)
+>>>>>>> 6764d90ebf968dcada002db65007b042929843e4
 
     isbn String? @unique
 
-    published DateTime
+    published DateTime?
 
     contentRawTranslationId Int
     content                 RawTranslation @relation("BookContent", fields: [contentRawTranslationId], references: [id], onDelete: Cascade)
@@ -144,7 +150,7 @@ model MapPoint {
     description                 RawTranslation? @relation("MapPointDescription", fields: [descriptionRawTranslationId], references: [id], onDelete: SetNull)
 
     categoryId Int
-    category   MapPointCategory @relation(fields: [categoryId], references: [id])
+    category   MapPointCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
     latitude  Float
     longitude Float
@@ -156,8 +162,12 @@ model MapPoint {
 model Celebrity {
     id Int @id @default(autoincrement())
 
+<<<<<<< HEAD
+    imageKey String?
+=======
     imageId String?
     image   MediaItem? @relation("CelebrityImage", fields: [imageId], references: [storageKey], onDelete: SetNull)
+>>>>>>> 6764d90ebf968dcada002db65007b042929843e4
 
     name                       String
     bioRawTranslationId        Int
@@ -170,6 +180,8 @@ model Celebrity {
 
     alsYear Int
 }
+<<<<<<< HEAD
+=======
 
 model MediaItem {
     storageKey String @id
@@ -197,3 +209,4 @@ model MediaItem {
     booksAsCover       Book[]      @relation("BookCoverImage")
     celebritiesAsImage Celebrity[] @relation("CelebrityImage")
 }
+>>>>>>> 6764d90ebf968dcada002db65007b042929843e4

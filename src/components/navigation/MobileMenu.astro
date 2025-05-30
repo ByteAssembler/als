@@ -1,21 +1,26 @@
 ﻿---
+// Astro-Teil
 import MenuItem from "./MenuItem.astro";
 import LanguageSelector from "./LanguageSelector.astro";
-import type { NavbarItem } from "./navbar-content";
+import { navbarContent } from "./navbar-content";
 
-interface Props {
-    navBarItems: readonly NavbarItem[];
-}
+const { lang } = Astro.locals;
 
-const { navBarItems } = Astro.props;
+const navbarContentByLang =
+    lang && (lang as keyof typeof navbarContent) in navbarContent
+        ? navbarContent[lang as keyof typeof navbarContent]
+        : navbarContent.en;
 ---
 
 <div
     id="mobile-menu"
-    class="z-9999 fixed inset-0 translate-x-full transform bg-white transition-transform duration-300 ease-in-out lg:hidden"
+    class="z-[9999] fixed inset-0 translate-x-full transform bg-white transition-transform duration-300 ease-in-out lg:hidden"
 >
-    <div class="p-6">
-        <div class="flex justify-end">
+    <div class="p-6 flex flex-col h-full">
+        <div class="flex justify-between items-center">
+            <div class="pl-1">
+                <LanguageSelector />
+            </div>
             <button id="close-menu" class="text-gray-600 hover:text-gray-900" aria-label="Close menu">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -29,21 +34,17 @@ const { navBarItems } = Astro.props;
                 </svg>
             </button>
         </div>
+
         <nav class="mt-8">
-            <div class="flex flex-row">
-                <ul class="space-y-2">
-                    {
-                        navBarItems.map((item) => (
-                            <li>
-                                <MenuItem {...item} className="text-xl block py-2" />
-                            </li>
-                        ))
-                    }
-                </ul>
-                <div class="m-2 ml-6">
-                    <LanguageSelector />
-                </div>
-            </div>
+            <ul class="space-y-4">
+                {
+                    navbarContentByLang.map((item) => (
+                        <li>
+                            <MenuItem {...item} className="text-xl block py-2 px-2" />
+                        </li>
+                    ))
+                }
+            </ul>
         </nav>
     </div>
 </div>

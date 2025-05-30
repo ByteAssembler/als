@@ -1,7 +1,18 @@
-<script>
-  import { hasTranslation, createTranslationWarning } from "../../lib/utils/translation.js";
+<script lang="ts">
+  import { hasTranslation, createTranslationWarning } from "../../lib/utils/translation";
 
-  let { translationObj, currentLanguage, languages } = $props();
+  interface Language {
+    code: string;
+    name: string;
+  }
+
+  interface Props {
+    translationObj: Record<string, string>;
+    currentLanguage: string;
+    languages: Language[];
+  }
+
+  let { translationObj, currentLanguage, languages }: Props = $props();
 
   const showWarning =
     translationObj && Object.keys(translationObj).length > 0 && !hasTranslation(translationObj, currentLanguage);

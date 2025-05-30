@@ -23,6 +23,7 @@
 		"@dnd-kit/utilities": "^3.2.2",
 		"@googlemaps/js-api-loader": "^1.16.8",
 		"@jop-software/astro-cookieconsent": "^3.0.1",
+		"@lucide/svelte": "^0.511.0",
 		"@monaco-editor/react": "^4.7.0",
 		"@prisma/client": "^6.8.2",
 		"@react-google-maps/api": "^2.20.6",

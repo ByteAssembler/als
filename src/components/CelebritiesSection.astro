@@ -1,10 +1,11 @@
 ﻿---
-import Section from "../layouts/Section.astro";
-import { fetchDataFromServer } from "../pages/api/trpc/serverHelpers";
+import { getImageUrlForImageKey } from "@/utils";
+import Section from "@/layouts/Section.astro";
+import { fetchDataFromServer } from "@/pages/api/trpc/serverHelpers";
 
 const lang = Astro.locals.lang;
 if (!lang) throw new Error("Language is required");
-import { i18n } from "../i18n";
+import { i18n } from "@/i18n";
 
 const celebrities = await fetchDataFromServer("celebrity.list_by_language", lang);
 ---
@@ -14,29 +15,31 @@ const celebrities = await fetchDataFromServer("celebrity.list_by_language", lang
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             {
                 celebrities.map((celebrity) => (
-                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <div class="bg-[#f2f4ff] p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
                         <div class="flex items-start space-x-4">
-                            {celebrity.image && (
+                            {celebrity.imageKey && (
                                 <img
-                                    src={celebrity.image}
+                                    src={getImageUrlForImageKey(celebrity.imageKey)}
                                     alt={celebrity.name}
                                     class="w-20 h-20 object-cover rounded-full"
                                 />
                             )}
                             <div>
-                                <h3 class="text-lg font-bold text-blue-700">
+                                <h3 class="text-lg font-bold text-black-700">
                                     {celebrity.name}
                                     {celebrity.died && (
                                         <span class="text-gray-500 font-normal">
-                                            {" "}
-                                            ({new Date(celebrity.born).getFullYear()}-
-                                            {new Date(celebrity.died).getFullYear()})
+                                            {" (" +
+                                                new Date(celebrity.born).getFullYear() +
+                                                "-" +
+                                                new Date(celebrity.died).getFullYear() +
+                                                ")"}
                                         </span>
                                     )}
                                 </h3>
                                 <p class="text-gray-600 mt-1">
-                                    {i18n.tLang(lang, "pages.homepage.promis.diagnosis")}: {celebrity.alsYear} (
-                                    {i18n.tLang(lang, "pages.homepage.promis.age")}{" "}
+                                    {i18n.tLang(lang, "pages.homepage.promis.diagnosis")}: {celebrity.alsYear}
+                                    {"(" + i18n.tLang(lang, "pages.homepage.promis.age")}{" "}
                                     {celebrity.alsYear - new Date(celebrity.born).getFullYear()})
                                 </p>
                                 <p class="text-gray-600">{celebrity.profession}</p>

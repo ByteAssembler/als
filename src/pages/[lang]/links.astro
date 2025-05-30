@@ -1,23 +1,16 @@
 ﻿---
+import { i18n } from "@/i18n";
 import Layout from "../../layouts/Layout.astro";
 import { fetchDataFromServer } from "../../pages/api/trpc/serverHelpers";
 
 const lang = Astro.locals.lang;
-if (!lang) throw new Error("Lang ist not set!");
-
+if (!lang) throw new Error("Language not set in Astro.locals");
 const links = await fetchDataFromServer("link.list_by_language", lang);
 ---
 
-<Layout title="Links" defaultPadding={false}>
+<Layout title={i18n.tLang(lang, "pages.links.title")} defaultPadding={false}>
     <main class="min-h-screen pt-0 pb-16 px-6 sm:px-12">
         <div class="mx-auto max-w-4xl">
-            <!-- <header class="mb-12 text-center">
-                <h1 class="text-5xl font-extrabold text-blue-900 drop-shadow-md">Ressourcen & Unterstützung bei ALS</h1>
-                <p class="mt-4 text-lg text-blue-700 max-w-2xl mx-auto">
-                    Nützliche Links für Betroffene, Angehörige und Interessierte.
-                </p>
-            </header> -->
-
             <ul class="space-y-8">
                 {
                     links.map((link, index) => (
@@ -38,18 +31,13 @@ const links = await fetchDataFromServer("link.list_by_language", lang);
                                 >
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                 </svg>
-                                <span>{link.name}</span>
+                                <span>{link.name || "LINK NAME"}</span>
                             </a>
                             {index === 0 && (
-                                <p class="mt-2 text-blue-700">
-                                    Diese Webseite bietet umfassende Informationen über ALS, Symptome und
-                                    Behandlungsmöglichkeiten.
-                                </p>
+                                <p class="mt-2 text-blue-700">{i18n.tLang(lang, "pages.links.description1")}</p>
                             )}
                             {index === 1 && (
-                                <p class="mt-2 text-blue-700">
-                                    Unterstützungsnetzwerke und Beratungsangebote für Betroffene und Angehörige.
-                                </p>
+                                <p class="mt-2 text-blue-700">{i18n.tLang(lang, "pages.links.description2")}</p>
                             )}
                         </li>
                     ))

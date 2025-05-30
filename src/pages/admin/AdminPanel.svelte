@@ -1,7 +1,17 @@
 <script>
-  import Links from "./schmea/Links.svelte";
-  import Sidebar from "./sidebar/Sidebar.svelte";
+  import FileManager from "./schema/FileManager.svelte";
+
+  // import FileUplaod from "./schema/FileUplaod.svelte";
+  // import Media from "./schema/Media.svelte";
+  import Navbar from "./schema/Navbar.svelte";
+  import Links from "./schema/Links.svelte";
+  import Blogs from "./schema/Blogs.svelte";
+  import Celebrities from "./schema/Celebrities.svelte";
+  import Map from "./schema/Map.svelte";
+  // import LanguageSettings from "./schema/LanguageSettings.svelte";
   import "./styles.css";
+
+  import Sidebar from "./sidebar/Sidebar.svelte";
 
   let activeItemId = $state("dashboard");
 
@@ -10,14 +20,24 @@
       title: "Main",
       links: [
         {
+          id: "dashboard",
+          label: "Dashboard",
+          iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xl:mr-2 lg:mr-0 size-4"><rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="12" rx="1"></rect><rect width="7" height="5" x="3" y="16" rx="1"></rect></svg>`,
+        },
+        {
+          id: "file-manager",
+          label: "File Manager",
+          iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xl:mr-2 lg:mr-0 size-4"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"></path><path d="M12.5 16h-1a2.5 2.5 0 0 0-2.5 2.5v1a2.5 2.5 0 0 0 2.5 2.5h1a2.5 2.5 0 0 0 2.5-2.5v-1A2.5 2.5 0 0 0 12.5 16z"></path><path d="M12.5 8V6a4.5 4.5 0 1 1-4.5-4.5"></path></svg>`,
+        },
+        {
           id: "links",
           label: "Links",
           iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xl:mr-2 lg:mr-0 size-4"><path d="M10 13a5 5 0 1 1 7.07-7.07l-1.41 1.41a3 3 0 1 0-4.24 4.24l1.41 1.41A5 5 0 0 1 10 13z"></path><path d="M14.83 14.83a5 5 0 1 1-7.07-7.07l1.41-1.41a3 3 0 1 0-4.24-4.24l-1.41-1.41A5 5 0 0 1 9.17 9.17l1.41-1.41a3 3 0 1 0-4.24-4.24l1.41-1.41A5 5 0 0 1 14.83 14.83z"></path></svg>`,
         },
         {
-          id: "dashboard",
-          label: "Dashboard",
-          iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xl:mr-2 lg:mr-0 size-4"><rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="12" rx="1"></rect><rect width="7" height="5" x="3" y="16" rx="1"></rect></svg>`,
+          id: "navbar",
+          label: "Navigation",
+          iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xl:mr-2 lg:mr-0 size-4"><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M3 21h18"></path></svg>`,
         },
         {
           id: "users",
@@ -25,19 +45,24 @@
           iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xl:mr-2 lg:mr-0 size-4"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>`,
         },
         {
-          id: "analytics",
-          label: "Analytics",
-          iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xl:mr-2 lg:mr-0 size-4"><path d="M3 3v18h18"></path><path d="m19 9-5 5-4-4-3 3"></path></svg>`,
+          id: "blogs",
+          label: "Blogs",
+          iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xl:mr-2 lg:mr-0 size-4"><path d="M21 8V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2"></path><path d="M3.5 8h17"></path><path d="M3.5 12h17"></path><path d="M3.5 16h17"></path></svg>`,
         },
         {
-          id: "settings",
-          label: "Settings",
-          iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xl:mr-2 lg:mr-0 size-4"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>`,
+          id: "map",
+          label: "map",
+          iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xl:mr-2 lg:mr-0 size-4"><path d="M3 3v18a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z"></path><path d="M16.5 6.5l1.5-1.5"></path><path d="M19.5 9.5l1.5-1.5"></path><path d="M16.5 12.5l1.5-1.5"></path></svg>`,
         },
         {
-          id: "security",
-          label: "Security",
-          iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xl:mr-2 lg:mr-0 size-4"><shield_def><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"></path></shield_def></svg>`,
+          id: "celebrities",
+          label: "Celebrities",
+          iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xl:mr-2 lg:mr-0 size-4"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"></path><path d="M12 8a4 4 0 1 1-4 4"></path><path d="M12.5 16h-1a2.5 2.5 0 0 0-2.5 2.5v1a2.5 2.5 0 0 0 2.5 2.5h1a2.5 2.5 0 0 0 2.5-2.5v-1A2.5 2.5 0 0 0 12.5 16z"></path></svg>`,
+        },
+        {
+          id: "language-settings",
+          label: "Sprachen",
+          iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="xl:mr-2 lg:mr-0 size-4"><path d="M5 8l6 6"></path><path d="M4 14l6-6 2-3"></path><path d="M2 5h12"></path><path d="M7 2h1"></path><path d="M22 22l-5-10-5 10"></path><path d="M14 18h6"></path></svg>`,
         },
       ],
     },
@@ -55,57 +80,21 @@
 
   <!-- Main Content -->
   <main class="xl:pl-64 lg:pl-16 md:pl-16 pl-0 min-h-screen transition-all duration-300">
-    <!-- Header -->
-    <header class="bg-background border-b px-6 py-4 lg:px-8">
-      <div class="flex items-center justify-between">
-        <div class="flex-1 min-w-0">
-          <h1 class="text-2xl font-bold leading-7 sm:truncate">
-            {currentLabel}
-          </h1>
-          <p class="mt-1 text-sm text-muted-foreground">Manage your application settings and preferences</p>
-        </div>
-
-        <!-- Header Actions -->
-        <div class="flex items-center space-x-4">
-          <!-- Search -->
-          <div class="relative hidden sm:block">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg class="h-5 w-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                ></path>
-              </svg>
-            </div>
-            <input
-              type="search"
-              placeholder="Search..."
-              class="block w-full pl-10 pr-3 py-2 border rounded-lg leading-5 bg-background placeholder-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring focus:border-ring sm:text-sm"
-            />
-          </div>
-
-          <!-- Notifications -->
-          <button class="relative p-2 text-muted-foreground hover:text-foreground transition-colors">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M15 17h5l-3.5-3.5a12.1 12.1 0 01-.5-8.5L15 6l-1 1-1-1-1 1V5a2 2 0 114 0v1l-1 1 1 1-1.5 1.5a12.1 12.1 0 01-.5 8.5L15 17z"
-              ></path>
-            </svg>
-            <span class="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full"></span>
-          </button>
-        </div>
-      </div>
-    </header>
-
-    <!-- Content Area -->
     <div class="px-6 py-8 lg:px-8">
-      {#if activeItemId === "links"}
+      {#if activeItemId === "map"}
+        <Map />
+      {:else if activeItemId === "celebrities"}
+        <Celebrities />
+      {:else if activeItemId === "language-settings"}
+        <LanguageSettings />
+      {:else if activeItemId === "links"}
         <Links />
+      {:else if activeItemId === "file-manager"}
+        <FileManager />
+      {:else if activeItemId === "navbar"}
+        <Navbar />
+      {:else if activeItemId === "blogs"}
+        <Blogs />
       {:else if activeItemId === "dashboard"}
         <!-- Dashboard Content -->
         <div class="space-y-6">
