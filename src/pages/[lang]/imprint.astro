@@ -1,21 +1,28 @@
 ---
+import { i18n } from "@/i18n";
 import Layout from "@/layouts/Layout.astro";
+let lang = Astro.locals.lang;
+if (!lang) throw new Error("Language parameter is required");
 ---
 
 <Layout showTitle={false} title="Impressum">
     <main class="max-w-4xl mx-auto py-16 px-6 sm:px-8 lg:px-12 mt-16">
         <div class="bg-white rounded-lg shadow-lg p-8 lg:p-12">
-            <h1 class="text-4xl lg:text-5xl font-bold mb-8 text-gray-900 text-center">Impressum</h1>
+            <h1 class="text-4xl lg:text-5xl font-bold mb-8 text-gray-900 text-center">
+                {i18n.tLang(lang, "footer.imprint")}
+            </h1>
 
             <div class="text-center mb-12">
-                <p class="text-xl font-semibold text-gray-700">Kontaktieren Sie uns</p>
+                <p class="text-xl font-semibold text-gray-700">{i18n.tLang(lang, "pages.homepage.aboutUs.title")}</p>
             </div>
 
             <div class="space-y-8 max-w-2xl mx-auto">
                 <div class="border-l-4 border-blue-500 pl-6 py-4">
                     <p class="text-lg mb-3">
                         <span class="text-2xl mr-3">📍</span>
-                        <strong class="font-bold text-gray-800">Adresse:</strong>
+                        <strong class="font-bold text-gray-800"
+                            >{i18n.tLang(lang, "pages.homepage.contact.aside.address")}</strong
+                        >
                     </p>
                     <p class="text-gray-600 leading-relaxed ml-10">
                         Rienzstr. 21,<br />
@@ -26,7 +33,9 @@ import Layout from "@/layouts/Layout.astro";
                 <div class="border-l-4 border-blue-500 pl-6 py-4">
                     <p class="text-lg mb-3">
                         <span class="text-2xl mr-3">✉️</span>
-                        <strong class="font-bold text-gray-800">PEC:</strong>
+                        <strong class="font-bold text-gray-800"
+                            >{i18n.tLang(lang, "pages.homepage.contact.aside.PEC")}</strong
+                        >
                     </p>
                     <p class="ml-10">
                         <a href="mailto:cv-als@pec.it" class="text-blue-600 hover:text-blue-800 hover:underline text-lg"
@@ -38,7 +47,9 @@ import Layout from "@/layouts/Layout.astro";
                 <div class="border-l-4 border-blue-500 pl-6 py-4">
                     <p class="text-lg mb-3">
                         <span class="text-2xl mr-3">📧</span>
-                        <strong class="font-bold text-gray-800">Alternative E-Mail:</strong>
+                        <strong class="font-bold text-gray-800"
+                            >{i18n.tLang(lang, "pages.homepage.contact.aside.alternativeEmail")}</strong
+                        >
                     </p>
                     <p class="ml-10">
                         <a
@@ -51,7 +62,9 @@ import Layout from "@/layouts/Layout.astro";
                 <div class="border-l-4 border-blue-500 pl-6 py-4">
                     <p class="text-lg mb-3">
                         <span class="text-2xl mr-3">📱</span>
-                        <strong class="font-bold text-gray-800">Mobil:</strong>
+                        <strong class="font-bold text-gray-800"
+                            >{i18n.tLang(lang, "pages.homepage.contact.aside.mobile")}</strong
+                        >
                     </p>
                     <p class="ml-10">
                         <a href="tel:+393284534583" class="text-blue-600 hover:text-blue-800 hover:underline text-lg"
@@ -63,7 +76,9 @@ import Layout from "@/layouts/Layout.astro";
                 <div class="border-l-4 border-blue-500 pl-6 py-4">
                     <p class="text-lg mb-3">
                         <span class="text-2xl mr-3">💳</span>
-                        <strong class="font-bold text-gray-800">IBAN für Spende:</strong>
+                        <strong class="font-bold text-gray-800"
+                            >{i18n.tLang(lang, "pages.homepage.contact.aside.iban")}</strong
+                        >
                     </p>
                     <p class="ml-10">
                         <span
@@ -76,7 +91,9 @@ import Layout from "@/layouts/Layout.astro";
                 <div class="border-l-4 border-blue-500 pl-6 py-4">
                     <p class="text-lg mb-3">
                         <span class="text-2xl mr-3">🧾</span>
-                        <strong class="font-bold text-gray-800">Steuernummer:</strong>
+                        <strong class="font-bold text-gray-800"
+                            >{i18n.tLang(lang, "pages.homepage.contact.aside.taxNumber")}</strong
+                        >
                     </p>
                     <p class="ml-10">
                         <span

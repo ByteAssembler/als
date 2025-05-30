@@ -25,14 +25,17 @@ const categoryIcons: Record<string, string> = {
     images: "🖼️",
     videos: "🎬",
     documents: "📄",
-    information: "📄", // Alias for 'information' if that key is used
+    information: "📄",
 };
 
 function getCategoryIcon(categoryKey: string): string {
     return categoryIcons[categoryKey.toLowerCase()] || categoryIcons.default;
 }
 
-const categories = mediaFiles ? Object.keys(mediaFiles) : [];
+// const categories = mediaFiles ? Object.keys(mediaFiles) : []; // Replaced by collapsibleCategoryKeys for the script
+const collapsibleCategoryKeys = mediaFiles
+    ? Object.keys(mediaFiles).filter((key) => key.toLowerCase() !== "images")
+    : [];
 ---
 
 <Layout title={i18n.tLang(lang, "pages.media.pageTitle")} defaultPadding={true} showTitle={true}>
@@ -40,60 +43,103 @@ const categories = mediaFiles ? Object.keys(mediaFiles) : [];
         {
             mediaFiles &&
                 Object.entries(mediaFiles).map(([category, files]: [string, any[]]) => {
-                    const categoryTitle = "i18n.tLang(lang, `pages.media.categories.${category}.title`);";
-                    const emptyCategoryText = "i18n.tLang(lang, `pages.media.categories.${category}.empty`);";
-                    const icon = getCategoryIcon(category);
-                    const isImageCategory = category.toLowerCase() === "images"; // Or check based on file types if mixed
+                    const categoryKey = category.toLowerCase();
+                    // Corrected: Ensure i18n.tLang is called, not assigned as a string
+                    const categoryTitle = "title";
+                    const emptyCategoryText = "categoryEmptyText";
+                    const icon = getCategoryIcon(categoryKey);
+                    // const isImageCategory = category.toLowerCase() === "images"; // Removed, explicit check below
 
-                    return (
-                        <>
-                            <button
-                                type="button"
-                                class="bg-blue-400 p-6 rounded-xl text-xl font-semibold hover:bg-blue-500 transition text-black dark:text-white dark:hover:bg-blue-500"
-                                onclick={`toggleSection('${category}')`}
-                            >
-                                {icon} {categoryTitle}
-                            </button>
-                            <div id={category} class="hidden pl-6">
+                    if (categoryKey === "images") {
+                        // Render dedicated image gallery
+                        return (
+                            <div class="mb-8">
+                                <h2 class="text-2xl font-semibold mb-4 flex items-center">
+                                    <span class="text-3xl mr-2">{icon}</span> {categoryTitle}
+                                </h2>
                                 {files.length > 0 ? (
-                                    <ul class="space-y-2">
+                                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                                         {files.map((file) => {
                                             const displayName = file.name.substring(file.name.lastIndexOf("/") + 1);
                                             const fullUrl = `${fileBaseUrl}/${file.name}`;
-                                            // Use file.etag or another unique identifier if available and needed for specific functionality
-                                            const fileId = file.etag || file.name;
-
-                                            let onclickAction;
-                                            if (file.mediaType?.startsWith("image/")) {
-                                                onclickAction = `event.preventDefault(); showImageModal('${displayName}', '${fullUrl}');`;
-                                            } else {
-                                                onclickAction = `return showMedia(event, '${category}', '${fileId}', '${displayName}', '${fullUrl}', '${file.mediaType || ""}')`;
-                                            }
-
                                             return (
-                                                <li>
-                                                    <a
-                                                        href={fullUrl}
-                                                        class="text-blue-600 dark:text-blue-400 hover:underline"
-                                                        onclick={onclickAction}
-                                                        target={
-                                                            file.mediaType?.startsWith("image/") ? "_self" : "_blank"
-                                                        }
-                                                        rel="noopener noreferrer"
-                                                    >
-                                                        {removeExtension(displayName)}
-                                                    </a>
-                                                </li>
+                                                <button
+                                                    type="button"
+                                                    class="aspect-square bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden group relative focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800"
+                                                    onclick={`event.preventDefault(); showImageModal('${displayName}', '${fullUrl}')`}
+                                                    title={`View ${displayName}`}
+                                                >
+                                                    <img
+                                                        src={fullUrl}
+                                                        alt={displayName}
+                                                        class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                                                        loading="lazy"
+                                                    />
+                                                    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-colors duration-300" />
+                                                    <span class="sr-only">View {displayName}</span>
+                                                </button>
                                             );
                                         })}
-                                    </ul>
+                                    </div>
                                 ) : (
                                     <p class="text-gray-500 dark:text-gray-400">{emptyCategoryText}</p>
                                 )}
-                                <div id={`viewer-${category}`} class="mt-2" />
                             </div>
-                        </>
-                    );
+                        );
+                    } else {
+                        // Render existing collapsible section for other categories
+                        return (
+                            <>
+                                <button
+                                    type="button"
+                                    class="bg-blue-400 p-6 rounded-xl text-xl font-semibold hover:bg-blue-500 transition text-black dark:text-white dark:hover:bg-blue-500 w-full text-left flex items-center"
+                                    onclick={`toggleSection('${category}')`}
+                                >
+                                    <span class="text-3xl mr-3">{icon}</span> {categoryTitle}
+                                </button>
+                                <div id={category} class="hidden pl-6 pt-4">
+                                    {" "}
+                                    {/* Added pt-4 */}
+                                    {files.length > 0 ? (
+                                        <ul class="space-y-2">
+                                            {files.map((file) => {
+                                                const displayName = file.name.substring(file.name.lastIndexOf("/") + 1);
+                                                const fullUrl = `${fileBaseUrl}/${file.name}`;
+                                                const fileId = file.etag || file.name;
+
+                                                let onclickAction;
+                                                let target = "_blank"; // Default target
+
+                                                if (file.mediaType?.startsWith("image/")) {
+                                                    onclickAction = `event.preventDefault(); showImageModal('${displayName}', '${fullUrl}');`;
+                                                    target = "_self";
+                                                } else {
+                                                    onclickAction = `return showMedia(event, '${category}', '${fileId}', '${displayName}', '${fullUrl}', '${file.mediaType || ""}')`;
+                                                }
+
+                                                return (
+                                                    <li>
+                                                        <a
+                                                            href={fullUrl}
+                                                            class="text-blue-600 dark:text-blue-400 hover:underline"
+                                                            onclick={onclickAction}
+                                                            target={target}
+                                                            rel="noopener noreferrer"
+                                                        >
+                                                            {removeExtension(displayName)}
+                                                        </a>
+                                                    </li>
+                                                );
+                                            })}
+                                        </ul>
+                                    ) : (
+                                        <p class="text-gray-500 dark:text-gray-400">{emptyCategoryText}</p>
+                                    )}
+                                    <div id={`viewer-${category}`} class="mt-4" /> {/* Added mt-4 */}
+                                </div>
+                            </>
+                        );
+                    }
                 })
         }
         {
@@ -160,7 +206,7 @@ const categories = mediaFiles ? Object.keys(mediaFiles) : [];
 
     <script
         define:vars={{
-            categories: JSON.stringify(categories),
+            categories: JSON.stringify(collapsibleCategoryKeys), // Use filtered keys
             i18nNoPreview: i18n.tLang(lang, "pages.media.noPreview"),
             i18nOpenFile: i18n.tLang(lang, "pages.media.openFile"),
         }}
