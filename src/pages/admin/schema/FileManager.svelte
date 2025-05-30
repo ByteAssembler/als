@@ -1,5 +1,4 @@
 <script lang="ts">
-  // Icons
   import Upload from "@lucide/svelte/icons/upload";
   import FolderPlus from "@lucide/svelte/icons/folder-plus";
   import FileIcon from "@lucide/svelte/icons/file";
@@ -14,17 +13,16 @@
   import Home from "@lucide/svelte/icons/home";
   import ArrowLeft from "@lucide/svelte/icons/arrow-left";
   import ExternalLink from "@lucide/svelte/icons/external-link";
-  import Pencil from "@lucide/svelte/icons/pencil"; // Added
-  import Check from "@lucide/svelte/icons/check"; // Added
+  import Pencil from "@lucide/svelte/icons/pencil";
+  import Check from "@lucide/svelte/icons/check";
 
   import type { BucketItem } from "minio";
   import { trpcAuthQuery, trpcQuery } from "@/pages/api/trpc/trpc";
   import { cn } from "@/utils/utils";
 
-  // --- Type definitions ---
   interface DisplayItem {
-    name: string; // full path (prefix + name) (unique)
-    displayName: string; // display name (without prefix)
+    name: string;
+    displayName: string;
     isDir: boolean;
     size?: number;
     lastModified?: Date;
@@ -34,24 +32,21 @@
     path: string;
   }
 
-  // --- Cache ---
   const CACHE_SIZE = 20;
-  let folderCache = $state<Map<string, DisplayItem[]>>(new Map()); // Key: absolute path (prefix), Value: items
-  let recentlyVisitedFolders = $state<string[]>([]); // LRU order of visited folders
+  let folderCache = $state<Map<string, DisplayItem[]>>(new Map());
+  let recentlyVisitedFolders = $state<string[]>([]);
 
-  // --- State ---
   let items = $state<DisplayItem[]>([]);
-  let isLoading = $state(true); // Main loading state (initial or when no cache)
-  let isOptimisticLoading = $state(false); // Indicates cache is shown while background loading or syncing
+  let isLoading = $state(true);
+  let isOptimisticLoading = $state(false);
   let error = $state<string | null>(null);
   let newFolderName = $state("");
   let showNewFolderInput = $state(false);
-  let isProcessing = $state(false); // For actions like upload, delete, create, rename
+  let isProcessing = $state(false);
   let navigationHistory = $state<string[]>([]);
-  let renamingItemName = $state<string | null>(null); // Added: Track item being renamed
-  let newItemName = $state(""); // Added: Input for new name
+  let renamingItemName = $state<string | null>(null);
+  let newItemName = $state("");
 
-  // --- Dialog State ---
   let showPreviewDialog = $state(false);
   let previewItem = $state<DisplayItem | null>(null);
   let previewUrl = $state<string | null>(null);
@@ -59,7 +54,6 @@
   let previewError = $state<string | null>(null);
   let dialogElement: HTMLDialogElement | null = $state(null);
 
-  // --- Reactive current path ---
   let currentPrefix = $derived.by(() => {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
@@ -68,7 +62,6 @@
     return "";
   });
 
-  // --- Reactive breadcrumbs ---
   let breadcrumbs = $derived.by(() => {
     const parts: BreadcrumbPart[] = [{ name: "Root", path: "" }];
     const pathSegments = currentPrefix.split("/").filter((p) => p !== "");
@@ -80,7 +73,6 @@
     return parts;
   });
 
-  // --- Helpers ---
   function formatBytes(bytes: number, decimals = 2): string {
     if (!bytes || bytes === 0) return "0 Bytes";
     const k = 1024;
@@ -154,7 +146,6 @@
     return sortItems(displayItems);
   }
 
-  // --- Cache management ---
   function updateCache(prefix: string, data: DisplayItem[]) {
     folderCache.set(prefix, data);
     const filteredList = recentlyVisitedFolders.filter((p) => p !== prefix);
@@ -179,18 +170,16 @@
     console.log("Cache invalidated for:", prefix || "root");
   }
 
-  // --- Load data ---
   async function loadItemsForPrefix(prefix: string, forceNoCache = false) {
     const loadTargetPrefix = prefix;
 
     isLoading = true;
     isOptimisticLoading = false;
-    // Clear error only if loading for the currently viewed prefix
     if (currentPrefix === loadTargetPrefix) {
       error = null;
     }
     if (showPreviewDialog) closePreview();
-    cancelRename(); // Cancel rename if navigating away or refreshing
+    cancelRename();
 
     if (!forceNoCache && folderCache.has(loadTargetPrefix)) {
       const cachedItems = folderCache.get(loadTargetPrefix)!;
@@ -214,7 +203,6 @@
       updateCache(loadTargetPrefix, freshItems);
       if (currentPrefix === loadTargetPrefix) {
         items = freshItems;
-        // Clear error on successful load for current view
         error = null;
       }
     } catch (err: any) {
@@ -233,14 +221,12 @@
     }
   }
 
-  // Effect: reload data on path change
   $effect(() => {
     if (typeof window !== "undefined") {
       loadItemsForPrefix(currentPrefix);
     }
   });
 
-  // --- Navigation ---
   function navigateToFolder(prefix: string | null, isForwardNavigation: boolean = true) {
     const targetPrefix = prefix === null ? "" : prefix;
     if (targetPrefix === currentPrefix) return;
@@ -257,8 +243,8 @@
       params.delete("prefix");
     }
     window.history.pushState({}, "", window.location.pathname + `?${params.toString()}`);
-    currentPrefix = targetPrefix; // Trigger $effect
-    cancelRename(); // Cancel rename on navigation
+    currentPrefix = targetPrefix;
+    cancelRename();
   }
 
   function handleBackClick() {
@@ -272,15 +258,13 @@
   }
 
   function handleItemClick(item: DisplayItem) {
-    if (renamingItemName) return; // Don't navigate/preview if renaming input is active
+    if (renamingItemName) return;
     if (item.isDir) {
       navigateToFolder(item.name, true);
     } else {
       openPreview(item);
     }
   }
-
-  // --- Actions with optimistic updates ---
 
   async function handleFileUpload(event: Event) {
     const prefixAtActionStart = currentPrefix;
@@ -496,18 +480,16 @@
     }
   }
 
-  // --- Rename functions ---
   function startRename(item: DisplayItem) {
-    if (item.isDir || isProcessing || isLoading) return; // Prevent renaming folders for now
+    if (item.isDir || isProcessing || isLoading) return;
     renamingItemName = item.name;
     newItemName = item.displayName;
-    error = null; // Clear previous errors
+    error = null;
   }
 
   function cancelRename() {
     renamingItemName = null;
     newItemName = "";
-    // Don't clear error here, might be relevant
   }
 
   async function handleRenameItem() {
@@ -525,11 +507,10 @@
     }
     if (!trimmedNewName || trimmedNewName.includes("/")) {
       error = "Invalid file name. Cannot be empty or contain slashes.";
-      // Don't cancel, let user correct
       return;
     }
     if (trimmedNewName === originalItem.displayName) {
-      cancelRename(); // No change needed
+      cancelRename();
       return;
     }
 
@@ -543,7 +524,6 @@
       error = null;
     }
 
-    // Optimistic Update
     let itemsToUpdate: DisplayItem[] = [];
     if (folderCache.has(prefixAtActionStart)) {
       itemsToUpdate = [...folderCache.get(prefixAtActionStart)!];
@@ -554,12 +534,12 @@
     const itemIndex = itemsToUpdate.findIndex((i) => i.name === oldFullName);
     let originalOptimisticItem: DisplayItem | null = null;
     if (itemIndex !== -1) {
-      originalOptimisticItem = { ...itemsToUpdate[itemIndex] }; // Store for potential revert
+      originalOptimisticItem = { ...itemsToUpdate[itemIndex] };
       itemsToUpdate[itemIndex] = {
         ...itemsToUpdate[itemIndex],
         name: newFullName,
         displayName: trimmedNewName,
-        lastModified: new Date(), // Optimistically update modified time
+        lastModified: new Date(),
       };
       const newOptimisticItems = sortItems(itemsToUpdate);
       updateCache(prefixAtActionStart, newOptimisticItems);
@@ -568,12 +548,11 @@
       }
     } else {
       console.warn("Optimistic rename failed: Item not found in list/cache.");
-      // Proceed without optimistic update if item wasn't found locally
     }
 
-    const oldRenamingItemName = renamingItemName; // Store for potential revert
-    const oldNewItemName = newItemName; // Store for potential revert
-    renamingItemName = null; // Exit renaming mode optimistically
+    const oldRenamingItemName = renamingItemName;
+    const oldNewItemName = newItemName;
+    renamingItemName = null;
     newItemName = "";
 
     try {
@@ -582,14 +561,8 @@
         newName: newFullName,
       });
       console.log(`Rename successful: ${oldFullName} -> ${newFullName}`);
-      // Optimistic update already applied, maybe force refresh cache if needed?
-      // invalidateCache(prefixAtActionStart); // Optional: force reload from server after success
-      // if (currentPrefix === prefixAtActionStart) {
-      //     await loadItemsForPrefix(prefixAtActionStart, true);
-      // }
     } catch (err: any) {
       console.error("Rename Error:", err);
-      // Revert Optimistic Update
       if (originalOptimisticItem && itemIndex !== -1) {
         itemsToUpdate[itemIndex] = originalOptimisticItem;
         const revertedItems = sortItems(itemsToUpdate);
@@ -598,29 +571,24 @@
           items = revertedItems;
         }
       } else {
-        // If optimistic update didn't happen or failed, invalidate and reload
         invalidateCache(prefixAtActionStart);
       }
 
       if (currentPrefix === prefixAtActionStart) {
         error = err.message || `Failed to rename file.`;
-        // Restore input field for correction
         renamingItemName = oldRenamingItemName;
         newItemName = oldNewItemName;
-        // Optionally force reload if revert wasn't clean
-        // await loadItemsForPrefix(prefixAtActionStart, true);
       } else {
         console.error(
           `Rename failed for background item "${oldFullName}" in folder "${prefixAtActionStart}": ${err.message}`
         );
-        invalidateCache(prefixAtActionStart); // Invalidate cache for background folder
+        invalidateCache(prefixAtActionStart);
       }
     } finally {
       isProcessing = false;
       if (hadActionInFocus) {
         isOptimisticLoading = false;
       }
-      // Ensure renaming state is cleared if rename succeeded or failed without restoring input
       if (error && renamingItemName === oldRenamingItemName) {
         // Input was restored due to error, keep it.
       } else {
@@ -630,7 +598,6 @@
     }
   }
 
-  // --- Dialog functions ---
   async function openPreview(itemToPreview: DisplayItem) {
     if (itemToPreview.isDir || isPreviewLoading) return;
     previewItem = itemToPreview;
@@ -666,12 +633,9 @@
   }
 </script>
 
-<!-- Main container -->
 <div class="p-4 md:p-6 space-y-6 bg-white text-gray-900 rounded-lg border border-gray-200">
-  <!-- Title -->
   <h2 class="text-2xl font-bold">File Manager</h2>
 
-  <!-- Breadcrumbs -->
   <nav
     aria-label="Breadcrumb"
     class="flex items-center space-x-1 text-sm text-gray-600 overflow-x-auto whitespace-nowrap py-1"
@@ -692,9 +656,7 @@
     {/each}
   </nav>
 
-  <!-- Controls -->
   <div class="flex flex-wrap gap-2 items-center border-b border-gray-200 pb-4">
-    <!-- Back Button -->
     {#if navigationHistory.length > 0}
       <button
         onclick={handleBackClick}
@@ -710,7 +672,6 @@
       </button>
     {/if}
 
-    <!-- Upload Button -->
     <label
       class={cn(
         "flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 cursor-pointer transition-colors",
@@ -728,7 +689,6 @@
       />
     </label>
 
-    <!-- New Folder Input/Button -->
     {#if showNewFolderInput}
       <div class="flex items-center gap-2 bg-gray-100 p-1 rounded-md">
         <input
@@ -775,7 +735,6 @@
       </button>
     {/if}
 
-    <!-- Refresh Button and Optimistic Loading Indicator -->
     <div class="flex items-center gap-2">
       <button
         onclick={() => loadItemsForPrefix(currentPrefix, true)}
@@ -794,7 +753,6 @@
           <RefreshCw class="h-4 w-4" />
         {/if}
       </button>
-      <!-- Show sync indicator when cache is shown OR an action is processing -->
       {#if isOptimisticLoading || isProcessing}
         <div title="Syncing changes..." aria-label="Optimistic update indicator">
           <Loader2 class="h-4 w-4 animate-spin text-blue-600" />
@@ -803,20 +761,17 @@
     </div>
   </div>
 
-  <!-- Status display -->
   {#if error}
     <div class="mt-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-800 text-sm whitespace-pre-wrap">
       Error: {error}
     </div>
   {/if}
   {#if isProcessing && !isLoading && !isOptimisticLoading}
-    <!-- Should not be visible often due to loader above -->
     <div class="mt-4 flex items-center gap-2 text-sm text-blue-700">
       <HardDriveUpload class="h-4 w-4 animate-pulse" /><span>Processing...</span>
     </div>
   {/if}
 
-  <!-- File and folder list -->
   <div class="mt-6">
     {#if isLoading && !isOptimisticLoading}
       <p class="text-gray-600 flex items-center gap-2">
@@ -891,7 +846,6 @@
                 <td class="p-2 align-middle text-gray-600">{formatDate(item.lastModified)}</td>
                 <td class="p-2 align-middle text-right">
                   {#if renamingItemName === item.name}
-                    <!-- Rename Save/Cancel Buttons -->
                     <div class="flex justify-end items-center gap-1">
                       <button
                         onclick={handleRenameItem}
@@ -913,7 +867,6 @@
                       </button>
                     </div>
                   {:else}
-                    <!-- Default Action Buttons -->
                     <div
                       class="flex justify-end items-center gap-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity"
                     >
@@ -949,7 +902,6 @@
   </div>
 </div>
 
-<!-- Preview dialog (HTML <dialog>) -->
 {#if showPreviewDialog}
   <dialog
     bind:this={dialogElement}
