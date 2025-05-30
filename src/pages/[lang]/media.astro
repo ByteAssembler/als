@@ -2,16 +2,10 @@
 import { i18n } from "@/i18n";
 import Layout from "@/layouts/Layout.astro";
 import { fetchDataFromServer } from "../api/trpc/serverHelpers";
+import { getImageUrlForImageKey } from "@/utils";
 
 const lang = Astro.locals.lang;
 
-// These should be configured in your Astro project, e.g., via .env files
-// Ensure they are prefixed with PUBLIC_ if accessed on the client, or handle them server-side.
-const fileServerEndpointFull = import.meta.env.PUBLIC_FILE_STORAGE_SERVER_ENDPOINT_FULL;
-const bucketName = import.meta.env.PUBLIC_MINIO_BUCKET_NAME;
-const fileBaseUrl = `${fileServerEndpointFull}/${bucketName}`;
-
-// Fetches data like: { "audios": [fileObj1, fileObj2], "images": [...], ... }
 const mediaFiles = await fetchDataFromServer("filemanager.public-media");
 
 function removeExtension(filename: string) {
@@ -32,26 +26,23 @@ function getCategoryIcon(categoryKey: string): string {
     return categoryIcons[categoryKey.toLowerCase()] || categoryIcons.default;
 }
 
-// const categories = mediaFiles ? Object.keys(mediaFiles) : []; // Replaced by collapsibleCategoryKeys for the script
 const collapsibleCategoryKeys = mediaFiles
     ? Object.keys(mediaFiles).filter((key) => key.toLowerCase() !== "images")
     : [];
 ---
 
 <Layout title={i18n.tLang(lang, "pages.media.pageTitle")} defaultPadding={true} showTitle={true}>
-    <div class="max-w-3xl mx-auto p-6 flex flex-col gap-6">
+    <div class="max-w-5xl mx-auto p-6 flex flex-col gap-6">
+        {/* Changed max-w-3xl to max-w-5xl */}
         {
             mediaFiles &&
                 Object.entries(mediaFiles).map(([category, files]: [string, any[]]) => {
                     const categoryKey = category.toLowerCase();
-                    // Corrected: Ensure i18n.tLang is called, not assigned as a string
-                    const categoryTitle = "title";
-                    const emptyCategoryText = "categoryEmptyText";
+                    const categoryTitle = category;
+                    const emptyCategoryText = "-";
                     const icon = getCategoryIcon(categoryKey);
-                    // const isImageCategory = category.toLowerCase() === "images"; // Removed, explicit check below
 
                     if (categoryKey === "images") {
-                        // Render dedicated image gallery
                         return (
                             <div class="mb-8">
                                 <h2 class="text-2xl font-semibold mb-4 flex items-center">
@@ -61,7 +52,7 @@ const collapsibleCategoryKeys = mediaFiles
                                     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                                         {files.map((file) => {
                                             const displayName = file.name.substring(file.name.lastIndexOf("/") + 1);
-                                            const fullUrl = `${fileBaseUrl}/${file.name}`;
+                                            const fullUrl = getImageUrlForImageKey(file.name);
                                             return (
                                                 <button
                                                     type="button"
@@ -82,6 +73,7 @@ const collapsibleCategoryKeys = mediaFiles
                                         })}
                                     </div>
                                 ) : (
+                                    // Use emptyCategoryText for images as well
                                     <p class="text-gray-500 dark:text-gray-400">{emptyCategoryText}</p>
                                 )}
                             </div>
@@ -104,7 +96,8 @@ const collapsibleCategoryKeys = mediaFiles
                                         <ul class="space-y-2">
                                             {files.map((file) => {
                                                 const displayName = file.name.substring(file.name.lastIndexOf("/") + 1);
-                                                const fullUrl = `${fileBaseUrl}/${file.name}`;
+                                                // Use getImageUrlForImageKey for all files
+                                                const fullUrl = getImageUrlForImageKey(file.name);
                                                 const fileId = file.etag || file.name;
 
                                                 let onclickAction;
@@ -133,6 +126,7 @@ const collapsibleCategoryKeys = mediaFiles
                                             })}
                                         </ul>
                                     ) : (
+                                        // emptyCategoryText is now correctly defined and used here
                                         <p class="text-gray-500 dark:text-gray-400">{emptyCategoryText}</p>
                                     )}
                                     <div id={`viewer-${category}`} class="mt-4" /> {/* Added mt-4 */}
