@@ -13,6 +13,8 @@ export const privateHandlers = {
 	"filemanager.file.upload-url": fileManager.getUploadFileUrlForClient,
 	"filemanager.file.rename": fileManager.renameFile,
 	"filemanager.file.delete": fileManager.deleteFile,
+	"filemanager.file.listAll": fileManager.listAllFiles,
+
 	"filemanager.folder.create": fileManager.createFolder,
 	"filemanager.folder.delete": fileManager.deleteFolder,
 

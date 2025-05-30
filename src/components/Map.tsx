@@ -101,9 +101,11 @@ const MapComponent = (
     markersRef.current.forEach((marker) => mapRef.current?.removeLayer(marker));
     markersRef.current = [];
 
-    console.log("selectedCategories", category, category);
     const selectedCategories = category ? [points.find((item) => item.name === category)] : points;
     let group: L.Marker[] = [];
+
+    console.log("selectedCategories", selectedCategories, url, points);
+
 
     selectedCategories.forEach((category) => {
       if (category) {

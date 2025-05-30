@@ -153,6 +153,25 @@ async function deleteFolder(folderName: string) {
 	});
 }
 
+async function listAllFiles(): Promise<string[]> {
+	return new Promise((resolve, reject) => {
+		const filePaths: string[] = [];
+		const stream = minioClient.listObjectsV2(BUCKET_NAME, '', true);
+
+		stream.on('data', (obj: BucketItem) => {
+			if (obj.name && !obj.name.endsWith('/')) {
+				filePaths.push(obj.name);
+			}
+		});
+		stream.on('error', (err: Error) => {
+			reject(err);
+		});
+		stream.on('end', () => {
+			resolve(filePaths);
+		});
+	});
+}
+
 export const fileManager = {
 	listEntries,
 	getObjectStream,
@@ -165,6 +184,7 @@ export const fileManager = {
 	getDownloadFileUrlForClient,
 	renameFile,
 	deleteFile,
+	listAllFiles,
 
 	createFolder,
 	deleteFolder,
