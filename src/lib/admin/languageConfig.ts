@@ -8,8 +8,6 @@ export const DEFAULT_LANGUAGES: Language[] = [
 	{ code: "de", name: "Deutsch" },
 	{ code: "en", name: "English" },
 	{ code: "it", name: "Italiano" },
-	{ code: "fr", name: "Français" },
-	{ code: "es", name: "Español" }
 ];
 
 // Global language configuration
