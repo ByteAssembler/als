@@ -83,6 +83,14 @@ export const mapPointCategoryHandlers = {
 	},
 
 	delete: async (id: number) => {
+		// First delete all map points that reference this category
+		await prisma.mapPoint.deleteMany({
+			where: {
+				categoryId: id
+			}
+		});
+
+		// Then delete the category
 		return await prisma.mapPointCategory.delete({ where: { id } });
 	},
 
