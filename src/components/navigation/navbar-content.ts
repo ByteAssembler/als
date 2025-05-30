@@ -134,3 +134,5 @@ export const navbarContent = {
 } as const;
 
 export type NavbarItem = (typeof navbarContent)[keyof typeof navbarContent][number];
+
+export const allLanguages = Object.keys(navbarContent);

@@ -1,6 +1,7 @@
 ﻿import { defineMiddleware } from "astro/middleware";
 
 import jwt from "jsonwebtoken";
+import { allLanguages } from "./components/navigation/navbar-content";
 
 export const SECRET_KEY = process.env.JWT_SECRET || "supersecretkey";
 
@@ -9,6 +10,15 @@ export const onRequest = defineMiddleware((context, next) => {
 	const segments = context.url.pathname.split("/").filter(Boolean);
 	if (segments.length > 0) {
 		const langCode = segments[0];
+
+		if (!allLanguages.includes(langCode)) {
+			// redirect to default language if not found
+			return new Response(null, {
+				status: 302,
+				headers: { Location: `/${allLanguages[0]}` },
+			});
+		}
+
 		context.locals.lang = langCode;
 	}
 
