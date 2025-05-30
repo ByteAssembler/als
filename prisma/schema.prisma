@@ -29,8 +29,6 @@ model RawTranslation {
     blogContents          Blog[]             @relation("BlogContent")
     bookTitles            Book[]             @relation("BookTitle")
     bookContents          Book[]             @relation("BookContent")
-    mediaItemAltTexts     MediaItem[]        @relation("MediaItemAltText")
-    mediaItemCaptions     MediaItem[]        @relation("MediaItemCaption")
 }
 
 model Translation {
@@ -56,8 +54,7 @@ model Blog {
     contentRawTranslationId Int
     content                 RawTranslation @relation("BlogContent", fields: [contentRawTranslationId], references: [id], onDelete: Cascade)
 
-    coverImageKey String?    @map("coverImageId")
-    coverImage    MediaItem? @relation("BlogCoverImage", fields: [coverImageKey], references: [storageKey], onDelete: SetNull)
+    coverImageKey String?
 
     publishedAt DateTime @default(now())
     updatedAt   DateTime @updatedAt
@@ -95,8 +92,6 @@ model User {
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-
-    uploadedMediaItems MediaItem[]
 }
 
 enum Role {
@@ -113,8 +108,7 @@ model Book {
     title                 RawTranslation @relation("BookTitle", fields: [titleRawTranslationId], references: [id], onDelete: Cascade)
     author                String
 
-    coverImageKey String?    @map("coverImageId")
-    coverImage    MediaItem? @relation("BookCoverImage", fields: [coverImageKey], references: [storageKey], onDelete: SetNull)
+    coverImageKey String?
 
     isbn String? @unique
 
@@ -156,8 +150,7 @@ model MapPoint {
 model Celebrity {
     id Int @id @default(autoincrement())
 
-    imageKey String?    @map("imageId")
-    image    MediaItem? @relation("CelebrityImage", fields: [imageKey], references: [storageKey], onDelete: SetNull)
+    imageKey String?
 
     name                       String
     bioRawTranslationId        Int
@@ -169,32 +162,4 @@ model Celebrity {
     died DateTime?
 
     alsYear Int
-}
-
-model MediaItem {
-    storageKey String @id
-    filename   String
-    mimeType   String
-    size       Int
-
-    width  Int?
-    height Int?
-
-    altTextRawTranslationId Int?
-    altText                 RawTranslation? @relation("MediaItemAltText", fields: [altTextRawTranslationId], references: [id], onDelete: SetNull)
-
-    captionRawTranslationId Int?
-    caption                 RawTranslation? @relation("MediaItemCaption", fields: [captionRawTranslationId], references: [id], onDelete: SetNull)
-
-    uploadedAt DateTime @default(now())
-
-    uploaderId Int?
-    uploader   User? @relation(fields: [uploaderId], references: [id], onDelete: SetNull)
-
-    showInMediaGallery Boolean @default(false)
-    mediaType          String?
-
-    blogsAsCover       Blog[]      @relation("BlogCoverImage")
-    booksAsCover       Book[]      @relation("BookCoverImage")
-    celebritiesAsImage Celebrity[] @relation("CelebrityImage")
 }
