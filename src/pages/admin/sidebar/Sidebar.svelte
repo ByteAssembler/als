@@ -2,6 +2,7 @@
   import SidebarNavSection from "./SidebarNavSection.svelte";
   import type { NavLinkData as NavSectionLinkData } from "./SidebarNavSection.svelte";
   import { createEventDispatcher } from "svelte";
+  import "../styles.css";
 
   type SectionLink = {
     id: string;
