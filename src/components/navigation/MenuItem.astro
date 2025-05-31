@@ -2,16 +2,18 @@
 import { cn } from "@/utils/utils";
 import type { NavbarItem } from "./navbar-content";
 
+const lang = Astro.locals.lang;
+
 type Props = NavbarItem & {
     className?: string;
     href: any | string;
 };
 
-const { href, text, className = "" } = Astro.props;
+const { withLanguagePrefix, href, text, className } = Astro.props;
 ---
 
 <a
-    href={href}
+    href={withLanguagePrefix ? `/${lang}${href}` : href}
     class={cn(
         `text-gray-700 hover:text-primary-600 font-medium transition-colors duration-200 flex items-center justify-center`,
         className
