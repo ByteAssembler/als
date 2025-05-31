@@ -786,7 +786,6 @@
             <tr>
               <th class="p-2 w-8"></th> <th class="p-2">Name</th>
               <th class="p-2">Size</th>
-              <th class="p-2">Last Modified</th>
               <th class="p-2 w-20 text-right">Actions</th>
             </tr>
           </thead>
@@ -843,7 +842,6 @@
                 <td class="p-2 align-middle">
                   {#if !item.isDir && item.size != null}{formatBytes(item.size)}{:else}-{/if}
                 </td>
-                <td class="p-2 align-middle text-gray-600">{formatDate(item.lastModified)}</td>
                 <td class="p-2 align-middle text-right">
                   {#if renamingItemName === item.name}
                     <div class="flex justify-end items-center gap-1">
