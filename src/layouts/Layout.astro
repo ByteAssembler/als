@@ -44,7 +44,10 @@ const {
         <main class={cn("flex-1", classNameMain)}>
             {
                 showTitle && (
-                    <h1 class={cn("px-4 pt-20 mb-12 text-center text-4xl font-bold text-gray-900", classNameTitle)}>
+                    <h1
+                        class={cn("px-4 pt-20 mb-12 text-center text-4xl font-bold text-gray-900", classNameTitle)}
+                        style="text-wrap: pretty;"
+                    >
                         {title}
                     </h1>
                 )
