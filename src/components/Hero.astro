@@ -15,7 +15,10 @@ const lang = Astro.locals.lang;
 
         <!-- Inhalt -->
         <div class="relative z-10 max-w-5xl text-white">
-            <h1 class="text-5xl font-extrabold leading-tight sm:text-6xl md:text-7xl lg:text-8xl">
+            <h1
+                class="text-5xl font-extrabold leading-tight sm:text-6xl md:text-7xl lg:text-8xl"
+                style="text-wrap: pretty;"
+            >
                 <!-- Fighting Together Against ALS -->
                 {i18n.tLang(lang, "pages.homepage.wellcome.title")}
             </h1>
