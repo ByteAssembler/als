@@ -6,35 +6,37 @@ import { allLanguages } from "./components/navigation/navbar-content";
 export const SECRET_KEY = process.env.JWT_SECRET || "supersecretkey";
 
 export const onRequest = defineMiddleware((context, next) => {
-	// 1. Set lang
+	context.locals.lang = "en";
+
+	// Skip middleware for static files and special paths
+	if (
+		context.url.pathname.startsWith("/api") ||
+		context.url.pathname.startsWith("/static") ||
+		context.url.pathname.startsWith("/assets") ||
+		context.url.pathname.startsWith("/favicon.ico") ||
+		context.url.pathname.startsWith("/robots.txt") ||
+		context.url.pathname.includes("trpc")
+	) {
+		return next();
+	}
+
+	// 1. Set lang for all pages (including admin pages)
 	const segments = context.url.pathname.split("/").filter(Boolean);
 	if (segments.length > 0) {
 		const langCode = segments[0];
-
-		if (langCode.length >= 2 && langCode.length <= 3) {
-			if (
-				!allLanguages.includes(langCode) &&
-				langCode !== "admin" &&
-				langCode !== "api" &&
-				langCode !== "static" &&
-				langCode !== "assets" &&
-				langCode !== "favicon.ico" &&
-				langCode !== "robots.txt" &&
-				!langCode.includes("langCode") &&
-				!langCode.includes("trpc")
-			) {
-				// redirect to default language if not found
+		if (langCode.length <= 3) {
+			if (allLanguages.includes(langCode)) {
+				context.locals.lang = langCode;
+			} else {
 				return new Response(null, {
 					status: 302,
-					headers: { Location: `/${allLanguages[0]}` },
+					headers: { Location: "/en" },
 				});
 			}
 		}
-
-		context.locals.lang = langCode;
 	}
 
-	// Middleware nur für Admin-Seiten aktivieren
+	// 2. Admin authentication - only for admin pages
 	if (!context.url.pathname.startsWith("/admin") || context.url.pathname.startsWith("/admin/login")) {
 		return next();
 	}
