@@ -40,7 +40,7 @@ export const navbarContent = {
 			id: 71,
 			href: "/links",
 			withLanguagePrefix: true,
-			text: "Link",
+			text: "Links",
 		},
 	],
 	en: [
@@ -84,7 +84,7 @@ export const navbarContent = {
 			id: 72,
 			href: "/links",
 			withLanguagePrefix: true,
-			text: "Link",
+			text: "Links",
 		},
 	],
 	it: [
@@ -128,7 +128,7 @@ export const navbarContent = {
 			id: 70,
 			href: "/links",
 			withLanguagePrefix: true,
-			text: "Link",
+			text: "Links",
 		},
 	],
 } as const;
