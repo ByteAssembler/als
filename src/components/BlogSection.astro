@@ -2,6 +2,7 @@
 import Section from "@/layouts/Section.astro";
 import { fetchDataFromServer } from "@/pages/api/trpc/serverHelpers";
 import { i18n } from "@/i18n";
+import { getImageUrlForImageKey } from "@/utils";
 
 const lang = Astro.locals.lang;
 if (!lang) throw new Error("Language parameter is required");
@@ -16,7 +17,7 @@ const blogs = await fetchDataFromServer("blog.list_by_language", lang);
                 blogs.map((blog) => (
                     <a href={`/${lang}/blog/${blog.slug}`} class="block h-full">
                         <div class="flex h-full flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg transition-transform hover:scale-105">
-                            <img src={blog.coverImage || "/placeholder.webp"} alt="" class="h-48 w-full object-cover" />
+                            <img src={getImageUrlForImageKey(blog.coverImageKey) || "/placeholder.webp"} alt="" class="h-48 w-full object-cover" />
                             <div class="flex flex-1 flex-col p-6">
                                 <h3 class="mb-2 text-xl font-semibold text-gray-900">{blog.title}</h3>
                                 <p class="line-clamp-2 flex-1 text-gray-700">{blog.content}...</p>
