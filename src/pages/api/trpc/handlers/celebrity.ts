@@ -1,6 +1,6 @@
-import { z } from 'zod';
-import prisma from '@/utils/db';
-import type { Prisma } from '@prisma/client';
+import { z } from "zod";
+import prisma from "@/utils/db";
+import type { Prisma } from "@prisma/client";
 
 const mapTranslationsForPrisma = (translations: Record<string, string> | undefined) => {
   if (!translations) return [];
@@ -11,10 +11,7 @@ const mapTranslationsForPrisma = (translations: Record<string, string> | undefin
 };
 
 // Helper function to get celebrity with translated fields
-async function getCelebrityWithTranslatedFields(
-  whereClause: Prisma.CelebrityWhereUniqueInput,
-  language?: string
-) {
+async function getCelebrityWithTranslatedFields(whereClause: Prisma.CelebrityWhereUniqueInput, language?: string) {
   const celebrity = await prisma.celebrity.findUnique({
     where: whereClause,
     include: {
@@ -100,7 +97,7 @@ export const celebrityHandlers = {
             },
           },
         }),
-      }
+      },
     });
   },
 
@@ -130,13 +127,13 @@ export const celebrityHandlers = {
 
     return celebrities.map((celebrity) => ({
       ...celebrity,
-      bios: celebrity.bio.translations.map(t => ({
+      bios: celebrity.bio.translations.map((t) => ({
         text: t.value,
-        language: t.language
+        language: t.language,
       })),
-      professions: celebrity.profession.translations.map(t => ({
+      professions: celebrity.profession.translations.map((t) => ({
         text: t.value,
-        language: t.language
+        language: t.language,
       })),
     }));
   },
@@ -166,7 +163,12 @@ export const celebrityHandlers = {
     }
 
     return celebrities.map((celebrity) => ({
-      ...celebrity,
+      id: celebrity.id,
+      name: celebrity.name,
+      imageKey: celebrity.imageKey,
+      born: celebrity.born,
+      died: celebrity.died,
+      alsYear: celebrity.alsYear,
       bio: celebrity.bio.translations.length > 0 ? celebrity.bio.translations[0].value : null,
       profession: celebrity.profession.translations.length > 0 ? celebrity.profession.translations[0].value : null,
     }));

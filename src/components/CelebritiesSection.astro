@@ -17,6 +17,7 @@ const celebrities = await fetchDataFromServer("celebrity.list_by_language", lang
                 celebrities.map((celebrity) => (
                     <div class="bg-[#f2f4ff] p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
                         <div class="flex items-start space-x-4">
+                            {celebrity.imageKey == null && console.log("No image key: " + celebrity.name)}
                             {celebrity.imageKey && (
                                 <img
                                     src={getImageUrlForImageKey(celebrity.imageKey)}

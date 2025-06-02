@@ -50,7 +50,7 @@
 <LanguageModal {show} {title} {languages} {currentLanguage} {onLanguageChange} {onClose} {onSubmit} {submitText}>
   {#snippet children()}
     {#each formFields as field}
-      <div>
+      <div class="mb-4">
         {#if field.multilingual}
           <label for="{field.id}-{currentLanguage}" class="block text-sm font-medium mb-1">
             {field.label} ({languages.find((l) => l.code === currentLanguage)?.name})
@@ -64,8 +64,8 @@
               id="{field.id}-{currentLanguage}"
               bind:value={formData[field.id][currentLanguage]}
               required={field.required && currentLanguage === "de"}
-              rows="3"
-              class="w-full px-3 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+              rows="6"
+              class="w-full px-3 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical min-h-[120px]"
               placeholder={field.placeholder || ""}
             ></textarea>
           {:else}

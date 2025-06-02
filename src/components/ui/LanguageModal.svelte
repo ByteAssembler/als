@@ -86,7 +86,7 @@
       <div class="fixed inset-0 transition-opacity bg-black bg-opacity-50" onclick={onClose} aria-hidden="true"></div>
 
       <div
-        class="inline-block w-full max-w-lg p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-card shadow-xl rounded-lg border bg-white"
+        class="inline-block w-full max-w-2xl p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-card shadow-xl rounded-lg border bg-white"
         use:trapFocus
       >
         <div class="flex justify-between items-center mb-4">
@@ -126,7 +126,7 @@
           </div>
         </div>
 
-        <div id="form-content" role="tabpanel" aria-labelledby="modal-title">
+        <div id="form-content" class="max-h-[70vh] overflow-y-auto px-1 py-2" role="tabpanel" aria-labelledby="modal-title">
           <form onsubmit={onSubmit} class="space-y-4">
             {@render children()}
 

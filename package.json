@@ -4,7 +4,7 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"dev": "astro dev",
+		"dev": "dotenv -- astro dev",
 		"start": "astro dev",
 		"build": "astro build",
 		"preview": "astro preview",
@@ -67,6 +67,7 @@
 		"@types/bcrypt": "^5.0.2",
 		"@types/jsonwebtoken": "^9.0.9",
 		"@types/minio": "^7.1.1",
+		"dotenv-cli": "^8.0.0",
 		"prettier": "^3.5.3",
 		"prettier-plugin-astro": "^0.14.1",
 		"prettier-plugin-tailwindcss": "^0.6.11",
