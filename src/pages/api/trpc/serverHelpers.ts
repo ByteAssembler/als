@@ -1,6 +1,7 @@
 import SuperJSON from "superjson";
 import { publicHandlers, authHandlers } from "./handlers";
 import type { AppRouter, AuthRouter } from "./handlers";
+import { setClearCacheFunction } from "./handlers/admin";
 
 // Define CombinedRouter by merging AppRouter and AuthRouter types
 type CombinedRouter = AppRouter & AuthRouter;
@@ -28,6 +29,9 @@ export function clearCache(): void {
   console.log('[Cache] Clearing entire cache');
   cache.clear();
 }
+
+// Register the clearCache function with admin handlers to avoid circular dependencies
+setClearCacheFunction(clearCache);
 
 /**
  * Fetches data using a handler ID, utilizing an in-memory cache with strong type safety.

@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
 import superjson from "superjson";
 import { createSuccessResponse, createErrorResponse } from "../trpc";
+import { authHandlers } from "../handlers";
 
 import jwt from "jsonwebtoken";
 import { SECRET_KEY } from "@/middleware";
@@ -74,8 +75,7 @@ export const POST: APIRoute = async ({ request }) => {
 
 	const { destination, data } = reqBody;
 	
-	// Import authHandlers dynamically to avoid circular dependencies
-	const { authHandlers } = await import("../handlers");
+	// Use the imported authHandlers that's now dynamically populated
 	const handler = (authHandlers as Record<string, Function>)[destination] as
 		| ((...args: any[]) => Promise<any>)
 		| undefined;
