@@ -1,5 +1,4 @@
 import type { APIRoute } from "astro";
-import { authHandlers } from "../handlers";
 import superjson from "superjson";
 import { createSuccessResponse, createErrorResponse } from "../trpc";
 
@@ -74,6 +73,9 @@ export const POST: APIRoute = async ({ request }) => {
 	}
 
 	const { destination, data } = reqBody;
+	
+	// Import authHandlers dynamically to avoid circular dependencies
+	const { authHandlers } = await import("../handlers");
 	const handler = (authHandlers as Record<string, Function>)[destination] as
 		| ((...args: any[]) => Promise<any>)
 		| undefined;
