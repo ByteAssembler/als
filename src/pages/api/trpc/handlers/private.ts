@@ -8,6 +8,7 @@ import { mapPointCategoryHandlers } from "./mapPointCategory";
 import { mapPointHandlers } from "./mapPoint";
 import { celebrityHandlers } from "./celebrity";
 import { fileManager } from "./file-manager-api";
+import { adminHandlers } from "./admin";
 
 export const privateHandlers = {
 	"filemanager.file.upload-url": fileManager.getUploadFileUrlForClient,
@@ -89,4 +90,7 @@ export const privateHandlers = {
 	"celebrity.delete": celebrityHandlers.delete,
 	"celebrity.list": celebrityHandlers.list,
 	"celebrity.list_by_language": celebrityHandlers.list_by_language,
+
+	// Admin
+	"admin.clearCache": adminHandlers.clearCache,
 };

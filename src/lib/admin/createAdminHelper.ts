@@ -1,4 +1,15 @@
 import type { FormField } from "@/components/ui/MultiLanguageFormModal.svelte";
+import { trpcAuthQuery } from "@/pages/api/trpc/trpc";
+
+// Helper function to clear the server cache
+async function clearServerCache(): Promise<void> {
+  try {
+    await trpcAuthQuery("admin.clearCache");
+    console.log("Server cache cleared successfully");
+  } catch (error) {
+    console.error("Failed to clear server cache:", error);
+  }
+}
 
 // Generic data transformation interface
 export interface DataTransformers<ApiType, FormType> {
@@ -109,10 +120,16 @@ export function createAdminEntityHelper<ApiType, FormType>(
           } else {
             await entityConfig.apiMethods.create(apiData);
           }
+          
+          // Clear server cache after save operation
+          await clearServerCache();
           await loadDataCallback();
         },
         onDelete: async (id) => {
           await entityConfig.apiMethods.delete(Number(id));
+          
+          // Clear server cache after delete operation
+          await clearServerCache();
           await loadDataCallback();
         },
         initialFormData: entityConfig.initialFormData

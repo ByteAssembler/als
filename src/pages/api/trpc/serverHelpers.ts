@@ -21,6 +21,15 @@ const cache = new Map<string, CacheEntry>(); // Cache will store CacheEntry<any>
 const CACHE_DURATION_MS = 10 * 60 * 1000; // 10 minutes in milliseconds
 
 /**
+ * Clears the entire server cache.
+ * This function should be called when data is modified through the admin panel.
+ */
+export function clearCache(): void {
+  console.log('[Cache] Clearing entire cache');
+  cache.clear();
+}
+
+/**
  * Fetches data using a handler ID, utilizing an in-memory cache with strong type safety.
  * This function is intended for server-side use only.
  *
