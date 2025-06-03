@@ -92,12 +92,12 @@
     {
       header: "Veröffentlicht",
       key: "publishedAt",
-      render: (item) => (item.publishedAt ? new Date(item.publishedAt).toLocaleDateString() : "-"),
+      render: (item) => (item.publishedAt ? new Date(item.publishedAt).toLocaleDateString("de-DE", { day: '2-digit', month: '2-digit', year: 'numeric' }) : "-"),
     },
     {
       header: "Aktualisiert",
       key: "updatedAt",
-      render: (item) => (item.updatedAt ? new Date(item.updatedAt).toLocaleDateString() : "-"),
+      render: (item) => (item.updatedAt ? new Date(item.updatedAt).toLocaleDateString("de-DE", { day: '2-digit', month: '2-digit', year: 'numeric' }) : "-"),
     },
   ]);
 

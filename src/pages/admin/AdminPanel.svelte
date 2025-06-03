@@ -116,7 +116,7 @@
       {#if activeItemId === undefined || activeItemId === null || activeItemId === "dashboard"}
         <!-- List of Sections -->
         <div class="space-y-4">
-          <h2 class="text-2xl font-semibold">Select a Section</h2>
+          <h2 class="text-2xl font-semibold">Wähle eine Sektion aus</h2>
           <ul class="list-none space-y-4">
             {#each sidebarSections
               .flatMap((section) => section.links)
