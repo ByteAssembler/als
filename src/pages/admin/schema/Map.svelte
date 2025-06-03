@@ -325,27 +325,6 @@
 </script>
 
 <div class="space-y-6">
-  <!-- Header with Tabs -->
-  <div class="flex justify-between items-center">
-    <div>
-      <h1 class="text-2xl font-bold">Karten Verwaltung</h1>
-      <p class="text-sm text-muted-foreground mt-1">Verwalten Sie Kategorien und Kartenpunkte</p>
-    </div>
-    <div class="flex items-center space-x-2">
-      <label for="language-select" class="text-sm text-muted-foreground">Anzeigesprache:</label>
-      <select
-        id="language-select"
-        value={currentLanguage}
-        onchange={(e) => (currentLanguage = e.currentTarget.value)}
-        class="text-sm border border-input rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      >
-        {#each languages as lang}
-          <option value={lang.code}>{lang.name}</option>
-        {/each}
-      </select>
-    </div>
-  </div>
-
   <!-- Tab Navigation -->
   <div class="border-b border-border">
     <nav class="-mb-px flex space-x-8">

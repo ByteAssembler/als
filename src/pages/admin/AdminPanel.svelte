@@ -13,16 +13,16 @@
 
   const sidebarSections = $state([
     {
-      title: "Main",
+      title: "Hauptmenü",
       links: [
         {
           id: "dashboard",
-          label: "Dashboard",
+          label: "Übersicht",
           iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="12" rx="1"></rect><rect width="7" height="5" x="3" y="16" rx="1"></rect></svg>`,
         },
         {
           id: "file-manager",
-          label: "File Manager",
+          label: "Dateimanager",
           iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>`,
         },
         {
@@ -40,7 +40,7 @@
         /*
 		{
           id: "users",
-          label: "Users",
+          label: "Benutzer",
           iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>`,
         },
 		*/
@@ -51,12 +51,12 @@
         },
         {
           id: "map",
-          label: "Map",
+          label: "Karte",
           iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></svg>`,
         },
         {
           id: "celebrities",
-          label: "Celebrities",
+          label: "Prominente",
           iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/></svg>`,
         },
       ],
@@ -162,7 +162,7 @@
           <!-- Chart Placeholder -->
           <div class="bg-card shadow-sm rounded-lg border">
             <div class="px-6 py-5 border-b">
-              <h3 class="text-lg leading-6 font-medium">Analytics Overview</h3>
+              <h3 class="text-lg leading-6 font-medium">Analyseübersicht</h3>
             </div>
             <div class="p-6">
               <div class="h-64 bg-muted rounded-lg flex items-center justify-center">
@@ -180,7 +180,7 @@
                       d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
                     ></path>
                   </svg>
-                  <p class="mt-2 text-sm text-muted-foreground">Chart visualization will be displayed here</p>
+                  <p class="mt-2 text-sm text-muted-foreground">Diagrammvisualisierung wird hier angezeigt</p>
                 </div>
               </div>
             </div>
@@ -205,10 +205,10 @@
                 ></path>
               </svg>
               <h3 class="mt-4 text-lg font-medium">
-                {currentLabel} Settings
+                {currentLabel} Einstellungen
               </h3>
               <p class="mt-2 text-sm text-muted-foreground">
-                This section is currently empty. Settings and options will be implemented here.
+                Dieser Bereich ist derzeit leer. Einstellungen und Optionen werden hier implementiert.
               </p>
               <div class="mt-6">
                 <button
@@ -218,7 +218,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                     ></path>
                   </svg>
-                  Add Configuration
+                  Konfiguration hinzufügen
                 </button>
               </div>
             </div>

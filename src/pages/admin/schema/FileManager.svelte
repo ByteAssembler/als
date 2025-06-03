@@ -501,12 +501,12 @@
     const trimmedNewName = newItemName.trim();
 
     if (!originalItem || originalItem.isDir) {
-      error = "Cannot rename this item.";
+      error = "Dieses Element kann nicht umbenannt werden.";
       cancelRename();
       return;
     }
     if (!trimmedNewName || trimmedNewName.includes("/")) {
-      error = "Invalid file name. Cannot be empty or contain slashes.";
+      error = "Ungültiger Dateiname. Darf nicht leer sein oder Schrägstriche enthalten.";
       return;
     }
     if (trimmedNewName === originalItem.displayName) {
@@ -547,7 +547,7 @@
         items = newOptimisticItems;
       }
     } else {
-      console.warn("Optimistic rename failed: Item not found in list/cache.");
+      console.warn("Optimistische Umbenennung fehlgeschlagen: Element nicht in Liste/Cache gefunden.");
     }
 
     const oldRenamingItemName = renamingItemName;
@@ -575,7 +575,7 @@
       }
 
       if (currentPrefix === prefixAtActionStart) {
-        error = err.message || `Failed to rename file.`;
+        error = err.message || `Umbenennung der Datei fehlgeschlagen.`;
         renamingItemName = oldRenamingItemName;
         newItemName = oldNewItemName;
       } else {
@@ -607,11 +607,11 @@
     showPreviewDialog = true;
     try {
       const url = await trpcQuery("filemanager.file.download-url", itemToPreview.name);
-      if (!url) throw new Error("No preview URL received.");
+      if (!url) throw new Error("Keine Vorschau-URL erhalten.");
       previewUrl = url;
     } catch (err: any) {
       console.error("Preview URL Error:", err);
-      previewError = err.message || "Could not load preview.";
+      previewError = err.message || "Vorschau konnte nicht geladen werden.";
     } finally {
       isPreviewLoading = false;
     }
@@ -634,7 +634,7 @@
 </script>
 
 <div class="p-4 md:p-6 space-y-6 bg-white text-gray-900 rounded-lg border border-gray-200">
-  <h2 class="text-2xl font-bold">File Manager</h2>
+  <h2 class="text-2xl font-bold">Dateimanager</h2>
 
   <nav
     aria-label="Breadcrumb"
@@ -664,8 +664,8 @@
           "p-2 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors",
           (isLoading || isProcessing || renamingItemName !== null) && "opacity-50 cursor-not-allowed"
         )}
-        title="Go back to previous folder"
-        aria-label="Go back"
+        title="Zurück zum vorherigen Ordner"
+        aria-label="Zurück"
         disabled={isLoading || isProcessing || renamingItemName !== null}
       >
         <ArrowLeft class="h-4 w-4" />
@@ -679,7 +679,7 @@
       )}
       aria-disabled={isProcessing || isLoading || renamingItemName !== null}
     >
-      <Upload class="h-4 w-4" /> <span>Upload</span>
+      <Upload class="h-4 w-4" /> <span>Hochladen</span>
       <input
         type="file"
         multiple
@@ -694,7 +694,7 @@
         <input
           type="text"
           bind:value={newFolderName}
-          placeholder="Folder name"
+          placeholder="Ordnername"
           class="px-3 py-1.5 bg-white rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-400 text-sm"
           onkeydown={(e) => e.key === "Enter" && !isProcessing && !renamingItemName && handleCreateFolder()}
           disabled={isProcessing || renamingItemName !== null}
@@ -702,8 +702,8 @@
         <button
           onclick={handleCreateFolder}
           class="p-2 bg-green-600 hover:bg-green-500 rounded-md disabled:opacity-50 text-white"
-          title="Create Folder"
-          aria-label="Create Folder"
+          title="Ordner erstellen"
+          aria-label="Ordner erstellen"
           disabled={isProcessing || !newFolderName.trim() || isLoading || renamingItemName !== null}
         >
           <FolderPlus class="h-4 w-4" />
@@ -715,8 +715,8 @@
             error = null;
           }}
           class="p-2 bg-red-600 hover:bg-red-500 rounded-md disabled:opacity-50 text-white"
-          title="Cancel"
-          aria-label="Cancel creating folder"
+          title="Abbrechen"
+          aria-label="Ordnererstellung abbrechen"
           disabled={isProcessing || renamingItemName !== null}
         >
           <X class="h-4 w-4" />
@@ -731,7 +731,7 @@
         )}
         disabled={isProcessing || isLoading || renamingItemName !== null}
       >
-        <FolderPlus class="h-4 w-4" /> <span>New Folder</span>
+        <FolderPlus class="h-4 w-4" /> <span>Neuer Ordner</span>
       </button>
     {/if}
 
@@ -743,8 +743,8 @@
           (isProcessing || (isLoading && !isOptimisticLoading) || renamingItemName !== null) &&
             "opacity-50 cursor-not-allowed"
         )}
-        title="Refresh current folder (force)"
-        aria-label="Refresh file list"
+        title="Aktuellen Ordner aktualisieren (erzwingen)"
+        aria-label="Dateiliste aktualisieren"
         disabled={isProcessing || (isLoading && !isOptimisticLoading) || renamingItemName !== null}
       >
         {#if isLoading && !isOptimisticLoading}
@@ -754,7 +754,7 @@
         {/if}
       </button>
       {#if isOptimisticLoading || isProcessing}
-        <div title="Syncing changes..." aria-label="Optimistic update indicator">
+        <div title="Änderungen werden synchronisiert..." aria-label="Optimistischer Update-Indikator">
           <Loader2 class="h-4 w-4 animate-spin text-blue-600" />
         </div>
       {/if}
@@ -763,30 +763,30 @@
 
   {#if error}
     <div class="mt-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-800 text-sm whitespace-pre-wrap">
-      Error: {error}
+      Fehler: {error}
     </div>
   {/if}
   {#if isProcessing && !isLoading && !isOptimisticLoading}
     <div class="mt-4 flex items-center gap-2 text-sm text-blue-700">
-      <HardDriveUpload class="h-4 w-4 animate-pulse" /><span>Processing...</span>
+      <HardDriveUpload class="h-4 w-4 animate-pulse" /><span>Wird verarbeitet...</span>
     </div>
   {/if}
 
   <div class="mt-6">
     {#if isLoading && !isOptimisticLoading}
       <p class="text-gray-600 flex items-center gap-2">
-        <RefreshCw class="h-4 w-4 animate-spin" /> Loading...
+        <RefreshCw class="h-4 w-4 animate-spin" /> Wird geladen...
       </p>
     {:else if items.length === 0 && !error}
-      <p class="text-gray-500">Folder is empty.</p>
+      <p class="text-gray-500">Ordner ist leer.</p>
     {:else if items.length > 0}
       <div class="overflow-x-auto">
         <table class="w-full text-left text-sm table-auto border-collapse">
           <thead class="border-b border-gray-300">
             <tr>
               <th class="p-2 w-8"></th> <th class="p-2">Name</th>
-              <th class="p-2">Size</th>
-              <th class="p-2 w-20 text-right">Actions</th>
+              <th class="p-2">Größe</th>
+              <th class="p-2 w-20 text-right">Aktionen</th>
             </tr>
           </thead>
           <tbody>
@@ -815,10 +815,10 @@
                     renamingItemName === item.name && "py-1"
                   )}
                   title={renamingItemName === item.name
-                    ? "Renaming..."
+                    ? "Wird umbenannt..."
                     : item.isDir
-                      ? `Open folder ${item.displayName}`
-                      : `Click to preview ${item.displayName}`}
+                      ? `Ordner öffnen: ${item.displayName}`
+                      : `Klicken für Vorschau: ${item.displayName}`}
                   onclick={() => !isLoading && !isProcessing && renamingItemName !== item.name && handleItemClick(item)}
                 >
                   {#if renamingItemName === item.name}
@@ -848,8 +848,8 @@
                       <button
                         onclick={handleRenameItem}
                         class="p-1 text-green-600 hover:text-green-700 rounded disabled:opacity-50"
-                        title="Save changes"
-                        aria-label="Save rename"
+                        title="Änderungen speichern"
+                        aria-label="Umbenennung speichern"
                         disabled={isProcessing || !newItemName.trim() || newItemName.trim() === item.displayName}
                       >
                         <Check class="h-4 w-4" />
@@ -857,8 +857,8 @@
                       <button
                         onclick={cancelRename}
                         class="p-1 text-red-600 hover:text-red-700 rounded disabled:opacity-50"
-                        title="Cancel rename"
-                        aria-label="Cancel rename"
+                        title="Umbenennung abbrechen"
+                        aria-label="Umbenennung abbrechen"
                         disabled={isProcessing}
                       >
                         <X class="h-4 w-4" />
@@ -872,8 +872,8 @@
                         <button
                           onclick={() => startRename(item)}
                           class="p-1 text-gray-600 hover:text-blue-600 rounded disabled:opacity-50"
-                          title="Rename File"
-                          aria-label="Rename {item.displayName}"
+                          title="Datei umbenennen"
+                          aria-label="{item.displayName} umbenennen"
                           disabled={isProcessing || isLoading || renamingItemName !== null}
                         >
                           <Pencil class="h-4 w-4" />
@@ -882,8 +882,8 @@
                       <button
                         onclick={() => handleDeleteItem(item)}
                         class="p-1 text-gray-600 hover:text-red-600 rounded disabled:opacity-50"
-                        title="Delete {item.isDir ? 'Folder' : 'File'}"
-                        aria-label="Delete {item.displayName}"
+                        title="{item.isDir ? 'Ordner' : 'Datei'} löschen"
+                        aria-label="{item.displayName} löschen"
                         disabled={isProcessing || isLoading || renamingItemName !== null}
                       >
                         <Trash2 class="h-4 w-4" />
@@ -908,9 +908,9 @@
   >
     <header class="flex justify-between items-center p-4 border-b border-gray-300">
       <h3 class="font-semibold text-lg truncate pr-4" title={previewItem?.displayName}>
-        Preview: {previewItem?.displayName ?? "File"}
+        Vorschau: {previewItem?.displayName ?? "Datei"}
       </h3>
-      <button onclick={closePreview} class="p-1 rounded-full hover:bg-gray-100" aria-label="Close preview">
+      <button onclick={closePreview} class="p-1 rounded-full hover:bg-gray-100" aria-label="Vorschau schließen">
         <X class="h-5 w-5" />
       </button>
     </header>
@@ -918,7 +918,7 @@
       {#if isPreviewLoading}
         <div class="flex flex-col items-center gap-2 text-gray-600">
           <Loader2 class="h-8 w-8 animate-spin" />
-          <span>Loading preview...</span>
+          <span>Vorschau wird geladen...</span>
         </div>
       {:else if previewError}
         <div class="flex flex-col items-center gap-2 text-red-600">
@@ -929,14 +929,14 @@
         {#key previewUrl}
           <iframe
             src={previewUrl}
-            title="File Preview: {previewItem?.displayName}"
+            title="Dateivorschau: {previewItem?.displayName}"
             class="w-full h-[70vh] border-0 bg-white"
             allowfullscreen
             onload={() => console.log("Iframe loaded (attempted):", previewUrl)}
             onerror={(e) => {
               if (previewUrl) {
                 console.error("Iframe loading error:", e, previewUrl);
-                previewError = "Could not display preview in iframe.";
+                previewError = "Vorschau konnte im iframe nicht angezeigt werden.";
               }
             }}
           ></iframe>
@@ -944,7 +944,7 @@
       {:else}
         <div class="flex flex-col items-center gap-2 text-gray-500">
           <AlertTriangle class="h-8 w-8" />
-          <span>Preview not available or load failed.</span>
+          <span>Vorschau nicht verfügbar oder Laden fehlgeschlagen.</span>
         </div>
       {/if}
     </div>
@@ -964,9 +964,9 @@
       >
         <ExternalLink class="h-4 w-4 inline" />{" "}
         {#if isPreviewLoading}
-          Loading...
+          Wird geladen...
         {:else if previewError}
-          Retry...
+          Wiederholen...
         {/if}
       </a>
     </footer>
